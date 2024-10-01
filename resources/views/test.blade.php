@@ -2,104 +2,255 @@
 @section('content')
 <!-- cards -->
 <div class="w-full px-6 py-6 mx-auto">
-        <!-- row 1 -->
-        <div class="flex flex-wrap -mx-3">
-          <!-- card1 -->
-          <div class="w-full max-w-full px-3 mb-6 sm:w-1/2 sm:flex-none xl:mb-0 xl:w-1/4">
-            <div class="relative flex flex-col min-w-0 break-words bg-white shadow-soft-xl rounded-2xl bg-clip-border">
-              <div class="flex-auto p-4">
-                <div class="flex flex-row -mx-3">
-                  <div class="flex-none w-2/3 max-w-full px-3">
-                    <div>
-                      <p class="mb-0 font-sans text-sm font-semibold leading-normal">Today's Money</p>
-                      <h5 class="mb-0 font-bold">
-                        $53,000
-                        <span class="text-sm leading-normal font-weight-bolder text-lime-500">+55%</span>
-                      </h5>
-                    </div>
-                  </div>
-                  <div class="px-3 text-right basis-1/3">
-                    <div class="inline-block w-12 h-12 text-center rounded-lg bg-gradient-to-tl from-purple-700 to-pink-500">
-                      <i class="ni leading-none ni-money-coins text-lg relative top-3.5 text-white"></i>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- card2 -->
-          <div class="w-full max-w-full px-3 mb-6 sm:w-1/2 sm:flex-none xl:mb-0 xl:w-1/4">
-            <div class="relative flex flex-col min-w-0 break-words bg-white shadow-soft-xl rounded-2xl bg-clip-border">
-              <div class="flex-auto p-4">
-                <div class="flex flex-row -mx-3">
-                  <div class="flex-none w-2/3 max-w-full px-3">
-                    <div>
-                      <p class="mb-0 font-sans text-sm font-semibold leading-normal">Today's Users</p>
-                      <h5 class="mb-0 font-bold">
-                        2,300
-                        <span class="text-sm leading-normal font-weight-bolder text-lime-500">+3%</span>
-                      </h5>
-                    </div>
-                  </div>
-                  <div class="px-3 text-right basis-1/3">
-                    <div class="inline-block w-12 h-12 text-center rounded-lg bg-gradient-to-tl from-purple-700 to-pink-500">
-                      <i class="ni leading-none ni-world text-lg relative top-3.5 text-white"></i>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- card3 -->
-          <div class="w-full max-w-full px-3 mb-6 sm:w-1/2 sm:flex-none xl:mb-0 xl:w-1/4">
-            <div class="relative flex flex-col min-w-0 break-words bg-white shadow-soft-xl rounded-2xl bg-clip-border">
-              <div class="flex-auto p-4">
-                <div class="flex flex-row -mx-3">
-                  <div class="flex-none w-2/3 max-w-full px-3">
-                    <div>
-                      <p class="mb-0 font-sans text-sm font-semibold leading-normal">New Clients</p>
-                      <h5 class="mb-0 font-bold">
-                        +3,462
-                        <span class="text-sm leading-normal text-red-600 font-weight-bolder">-2%</span>
-                      </h5>
-                    </div>
-                  </div>
-                  <div class="px-3 text-right basis-1/3">
-                    <div class="inline-block w-12 h-12 text-center rounded-lg bg-gradient-to-tl from-purple-700 to-pink-500">
-                      <i class="ni leading-none ni-paper-diploma text-lg relative top-3.5 text-white"></i>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- card4 -->
-          <div class="w-full max-w-full px-3 sm:w-1/2 sm:flex-none xl:w-1/4">
-            <div class="relative flex flex-col min-w-0 break-words bg-white shadow-soft-xl rounded-2xl bg-clip-border">
-              <div class="flex-auto p-4">
-                <div class="flex flex-row -mx-3">
-                  <div class="flex-none w-2/3 max-w-full px-3">
-                    <div>
-                      <p class="mb-0 font-sans text-sm font-semibold leading-normal">Sales</p>
-                      <h5 class="mb-0 font-bold">
-                        $103,430
-                        <span class="text-sm leading-normal font-weight-bolder text-lime-500">+5%</span>
-                      </h5>
-                    </div>
-                  </div>
-                  <div class="px-3 text-right basis-1/3">
-                    <div class="inline-block w-12 h-12 text-center rounded-lg bg-gradient-to-tl from-purple-700 to-pink-500">
-                      <i class="ni leading-none ni-cart text-lg relative top-3.5 text-white"></i>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+    <!-- row 1 -->
+    <div class="container mx-auto mt-6">
+        <!-- Tabs -->
+        <div class="flex justify-end">
+            <button id="diajukanBtn" onclick="showCard('diajukan')" class="tab-button active bg-white text-gray-800 font-bold py-2 px-6 rounded-t-lg shadow-md mr-2">Diajukan</button>
+            <button id="riwayatBtn" onclick="showCard('riwayat')" class="tab-button bg-gray-200 text-gray-400 font-bold py-2 px-6 rounded-t-lg mr-2">Riwayat</button>
         </div>
+
+        <!-- Card Diajukan -->
+        <div id="diajukanCard" class="card bg-white shadow-md rounded-lg p-6">
+          <!-- Tombol Pengajuan -->
+          <div class="flex justify-between mb-4">
+            <button class="bg-purple-600 text-white py-2 px-4 rounded-md">
+              <span class="mr-2">+</span> Buat Pengajuan
+            </button>
+          </div>
+            <!-- Sorting and Search Container with Orange Border -->
+            <div class="relative">
+                <div class="h-1 bg-orange-500 py-6"></div> <!-- Top Orange Line -->
+                <div class="bg-gray-100 p-2 border-b border-gray-300"> <!-- Sorting and Search with light gray background -->
+                    <div class="flex justify-between mb-4">
+                        <!-- Sort Dropdown -->
+                        <div class="w-1/4 pr-4">
+                          <div class="relative">
+                              <select class="appearance-none border border-gray-300 rounded-md p-2 w-full pr-10">
+                                  <option value="">Sort Status</option>
+                                  <option value="diterima">Diterima</option>
+                                  <option value="direview">Direview</option>
+                                  <option value="direvisi">Direvisi</option>
+                              </select>
+                              <!-- Custom Dropdown Icon -->
+                              <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                                      <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 011.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                  </svg>
+                              </div>
+                          </div>
+                      </div>
+                        <!-- Search Box -->
+                        <div class="flex items-center mt-2 grow sm:mt-0 sm:mr-6 md:mr-0 lg:flex lg:basis-auto">
+                          <div class="flex items-center md:ml-auto md:pr-4">
+                            <div class="relative flex flex-wrap items-stretch w-full transition-all rounded-lg ease-soft">
+                              <span class="text-sm ease-soft leading-5.6 absolute z-50 -ml-px flex h-full items-center whitespace-nowrap rounded-lg rounded-tr-none rounded-br-none border border-r-0 border-transparent bg-transparent py-2 px-2.5 text-center font-normal text-slate-500 transition-all">
+                                <i class="fas fa-search"></i>
+                              </span>
+                              <input type="text" class="pl-8.75 text-sm focus:shadow-soft-primary-outline ease-soft w-1/100 leading-5.6 relative -ml-px block min-w-0 flex-auto rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding py-2 pr-3 text-gray-700 transition-all placeholder:text-gray-500 focus:border-fuchsia-300 focus:outline-none focus:transition-shadow" placeholder="Cari..." />
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table Diajukan -->
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white border border-gray-200 mt-2 table-fixed"> <!-- Added table-fixed for fixed column width -->
+                    <thead class="bg-gray-100 text-gray-600">
+                        <tr>
+                            <th class="py-3 px-4 border w-1/12">No</th>
+                            <th class="py-3 px-4 border w-2/12">Tanggal Pengajuan</th>
+                            <th class="py-3 px-4 border w-3/12">Nama Kegiatan</th>
+                            <th class="py-3 px-4 border w-2/12">Ormawa</th>
+                            <th class="py-3 px-4 border w-1/12">Status</th>
+                            <th class="py-3 px-4 border w-2/12">Keterangan</th>
+                            <th class="py-3 px-4 border w-1/12">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="py-3 px-4 border">001</td>
+                            <td class="py-3 px-4 border">01-10-2024</td>
+                            <td class="py-3 px-4 border">Kegiatan Seminar</td>
+                            <td class="py-3 px-4 border">Himpunan Mahasiswa Teknik</td>
+                            <td class="py-3 px-4 border">Diterima</td>
+                            <td class="py-3 px-4 border">Keterangan Seminar</td>
+                            <td class="py-3 px-4 border">
+                              <button class="bg-purple-600 text-white px-2 py-1" style="border-radius: 5px;">Details</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Card Riwayat -->
+        <div id="riwayatCard" class="card bg-white shadow-md rounded-lg p-6 hidden"> 
+            <!-- Sorting and Search Container with Orange Border -->
+            <div class="relative">
+                <div class="h-1 bg-orange-500 py-6"></div> <!-- Top Orange Line -->
+                <div class="bg-gray-100 p-2 border-b border-gray-300"> <!-- Sorting and Search with light gray background -->
+                    <div class="flex justify-between mb-4">
+                        <!-- Sort Dropdown -->
+                        <div class="w-1/4 pr-4">
+                          <div class="relative">
+                              <select class="appearance-none border border-gray-300 rounded-md p-2 w-full pr-10">
+                                  <option value="">Sort Status</option>
+                                  <option value="selesai">Selesai</option>
+                                  <option value="ditolak">Ditolak</option>
+                              </select>
+                              <!-- Custom Dropdown Icon -->
+                              <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                                      <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 011.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                  </svg>
+                              </div>
+                          </div>
+                      </div>
+                        <!-- Search Box -->
+                        <div class="flex items-center mt-2 grow sm:mt-0 sm:mr-6 md:mr-0 lg:flex lg:basis-auto">
+                          <div class="flex items-center md:ml-auto md:pr-4">
+                            <div class="relative flex flex-wrap items-stretch w-full transition-all rounded-lg ease-soft">
+                              <span class="text-sm ease-soft leading-5.6 absolute z-50 -ml-px flex h-full items-center whitespace-nowrap rounded-lg rounded-tr-none rounded-br-none border border-r-0 border-transparent bg-transparent py-2 px-2.5 text-center font-normal text-slate-500 transition-all">
+                                <i class="fas fa-search"></i>
+                              </span>
+                              <input type="text" class="pl-8.75 text-sm focus:shadow-soft-primary-outline ease-soft w-1/100 leading-5.6 relative -ml-px block min-w-0 flex-auto rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding py-2 pr-3 text-gray-700 transition-all placeholder:text-gray-500 focus:border-fuchsia-300 focus:outline-none focus:transition-shadow" placeholder="Cari..." />
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table Riwayat -->
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white border border-gray-200 mt-2 table-fixed"> <!-- Added table-fixed for fixed column width -->
+                    <thead class="bg-gray-100 text-gray-600">
+                        <tr>
+                            <th class="py-3 px-4 border w-1/12">No</th>
+                            <th class="py-3 px-4 border w-2/12">Tanggal Pengajuan</th>
+                            <th class="py-3 px-4 border w-3/12">Nama Kegiatan</th>
+                            <th class="py-3 px-4 border w-2/12">Ormawa</th>
+                            <th class="py-3 px-4 border w-1/12">Status</th>
+                            <th class="py-3 px-4 border w-2/12">Keterangan</th>
+                            <th class="py-3 px-4 border w-1/12">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="py-3 px-4 border">002</td>
+                            <td class="py-3 px-4 border">15-09-2024</td>
+                            <td class="py-3 px-4 border">Festival Budaya</td>
+                            <td class="py-3 px-4 border">UKM Budaya</td>
+                            <td class="py-3 px-4 border">Ditolak</td>
+                            <td class="py-3 px-4 border">Keterangan Festival</td>
+                            <td class="py-3 px-4 border">
+                              <button class="bg-purple-600 text-white px-2 py-1" style="border-radius: 5px;">Details</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showCard(card) {
+            // Reset all tab buttons
+            document.getElementById('diajukanBtn').classList.remove('active', 'bg-white', 'text-gray-800');
+            document.getElementById('diajukanBtn').classList.add('bg-gray-200', 'text-gray-400');
+            document.getElementById('riwayatBtn').classList.remove('active', 'bg-white', 'text-gray-800');
+            document.getElementById('riwayatBtn').classList.add('bg-gray-200', 'text-gray-400');
+
+            // Hide all cards
+            document.getElementById('diajukanCard').classList.add('hidden');
+            document.getElementById('riwayatCard').classList.add('hidden');
+
+            // Show selected card and set active tab button
+            if (card === 'diajukan') {
+                document.getElementById('diajukanBtn').classList.add('active', 'bg-white', 'text-gray-800');
+                document.getElementById('diajukanBtn').classList.remove('bg-gray-200', 'text-gray-400');
+                document.getElementById('diajukanCard').classList.remove('hidden');
+            } else {
+                document.getElementById('riwayatBtn').classList.add('active', 'bg-white', 'text-gray-800');
+                document.getElementById('riwayatBtn').classList.remove('bg-gray-200', 'text-gray-400');
+                document.getElementById('riwayatCard').classList.remove('hidden');
+            }
+        }
+
+        // Set default tab as Diajukan
+        document.addEventListener('DOMContentLoaded', function () {
+            showCard('diajukan');
+        });
+    </script>
+
+    <style>
+        .container {
+            max-width: 100%;
+            margin: auto;
+        }
+
+        table {
+            border-spacing: 0;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            text-align: center;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+        }
+
+        .bg-purple-600 {
+            background-color: #3B3BBD;
+        }
+
+        .bg-orange-500 {
+            background-color: #FF9A36;
+        }
+
+        .bg-gray-100 {
+            background-color: #F4F4F4;
+        }
+
+        .bg-gray-200 {
+            background-color: #E5E7EB;
+        }
+
+        .bg-green-400 {
+            background-color: #57D000;
+        }
+
+        .text-gray-500, .text-gray-600 {
+            color: #6B7280;
+        }
+
+        .rounded-md {
+            border-radius: 0.375rem;
+        }
+
+        .h-8 {
+            height: 2rem;
+        }
+
+        .overflow-x-auto {
+            overflow-x: auto;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .active {
+            background-color: white;
+        }
+    </style>
+</div>
 
         <!-- cards row 2 -->
         <div class="flex flex-wrap mt-6 -mx-3">
