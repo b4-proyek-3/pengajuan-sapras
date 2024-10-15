@@ -3,6 +3,11 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PengajuanController;
 
+Route::get('/', function () {
+    return view('pages.test');
+});
+
+
 // Route untuk menampilkan daftar pengajuan
 Route::get('/pengajuan', [PengajuanController::class, 'index'])->name('pengajuan.index');
 

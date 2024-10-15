@@ -16,7 +16,7 @@
                     <p class="mb-0 text-sm leading-normal">
                     <i class="fa fa-calendar text-cyan-500"></i>
                       <span class="ml-1 font-semibold">No Pengajuan #</span>
-                      0001
+                      {{ $pengajuans->first()->id_pengajuan ?? 'N/A' }}
                     </p>
                   </div>
                   <div class="flex-none w-5/12 max-w-full px-3 my-auto text-right lg:w-1/2 lg:flex-none">
@@ -192,54 +192,10 @@
                         <td class="p-2 align-middle bg-transparent whitespace-nowrap">
                           <div class="flex px-4 py-1">
                             <div class="flex flex-col justify-center">
-                              <h6 class="mb-0 text-sm leading-normal">Nama Pengaju</h6>
+                              <h6 class="mb-0 text-sm leading-normal">{{ $item->dokumen ?? 'N/A' }}</h6>
                             </div>
                           </div>
                         </td>
-                      </tr>
-                      <tr>
-                        <td class="p-2 align-middle bg-transparent whitespace-nowrap">
-                          <div class="flex px-4 py-1">
-                            <div class="flex flex-col justify-center">
-                              <h6 class="mb-0 text-sm leading-normal">Nama Kegiatan</h6>
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="p-2 align-middle bg-transparent whitespace-nowrap">
-                          <div class="flex px-4 py-1">
-                            <div class="flex flex-col justify-center">
-                              <h6 class="mb-0 text-sm leading-normal">Tanggal Mulai</h6>
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="p-2 align-middle bg-transparent whitespace-nowrap">
-                          <div class="flex px-4 py-1">
-                            <div class="flex flex-col justify-center">
-                              <h6 class="mb-0 text-sm leading-normal">Tanggal Berakhir</h6>
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="p-2 align-middle bg-transparent whitespace-nowrap">
-                          <div class="flex px-4 py-1">
-                            <div class="flex flex-col justify-center">
-                              <h6 class="mb-0 text-sm leading-normal">Tempat</h6>
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="p-2 align-middle bg-transparent whitespace-nowrap">
-                          <div class="flex px-4 py-1">
-                            <div class="flex flex-col justify-center">
-                              <h6 class="mb-0 text-sm leading-normal">Kategori</h6>
-                            </div>
-                          </div>
                       </tr>
                     </tbody>
                   </table>
@@ -259,19 +215,6 @@
             </div>
           </div>
         </div>
-
-        <!-- cards row 3 -->
-        <h5 class="font-bold px-4 mt-6 mb-0">Catatan</h5>
-        <div class="flex flex-wrap my-6 -mx-3">
-          <!-- card 2 -->
-          <div class="w-full max-w-full pr-6 pl-1 mt-0 mb-6 md:mb-0 md:w-2/2 md:flex-none lg:w-3/3 lg:flex-none">
-            <div class="border-black/12.5 shadow-soft-xl relative flex h-full min-w-0 flex-col break-words rounded-2xl border-0 border-solid bg-white bg-clip-border">
-              <div class="flex-auto p-4">
-              </div>
-            </div>
-          </div>
-        </div>
-
         <footer class="pt-4">
           <div class="w-full px-6 mx-auto">
             <div class="flex flex-wrap items-center -mx-3 lg:justify-between">

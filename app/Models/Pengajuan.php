@@ -15,6 +15,7 @@ class Pengajuan extends Model
     protected $primaryKey = 'id_pengajuan'; // Menggunakan id_pengajuan sebagai primary key
 
     protected $fillable = [
+        'id_pengajuan',
         'nim',
         'tanggal_pengajuan',
         'tanggal_pinjam',
