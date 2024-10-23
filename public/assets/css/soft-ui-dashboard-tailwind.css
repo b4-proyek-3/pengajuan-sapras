@@ -25,6 +25,7 @@
 2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
 */
 
+
 *,
 ::before,
 ::after {
@@ -122,6 +123,457 @@ a {
   color: inherit;
   text-decoration: inherit;
 }
+
+/*tambahan status pengajuan*/
+@keyframes growProgressBar {
+  0%, 33% { --pgPercentage: 0; }
+  100% { --pgPercentage: var(--value); }
+}
+
+@property --pgPercentage {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0;
+}
+
+div[role="progressbar"] {
+  --size: 12rem;
+  --fg: #369;
+  --bg: #def;
+  --pgPercentage: var(--value);
+  animation: growProgressBar 3s 1 forwards;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: 
+    radial-gradient(closest-side, white 80%, transparent 0 99.9%, white 0),
+    conic-gradient(var(--fg) calc(var(--pgPercentage) * 1%), var(--bg) 0)
+    ;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: calc(var(--size) / 5);
+  color: var(--fg);
+}
+
+div[role="progressbar"]::before {
+  counter-reset: percentage var(--value);
+  content: counter(percentage) '%';
+}
+
+.icon {
+  width: 60px;
+  height: 60px;
+  margin-right: 15px;
+}
+
+.icon-content { 
+  padding-bottom: 20px;
+}
+
+.top {
+  padding-top: 40px;
+  padding-left: 13% !important;
+  padding-right: 13% !important;
+}
+
+ /* .card {
+  z-index: 0;
+  background-color: #ECEFF1;
+  padding-bottom: 20px;
+  margin-top: 90px;
+  margin-bottom: 90px;
+  border-radius: 10px;
+}  */
+
+/* Icon progressbar */
+#progressbar {
+  margin-bottom: 30px;
+  overflow: hidden;
+  color: #455A64;
+  padding-left: 0px;
+  margin-top: 30px;
+}
+
+#progressbar li {
+  list-style-type: none;
+  font-size: 13px;
+  width: 20%; /* Adjusted width for 5 steps */
+  float: left;
+  position: relative;
+  font-weight: 400;
+  text-align: center;
+}
+
+/* Outer and Inner Circle combined */
+.circle {
+  width: 60px;
+  height: 60px;
+  border: 5px solid #C5CAE9; /* Default grey color */
+  border-radius: 50%;
+  background-color: #fff; /* Default inner circle color */
+  margin: auto;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#progressbar li i {
+  font-size: 25px;
+  color: #C5CAE9; /* Default icon color */
+}
+
+/* ProgressBar connectors */
+#progressbar li:after {
+  content: '';
+  width: 100%;
+  height: 8px;
+  background: #C5CAE9;
+  position: absolute;
+  left: 0;
+  top: 28px; /* Aligns connector with circles */
+  z-index: -1;
+}
+
+#progressbar li:last-child:after {
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  position: absolute;
+  left: -50%;
+}
+
+#progressbar li:nth-child(2):after, 
+#progressbar li:nth-child(3):after,
+#progressbar li:nth-child(4):after {
+  left: -50%;
+}
+
+#progressbar li:first-child:after {
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  position: absolute;
+  left: 50%;
+}
+
+/* Active Steps Styling */
+#progressbar li.active .circle {
+  border-color: #FF9800; /* Orange border for active steps */
+  background-color: #ffffff; /* Make inner circle match the border */
+}
+
+#progressbar li.active i {
+  color: #FF9800; /* Icon color in active steps */
+}
+
+#progressbar li.active:after {
+  background: #FF9800; /* Connector color for active steps */
+}
+
+/* form pengajuan */
+.form-pengajuan {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 0; /* Set padding to 0 to remove any extra space */
+  margin: 0; /* Ensure no margins are applied */
+}
+
+.form-row {
+  display: flex;
+  justify-content: space-between;
+  width: 100%; /* Ensure full width */
+  max-width: 100%; /* Remove any limitation to width */
+  padding: 0; /* Remove padding */
+  margin: 0; /* Remove margin */
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  width: 30%;
+  margin-right: 20px;
+}
+
+.form-group:last-child {
+  margin-right: 0;
+}
+
+.form-group label {
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #455A64;
+  font-weight: 500;
+}
+
+.form-control {
+  padding: 10px;
+  border: 1px solid #C5CAE9;
+  border-radius: 10px;
+  font-size: 14px;
+  outline: none;
+  width: 100%;
+  background-color: #fff;
+  transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+  border-color: #FF9800;
+  box-shadow: 0 0 5px rgba(255, 152, 0, 0.5);
+}
+
+/* CSS */
+.tracking_status_container {
+  width: 100%;
+  max-width: 100%;
+  margin-top: 30px;
+  padding: 20px;
+  background: #f5f5f5;
+  border-radius: 8px;
+}
+
+.tracking_status_header {
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.tracking_status_wrapper {
+  position: relative;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.tracking_status_list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  position: relative;
+}
+
+.tracking_status_list::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 176px;          /* sebelumnya 106px */
+  width: 2px;
+  height: 100%;
+  background: #ddd;
+}
+
+.tracking_status_item {
+  position: relative;
+  padding-left: 196px;   /* sebelumnya 125px */
+  padding-bottom: 25px;
+  min-height: 70px;
+}
+
+.tracking_status_date {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 120px;          /* lebih lebar untuk menampung format waktu penuh */
+  min-width: 120px;      /* memastikan tidak lebih kecil dari ini */
+  text-align: right;
+  color: #666;
+  font-size: 12px;
+  white-space: nowrap;   /* mencegah text wrapping */
+}
+
+.tracking_status_content {
+  display: flex;
+  align-items: flex-start;
+  position: relative;
+  padding-left: 30px;
+}
+
+.tracking_status_dot {
+  position: absolute;
+  left: -28px;
+  top: 0;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #ddd;
+  z-index: 1;
+}
+
+.tracking_status_icon {
+  margin-right: 12px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+}
+
+.tracking_status_text {
+  flex: 1;
+}
+
+.tracking_status_title {
+  font-weight: 500;
+  margin-bottom: 4px;
+  color: #333;
+}
+
+.tracking_status_desc {
+  color: #666;
+  font-size: 14px;
+}
+
+/* Status styles */
+.tracking_status_item.completed .tracking_status_dot {
+  background: #ff9800;
+}
+
+.tracking_status_item.active .tracking_status_dot {
+  background: #ff9800;
+}
+
+/* Form styles */
+.form_group {
+  margin-bottom: 15px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .tracking_status_container {
+      padding: 15px;
+  }
+
+  .tracking_status_item {
+    padding-left: 166px; /* sesuaikan dengan desktop */
+  }
+
+  .tracking_status_list::before {
+    left: 146px;       /* sesuaikan dengan desktop */
+  }
+
+  .tracking_status_date {
+    width: 120px;      /* tetap konsisten di mobile */
+    font-size: 11px;
+  }
+
+  .tracking_status_dot {
+      left: -24px;
+  }
+}
+
+/* riwayat dokumen */
+/* Default width */
+.timeline-wrapper {
+  width: 100%; /* Lebar penuh untuk layar yang lebih kecil */
+  margin: 0 auto; /* Tetap di tengah */
+}
+
+/* Media query untuk layar yang lebih besar */
+@media screen and (min-width: 1200px) {
+  .timeline-wrapper {
+    width: 50%; /* Lebar 60% untuk layar besar */
+  }
+}
+#riwayat-dokumen {
+  margin-bottom: 30px;
+  overflow: hidden;
+  color: #455A64;
+  padding-left: 0px;
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative; /* Menjaga konten tetap dalam layout */
+}
+
+#riwayat-dokumen li {
+  list-style-type: none;
+  font-size: 13px;
+  width: 100%; /* Lebar penuh */
+  position: relative;
+  font-weight: 400;
+  text-align: center;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center; /* Pusatkan lingkaran */
+}
+
+.date {
+  position: absolute;
+  left: 10px; /* Atur jarak dari kiri lebih kecil */
+  text-align: right;
+  width: 100px; /* Kurangi lebar jika diperlukan */
+  color: #455A64;
+}
+
+.description {
+  position: absolute;
+  right: 10px; /* Atur jarak dari kanan lebih kecil */
+  text-align: left;
+  width: 200px; /* Disesuaikan agar lebih lebar */
+  color: #455A64;
+}
+
+/* Styling untuk teks bold pada deskripsi */
+.description strong {
+  font-weight: bold;
+  color: #FF9800; /* Warna bold yang sama dengan ikon aktif */
+}
+
+.circle-dokumen {
+  width: 60px;
+  height: 60px;
+  border: 5px solid #C5CAE9;
+  border-radius: 50%;
+  background-color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#riwayat-dokumen li i {
+  font-size: 25px;
+  color: #C5CAE9;
+}
+
+#riwayat-dokumen li:after {
+  content: '';
+  width: 8px;
+  height: 50px;
+  background: #C5CAE9;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: -1;
+}
+
+#riwayat-dokumen li:last-child:after {
+  display: none;
+}
+
+#riwayat-dokumen li.active .circle-dokumen {
+  border-color: #FF9800;
+  background-color: #ffffff;
+}
+
+#riwayat-dokumen li.active i {
+  color: #FF9800;
+}
+
+#riwayat-dokumen li.active:after {
+  background: #FF9800;
+}
+
+
 
 /*
 Add the correct font weight in Edge and Safari.
