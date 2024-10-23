@@ -46,7 +46,127 @@
             </div>
         </div>
 
-        <div class="form-pengajuan">
+        <!-- Struktur HTML yang baru -->
+        <div class="dashboard-container">
+            <div class="dashboard-row">
+                <!-- Form Pengajuan Card -->
+                <div class="dashboard-col">
+                    <div class="form-pengajuan card">
+                        <div class="card-body">
+                            <div class="form-group mb-3">
+                                <label for="nama-kegiatan">Nama Kegiatan</label>
+                                <input type="text" id="nama-kegiatan" class="form-control">
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="tanggal-kegiatan">Tanggal Kegiatan</label>
+                                <input type="date" id="tanggal-kegiatan" class="form-control">
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="ormawa">Ormawa</label>
+                                <input type="text" id="ormawa" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status Tracker Card -->
+                <div class="dashboard-col">
+                    <div class="tracking_status_container card">
+                      <div class="tracking_status_wrapper">
+                          <div class="tracking_status_header">STATUS</div>
+                          <ul class="tracking_status_list">
+                              <li class="tracking_status_item">
+                                  <div class="tracking_status_date">dd-mm-yyyy hh:mm:dd</div>
+                                  <div class="tracking_status_content">
+                                      <div class="tracking_status_dot"></div>
+                                      <div class="tracking_status_icon">
+                                        <i class="fa-solid fa-file-circle-check"></i>
+                                      </div>
+                                      <div class="tracking_status_text">
+                                          <div class="tracking_status_title">Selesai</div>
+                                          <div class="tracking_status_desc">Pengajuan selesai diajukan</div>
+                                      </div>
+                                  </div>
+                              </li>
+
+                              <li class="tracking_status_item">
+                                  <div class="tracking_status_date">dd-mm-yyyy hh:mm:dd</div>
+                                  <div class="tracking_status_content">
+                                      <div class="tracking_status_dot"></div>
+                                      <div class="tracking_status_icon">
+                                        <i class="fa-solid fa-user-magnifying-glass"></i>
+                                      </div>
+                                      <div class="tracking_status_text">
+                                          <div class="tracking_status_title">Dalam Review WD 3</div>
+                                          <div class="tracking_status_desc">Pengajuan sedang direview oleh WD 3</div>
+                                      </div>
+                                  </div>
+                              </li>
+
+                              <li class="tracking_status_item">
+                                  <div class="tracking_status_date">dd-mm-yyyy hh:mm:dd</div>
+                                  <div class="tracking_status_content">
+                                      <div class="tracking_status_dot"></div>
+                                      <div class="tracking_status_icon">
+                                        <i class="fa-solid fa-user-magnifying-glass"></i>
+                                      </div>
+                                      <div class="tracking_status_text">
+                                          <div class="tracking_status_title">Dalam review ULT</div>
+                                          <div class="tracking_status_desc">Pengajuan sedang dalam review ULT</div>
+                                      </div>
+                                  </div>
+                              </li>
+
+                              <li class="tracking_status_item active">
+                                  <div class="tracking_status_date">dd-mm-yyyy hh:mm:dd</div>
+                                  <div class="tracking_status_content">
+                                      <div class="tracking_status_dot"></div>
+                                      <div class="tracking_status_icon">
+                                        <i class="fa-solid fa-file-check"></i>
+                                      </div>
+                                      <div class="tracking_status_text">
+                                          <div class="tracking_status_title">Review KLI</div>
+                                          <div class="tracking_status_desc">Pengajuan telah disetujui oleh KLI [A02]</div>
+                                      </div>
+                                  </div>
+                              </li>
+
+                              <li class="tracking_status_item active">
+                                  <div class="tracking_status_date">dd-mm-yyyy hh:mm:dd</div>
+                                  <div class="tracking_status_content">
+                                      <div class="tracking_status_dot"></div>
+                                      <div class="tracking_status_icon">
+                                      <i class="fa-solid fa-file-check"></i>
+                                      </div>
+                                      <div class="tracking_status_text">
+                                          <div class="tracking_status_title">Review Sekretaris BEM</div>
+                                          <div class="tracking_status_desc">Pengajuan telah disetujui Sekretaris  [A01]</div>
+                                      </div>
+                                  </div>
+                              </li>
+
+                              <li class="tracking_status_item active">
+                                  <div class="tracking_status_date">dd-mm-yyyy hh:mm:dd</div>
+                                  <div class="tracking_status_content">
+                                      <div class="tracking_status_dot"></div>
+                                      <div class="tracking_status_icon">
+                                          <i class="fa-duotone fa-solid fa-file-export"></i>
+                                      </div>
+                                      <div class="tracking_status_text">
+                                          <div class="tracking_status_title">Pengajuan Dibuat</div>
+                                          <div class="tracking_status_desc">Pengajuan telah diajukan dan akan diriview Sekretaris BEM</div>
+                                      </div>
+                                  </div>
+                              </li>
+                          </ul>
+                      </div>
+                  </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- <div class="form-pengajuan">
             <div class="form-row">
                 <div class="form-group">
                     <label for="nama-kegiatan">Nama Kegiatan</label>
@@ -61,10 +181,10 @@
                     <input type="text" id="ormawa" class="form-control">
                 </div>
             </div>
-        </div>
+        </div> -->
 
         <!-- Status Tracker -->
-        <div class="tracking_status_container">
+        <!-- <div class="tracking_status_container">
             <div class="tracking_status_wrapper">
                 <div class="tracking_status_header">STATUS</div>
                 <ul class="tracking_status_list">
@@ -153,6 +273,6 @@
                     </li>
                 </ul>
             </div>
-        </div>
+        </div> -->
 
 @endsection
