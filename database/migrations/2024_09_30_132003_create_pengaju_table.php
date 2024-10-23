@@ -12,12 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pengaju', function (Blueprint $table) {
-            $table->string('nim')->primary();
+            $table->char('nim', length: 8)->primary();
             $table->string('nama');
             $table->string('email')->unique();
             $table->string('password');
-            //$table->unsignedBigInteger('id_ormawa'); // Foreign key ke tabel ormawa
-            //$table->foreign('id_ormawa')->references('id_ormawa')->on('ormawa')->onDelete('cascade');
+            $table->unsignedBigInteger('id_ormawa'); // Foreign key ke tabel ormawa
+            $table->foreign('id_ormawa')->references('id_ormawa')->on('ormawa')->onDelete('cascade');
             $table->timestamps();
         });
     }

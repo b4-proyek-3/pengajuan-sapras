@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Tempat extends Model
 {
+    use HasFactory;
+
+    protected $primaryKey = 'id_tempat';
     protected $table = 'tempat';
     protected $fillable = ['nama_tempat'];
 

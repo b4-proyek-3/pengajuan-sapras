@@ -19,6 +19,7 @@ class Pengaju extends Authenticatable
         'nama',
         'email',
         'password',
+        'id_ormawa',
     ];
 
     public function pengajuan()

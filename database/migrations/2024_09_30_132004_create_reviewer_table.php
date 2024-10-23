@@ -12,12 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('reviewers', function (Blueprint $table) {
-            $table->string('nip')->primary();
+            $table->char('nip', length: 18)->primary();
             $table->string('nama');
             $table->string('email')->unique();
             $table->string('password');
-            //$table->unsignedBigInteger('id_role'); // Foreign key ke tabel roles
-            //$table->foreign('id_role')->references('id_role')->on('roles')->onDelete('cascade');
+            $table->unsignedBigInteger('id_role'); // Foreign key ke tabel roles
+            $table->foreign('id_role')->references('id_role')->on('roles')->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -18,6 +18,7 @@ class Pengajuan extends Model
         'id_pengajuan',
         'nim',
         'tanggal_pengajuan',
+        'id_tempat',
         'tanggal_pinjam',
         'tanggal_akhir',
         'waktu_pengajuan',
@@ -25,6 +26,8 @@ class Pengajuan extends Model
         'dokumen',
     ];
 
+    public $timestamps = false;
+    
     public function pengaju()
     {
         return $this->belongsTo(Pengaju::class, 'nim', 'nim');

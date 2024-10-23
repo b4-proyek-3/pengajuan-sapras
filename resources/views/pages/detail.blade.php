@@ -2,7 +2,7 @@
 @section('content')
 <!-- cards -->
 <div class="w-full px-6 py-6 mx-auto">
-    <h5 class="font-bold">Detail Pengajuan</h5>
+        <h5 class="font-bold">Detail Pengajuan</h5>
         <!-- cards row 1 -->
         <div class="flex flex-wrap my-6 -mx-3">
           <!-- card 1 -->
@@ -16,27 +16,14 @@
                     <p class="mb-0 text-sm leading-normal">
                     <i class="fa fa-calendar text-cyan-500"></i>
                       <span class="ml-1 font-semibold">No Pengajuan #</span>
-                      {{ $pengajuans->first()->id_pengajuan ?? 'N/A' }}
+                      {{ $pengajuans->id_pengajuan ?? 'N/A' }}
                     </p>
                   </div>
-                  <div class="flex-none w-5/12 max-w-full px-3 my-auto text-right lg:w-1/2 lg:flex-none">
+                  <div class="flex-none w-1/12 max-w-full px-3 my-auto text-right lg:w-1/2 lg:flex-none">
                     <div class="relative pr-6 lg:float-right">
-                      <a dropdown-trigger class="cursor-pointer" aria-expanded="false">
-                        <i class="fa fa-ellipsis-v text-slate-400"></i>
+                      <a dropdown-trigger class="cursor-pointer" aria-expanded="false" onclick="openModal('editPengajuanModal')">
+                        <i class="fa fa-ellipsis-v"></i>
                       </a>
-                      <p class="hidden transform-dropdown-show"></p>
-
-                      <ul dropdown-menu class="z-100 text-sm transform-dropdown shadow-soft-3xl duration-250 before:duration-350 before:font-awesome before:ease-soft min-w-44 -ml-34 before:text-5.5 pointer-events-none absolute top-0 m-0 mt-2 list-none rounded-lg border-0 border-solid border-transparent bg-white bg-clip-padding px-2 py-4 text-left text-slate-500 opacity-0 transition-all before:absolute before:top-0 before:right-7 before:left-auto before:z-40 before:text-white before:transition-all before:content-['\f0d8']">
-                        <li class="relative">
-                          <a class="py-1.2 lg:ease-soft clear-both block w-full whitespace-nowrap rounded-lg border-0 bg-transparent px-4 text-left font-normal text-slate-500 lg:transition-colors lg:duration-300" href="javascript:;">Action</a>
-                        </li>
-                        <li class="relative">
-                          <a class="py-1.2 lg:ease-soft clear-both block w-full whitespace-nowrap rounded-lg border-0 bg-transparent px-4 text-left font-normal text-slate-500 lg:transition-colors lg:duration-300" href="javascript:;">Another action</a>
-                        </li>
-                        <li class="relative">
-                          <a class="py-1.2 lg:ease-soft clear-both block w-full whitespace-nowrap rounded-lg border-0 bg-transparent px-4 text-left font-normal text-slate-500 lg:transition-colors lg:duration-300" href="javascript:;">Something else here</a>
-                        </li>
-                      </ul>
                     </div>
                   </div>
                 </div>
@@ -49,7 +36,6 @@
                     <td class="p-0 align-middle bg-transparent border-b whitespace-nowrap">
                     <td class="p-0 align-middle bg-transparent border-b whitespace-nowrap">
                     <tbody>
-                    @foreach($pengajuans as $item)
                     <tr>
                         <td class="p-2 align-middle bg-transparent whitespace-nowrap">
                             <div class="flex px-4 py-1">
@@ -60,7 +46,7 @@
                                     <h6 class="mb-0 text-sm leading-normal">:</h6>
                                 </div>
                                 <div class="flex flex-col justify-center pl-2">
-                                    <h6 class="mb-0 text-sm leading-normal">{{ $item->pengaju->nama ?? 'N/A' }}</h6>
+                                    <h6 class="mb-0 text-sm leading-normal">{{ $pengajuans->pengaju->nama ?? 'N/A' }}</h6>
                                 </div>
                             </div>
                         </td>
@@ -75,7 +61,7 @@
                                     <h6 class="mb-0 text-sm leading-normal">:</h6>
                                 </div>
                                 <div class="flex flex-col justify-center pl-2">
-                                    <h6 class="mb-0 text-sm leading-normal">{{ $item->nama_kegiatan }}</h6>
+                                    <h6 class="mb-0 text-sm leading-normal">{{ $pengajuans->nama_kegiatan ?? 'N/A' }}</h6>
                                 </div>
                             </div>
                         </td>
@@ -90,7 +76,7 @@
                                   <h6 class="mb-0 text-sm leading-normal">:</h6>
                                 </div>
                                 <div class="flex flex-col justify-center pl-2">
-                                <h6 class="mb-0 text-sm leading-normal">{{ $item->tanggal_pinjam }}</h6>
+                                <h6 class="mb-0 text-sm leading-normal">{{ $pengajuans->tanggal_pinjam ?? 'N/A' }}</h6>
                                 </div>
                             </div>
                         </td>
@@ -105,7 +91,7 @@
                                   <h6 class="mb-0 text-sm leading-normal">:</h6>
                                 </div>
                                 <div class="flex flex-col justify-center pl-2">
-                                <h6 class="mb-0 text-sm leading-normal">{{ $item->tanggal_akhir }}</h6>
+                                <h6 class="mb-0 text-sm leading-normal">{{ $pengajuans->tanggal_akhir ?? 'N/A' }}</h6>
                                 </div>
                             </div>
                         </td>
@@ -120,18 +106,17 @@
                                   <h6 class="mb-0 text-sm leading-normal">:</h6>
                                 </div>
                                 <div class="flex flex-col justify-center pl-2">
-                                    <h6 class="mb-0 text-sm leading-normal">{{ $item->tempat ?? 'N/A' }}</h6>
+                                    <h6 class="mb-0 text-sm leading-normal">{{ $pengajuans->tempat ?? 'N/A' }}</h6>
                                 </div>
                             </div>
                         </td>
                     </tr>
-                  @endforeach
                   </table>
                 </div>
               </div>
             </div>
           </div>
-
+        
           <!-- card 2 -->
 
           <div class="w-full max-w-full pr-4 md:w-1/2 md:flex-none lg:w-1/3 lg:flex-none">
@@ -161,45 +146,65 @@
                     </span>
                     <div class="ml-11.252 pt-1.4 lg:max-w-120 relative -top-1.5 w-auto">
                         <h6 class="mb-0 text-sm font-semibold leading-normal text-slate-700">Review SEKUM BEM</h6>
+                        <p class="mt-1 mb-0 text-xs font-semibold leading-tight text-slate-400">Revisi</p>
                         <p class="mt-1 mb-0 text-xs font-semibold leading-tight text-slate-400">21 DEC 11 PM</p>
                     </div>
                 </div>
-
+              </div>
+              <div class="flex-none w-1/2 max-w-full px-3 text-right">
+                    <button class="inline-block w-full px-8 py-2 mb-0 font-bold text-center uppercase align-middle transition-all bg-transparent border border-solid rounded-lg shadow-none cursor-pointer leading-pro ease-soft-in text-xs bg-150 active:opacity-85 hover:scale-102 tracking-tight-soft bg-x-25 border-fuchsia-500 text-fuchsia-500 hover:opacity-75">View All</button>
               </div>
             </div>
           </div>
         </div>
 
+
         <!-- cards row 2 -->
-    <h5 class="font-bold px-3 mt-6 mb-0">Detail Dokumen</h5>
+        <h5 class="font-bold px-3 mt-6 mb-0">Detail Dokumen</h5>
         <div class="flex flex-wrap my-6 -mx-3">
           <!-- card 1 -->
 
           <div class="w-full max-w-full pl-6 pr-3 mt-0 mb-6 md:mb-0 md:w-1/2 md:flex-none lg:w-1/3 lg:flex-none">
-            <div class="border-black/12.5 shadow-soft-xl relative flex min-w-0 flex-col break-words rounded-2xl border-0 border-solid bg-white bg-clip-border h-full">
-              <div class="flex-auto p-6 px-0 pb-2">
-                <div class="overflow-x-auto">
-                <table class="items-center w-full mb-0 align-top border-gray-200 text-slate-500">
-                    <thead class="align-bottom">
-                      <tr>
-                        <th class="px-6 py-3 pt-0 font-bold tracking-normal text-left align-middle bg-transparent border-b letter border-b-solid whitespace-nowrap text-slate-400">Dokumen</th>
-                        <th class="px-6 py-3 pt-0 pl-2 font-bold tracking-normal text-left align-middle bg-transparent border-b letter border-b-solid whitespace-nowrap text-slate-400">Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td class="p-2 align-middle bg-transparent whitespace-nowrap">
-                          <div class="flex px-4 py-1">
-                            <div class="flex flex-col justify-center">
-                              <h6 class="mb-0 text-sm leading-normal">{{ $item->dokumen ?? 'N/A' }}</h6>
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+            <div class="border-black/12.5 shadow-soft-xl relative flex min-w-0 flex-col break-words rounded-2xl border-0 border-solid bg-white bg-clip-border">
+              <div class="border-black/12.5 mb-0 rounded-t-2xl border-b-0 border-solid bg-white p-6 pb-0">
+                <div class="flex flex-wrap mt-0 -mx-3">
+                  <div class="flex-none w-7/12 max-w-full px-3 mt-0 lg:w-1/2 lg:flex-none">
+                    <h6>Dokumen</h6>
+                  </div>
+                  <div class="flex-none w-5/12 max-w-full px-3 my-auto text-right lg:w-1/2 lg:flex-none">
+                    <div class="relative pr-6 lg:float-right">
+                      <a dropdown-trigger class="cursor-pointer" aria-expanded="false">
+                        <i class="fa fa-ellipsis-v text-slate-400"></i>
+                      </a>
+                      <p class="hidden transform-dropdown-show"></p>
+                      <ul dropdown-menu class="z-100 text-sm transform-dropdown shadow-soft-3xl duration-250 before:duration-350 before:font-awesome before:ease-soft min-w-44 -ml-34 before:text-5.5 pointer-events-none absolute top-0 m-0 mt-2 list-none rounded-lg border-0 border-solid border-transparent bg-white bg-clip-padding px-2 py-4 text-left text-slate-500 opacity-0 transition-all before:absolute before:top-0 before:right-7 before:left-auto before:z-40 before:text-white before:transition-all before:content-['\f0d8']">
+                        <li class="relative">
+                          <a class="py-1.2 lg:ease-soft clear-both block w-full whitespace-nowrap rounded-lg border-0 bg-transparent px-4 text-left font-normal text-slate-500 lg:transition-colors lg:duration-300" href="javascript:;">Action</a>
+                        </li>
+                        <li class="relative">
+                          <a class="py-1.2 lg:ease-soft clear-both block w-full whitespace-nowrap rounded-lg border-0 bg-transparent px-4 text-left font-normal text-slate-500 lg:transition-colors lg:duration-300" href="javascript:;">Another action</a>
+                        </li>
+                        <li class="relative">
+                          <a class="py-1.2 lg:ease-soft clear-both block w-full whitespace-nowrap rounded-lg border-0 bg-transparent px-4 text-left font-normal text-slate-500 lg:transition-colors lg:duration-300" href="javascript:;">Something else here</a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
                 </div>
               </div>
+              <table class="items-center w-full mb-0 align-top border-gray-200 text-slate-500">
+                  <tbody>
+                    <tr>
+                      <td class="p-2 align-middle bg-transparent whitespace-nowrap">
+                        <div class="flex px-4 py-1">
+                          <div class="flex flex-col justify-center">
+                            <h6 class="mb-0 text-sm leading-normal">{{ $pengajuans->dokumen ?? 'N/A' }}</h6>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
             </div>
           </div>
 
@@ -209,11 +214,12 @@
             <div class="border-black/12.5 shadow-soft-xl relative flex h-full min-w-0 flex-col break-words rounded-2xl border-0 border-solid bg-white bg-clip-border">
               <div class="flex-auto p-2">
                 <div class="before:border-r-solid relative before:absolute before:top-0 before:left-4 before:h-full before:border-r-2 before:border-r-slate-100 before:content-[''] before:lg:-ml-px">
-                <iframe src="{{ asset('assets/file/jadwal.pdf') }}" style="width:100%; height:800px;" frameborder="0"></iframe>
+                <iframe src="{{ asset('assets/file/jadwal.pdf') }}" style="width:100%; height:600px;" frameborder="0"></iframe>
               </div>
             </div>
           </div>
         </div>
+
 
         <!-- cards row 3 -->
         <h5 class="font-bold px-6 mt-6 mb-0">Catatan</h5>
@@ -301,9 +307,14 @@
                     <textarea id="editor" rows="8" class="block w-full px-0 text-sm text-gray-800 bg-white border-0 dark:bg-gray-800 focus:ring-0 dark:text-white dark:placeholder-gray-400" placeholder="Write an article..." required ></textarea>
                 </div>
             </div>
-            <button type="submit" class="inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800">
-                Publish post
-            </button>
+            <div class="flex justify-end">
+                <button type="submit" class="mt-2 bg-gradient-to-tl from-blue-600 to-teal-400 px-2.5 text-xs rounded-1.8 py-1.4 inline-block whitespace-nowrap text-center align-baseline font-bold uppercase leading-none text-white">
+                    terima
+                </button>
+                <button type="button" class="mt-2 bg-gradient-to-tl from-slate-600 to-slate-300 px-2.5 text-xs rounded-1.8 py-1.4 inline-block whitespace-nowrap text-center align-baseline font-bold uppercase leading-none text-white ml-2">
+                    tolak
+                </button>
+            </div>
           </form>
         </div>
 
@@ -332,4 +343,14 @@
           </div>
         </footer>
 </div>
+@include('modal.modal_edit_pengajuan')
+<script>
+    function openModal(modalId) {
+        document.getElementById(modalId).classList.remove('hidden');
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).classList.add('hidden');
+    }
+</script>
 @endsection

@@ -19,6 +19,7 @@ class Reviewer extends Authenticatable
         'nama',
         'email',
         'password',
+        'id_role',
     ];
 
     public function reviews()

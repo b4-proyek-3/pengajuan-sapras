@@ -3,7 +3,7 @@
       <div class="h-19.5">
         <i class="absolute top-0 right-0 hidden p-4 opacity-50 cursor-pointer fas fa-times text-slate-400 xl:hidden" sidenav-close></i>
         <a class="flex items-center px-8 py-4 m-0 text-sm whitespace-nowrap text-slate-700" href="javascript:;" target="_blank">
-            <img src="./assets/img/polban.png" class="inline h-full max-w-full transition-all duration-200 ease-nav-brand max-h-10 w-10" alt="main_logo" />
+            <img src={{ asset('assets/img/polban.png') }} class="inline h-full max-w-full transition-all duration-200 ease-nav-brand max-h-10 w-10" alt="main_logo" />
             <div class="ml-2">
                 <span class="block font-semibold transition-all duration-200 ease-nav-brand">Pengajuan</span>
                 <span class="block font-semibold transition-all duration-200 ease-nav-brand">Sarana dan Prasarana</span>
