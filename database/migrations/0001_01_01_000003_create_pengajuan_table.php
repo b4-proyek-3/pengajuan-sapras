@@ -4,14 +4,15 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePengajuansTable extends Migration
+class CreatePengajuanTable extends Migration
 {
     public function up()
     {
-        Schema::create('pengajuans', function (Blueprint $table) {
-            $table->id();
+        Schema::create('pengajuan', function (Blueprint $table) {
+            $table->string('id_pengajuan', length:6)->primary();
+            $table->dateTimeTz('tanggal_pengajuan');
             $table->string('ormawa');
-            $table->string('nama_pengaju');
+            $table->string('nama_pengaju')->nullable();
             $table->date('tanggal_peminjaman');
             $table->date('tanggal_berakhir');
             $table->string('waktu');
@@ -31,6 +32,6 @@ class CreatePengajuansTable extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('pengajuans');
+        Schema::dropIfExists('pengajuan');
     }
 }

@@ -8,7 +8,7 @@
                 <div class="flex-auto p-4">
                     <div class="container mx-auto px-6 py-6">
                         <h3 class="text-center text-xl font-semibold mb-4">Form Pengajuan Sarana dan Prasarana</h3>
-                        <form method="POST" enctype="multipart/form-data" action="{{ route('pengajuan.form') }}">
+                        <form method="POST" enctype="multipart/form-data" action="{{ route('pengajuan.store') }}">
                             @csrf <!-- CSRF token for security -->
 
                             <div class="mb-4">

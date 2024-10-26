@@ -10,12 +10,15 @@ class Pengajuan extends Model
     use HasFactory;
 
     // Specify the table if it's not the plural form of the model name
-    protected $table = 'pengajuans'; 
+    protected $table = 'pengajuan'; 
+    protected $primaryKey = 'id_pengajuan';
+    public $keyType = 'string';
 
     // Specify the fillable attributes for mass assignment
     protected $fillable = [
+        'id_pengajuan',
+        'tanggal_pengajuan',
         'ormawa',
-        'nama_pengaju',
         'tanggal_peminjaman',
         'tanggal_berakhir',
         'waktu',
@@ -26,6 +29,10 @@ class Pengajuan extends Model
         'dokumen3',
         'dokumen4',
         'dokumen5',
-        // Add any additional fields as necessary
+        'dokumen6',
+        'dokumen7',
+        'link_gdrive',
     ];
+
+    public $incrementing = false;
 }

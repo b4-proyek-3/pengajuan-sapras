@@ -1,11 +1,6 @@
 @extends('layout.main')
 @section('content')
 
-<!-- <?php
-session_start();
-$_SESSION['username'] = "NamaPengguna"; // Simpan username saat login
-?> -->
-
 <!-- cards -->
 <div class="w-full px-6 py-6 mx-auto">
     <div class="container mx-auto mt-6">
@@ -16,12 +11,48 @@ $_SESSION['username'] = "NamaPengguna"; // Simpan username saat login
         </div>
 
         <!-- Card Diajukan -->
-        <div id="diajukanCard" class="card bg-white shadow-md rounded-lg p-6">
+        <div id="diajukanCard" class="bg-white shadow-md rounded-lg p-6 max-w-sm mx-auto">
             <!-- Tombol Pengajuan -->
             <div class="flex justify-between mb-4">
-                <button data-bs-toggle="modal" data-bs-target="#pengajuanModal" style="background-color: #3B3BBD; color: white; padding: 10px 20px; border-radius: 5px; border: none; cursor: pointer;">
+                <button data-bs-toggle="modal" data-bs-target="#pengajuanModal"
+                    class="bg-blue-600 text-white px-4 py-2 rounded-lg">
                     <span class="mr-2">+</span>Tambah Pengajuan
                 </button>
+            </div>
+
+            <!-- Notifikasi pop-up -->
+            <div class="container mx-auto mt-4">
+                <!-- Notifikasi sukses -->
+                @if (session('success'))
+                    <div x-data="{ show: true }" 
+                        x-show="show" 
+                        x-init="setTimeout(() => show = false, 5000)" 
+                        class="fixed top-0 right-0 mt-4 mr-4 bg-green-500 text-white px-6 py-4 rounded shadow-lg z-50"
+                        role="alert">
+                        <span class="block sm:inline">{{ session('success') }}</span>
+                        <button @click="show = false" class="absolute top-0 right-0 mt-2 mr-2 text-white">
+                            <svg class="fill-current h-6 w-6" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                <path d="M14.348 5.652a1 1 0 10-1.414-1.414L10 7.172 7.066 4.238a1 1 0 10-1.414 1.414L8.586 8.586l-2.936 2.936a1 1 0 001.414 1.414L10 9.828l2.936 2.936a1 1 0 001.414-1.414L11.414 8.586l2.936-2.936z"/>
+                            </svg>
+                        </button>
+                    </div>
+                @endif
+
+                <!-- Notifikasi gagal -->
+                @if (session('failed'))
+                    <div x-data="{ show: true }" 
+                        x-show="show" 
+                        x-init="setTimeout(() => show = false, 5000)" 
+                        class="fixed top-0 right-0 mt-4 mr-4 bg-red-500 text-white px-6 py-4 rounded shadow-lg z-50"
+                        role="alert">
+                        <span class="block sm:inline">{{ session('failed') }}</span>
+                        <button @click="show = false" class="absolute top-0 right-0 mt-2 mr-2 text-white">
+                            <svg class="fill-current h-6 w-6" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                <path d="M14.348 5.652a1 1 0 10-1.414-1.414L10 7.172 7.066 4.238a1 1 0 10-1.414 1.414L8.586 8.586l-2.936 2.936a1 1 0 001.414 1.414L10 9.828l2.936 2.936a1 1 0 001.414-1.414L11.414 8.586l2.936-2.936z"/>
+                            </svg>
+                        </button>
+                    </div>
+                @endif
             </div>
 
             <!-- Sorting dan Pencarian -->
@@ -34,10 +65,8 @@ $_SESSION['username'] = "NamaPengguna"; // Simpan username saat login
                             <div class="relative">
                                 <select name="sort_status" class="appearance-none border border-gray-300 rounded-md p-2 w-full pr-10" onchange="this.form.submit()">
                                     <option value="">Sort Status</option>
-                                    <option value="diterima" {{ request('sort_status') == 'diterima' ? 'selected' : '' }}>Diterima</option>
                                     <option value="direview" {{ request('sort_status') == 'direview' ? 'selected' : '' }}>Direview</option>
                                     <option value="direvisi" {{ request('sort_status') == 'direvisi' ? 'selected' : '' }}>Direvisi</option>
-                                    <option value="ditolak" {{ request('sort_status') == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
                                 </select>
                                 <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
@@ -48,26 +77,25 @@ $_SESSION['username'] = "NamaPengguna"; // Simpan username saat login
                         </div>
 
                         <!-- Search Input -->
-                        <div class="flex items-center mt-2 grow sm:mt-0 sm:mr-6 md:mr-0 lg:flex lg:basis-auto">
-                          <div class="flex items-center md:ml-auto md:pr-4">
-                            <div class="relative flex flex-wrap items-stretch w-full transition-all rounded-lg ease-soft">
-                                <span class="text-sm ease-soft leading-5.6 absolute z-50 -ml-px flex h-full items-center whitespace-nowrap rounded-lg rounded-tr-none rounded-br-none border border-r-0 border-transparent bg-transparent py-2 px-2.5 text-center font-normal text-slate-500 transition-all">
+                        <div class="flex items-center mt-2 lg:flex-1">
+                            <div class="relative flex items-stretch w-full transition-all rounded-lg ease-soft">
+                                <span class="text-sm ease-soft leading-5.6 absolute z-50 -ml-px flex h-full items-center whitespace-nowrap rounded-lg rounded-tr-none rounded-br-none border border-r-0 border-transparent bg-transparent py-2 px-2.5 text-center font-normal text-gray-500 transition-all">
                                     <i class="fas fa-search"></i>
                                 </span>
-                                <input type="text" name="search" value="{{ request('search') }}" class="pl-8.75 text-sm focus:shadow-soft-primary-outline ease-soft w-1/100 leading-5.6 relative -ml-px block min-w-0 flex-auto rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding py-2 pr-3 text-gray-700 transition-all placeholder:text-gray-500 focus:border-fuchsia-300 focus:outline-none focus:transition-shadow" placeholder="Cari...">
+                                <input type="text" name="search" value="{{ request('search') }}" class="pl-8.75 text-sm focus:shadow-soft-primary-outline ease-soft w-full leading-5.6 relative -ml-px block min-w-0 flex-auto rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding py-2 pr-3 text-gray-700 transition-all placeholder:text-gray-500 focus:border-fuchsia-300 focus:outline-none focus:transition-shadow" placeholder="Cari...">
                             </div>
+
                             <!-- Tombol reset hanya muncul jika ada pencarian atau sorting -->
                             @if(request('search') || request('sort_status'))
-                                <a href="{{ route('pengajuan.index') }}" class="bg-gray-600 text-white py-2 px-4 rounded-md ml-4">Reset</a>
+                            <a href="{{ route('pengajuan.index') }}" class="bg-gray-600 text-white py-2 px-4 rounded-md ml-4">Reset</a>
                             @endif
                         </div>
                     </form>
                 </div>
-            </div>
 
-                <!-- Main Data Table -->
+                <!-- Data Pengajuan -->
                 <div class="overflow-x-auto">
-                    <table class="min-w-full bg-white border border-gray-200 mt-2 table-fixed">
+                    <table class="min-w-full bg-white border border-gray-200 mmt-2 max-w-full">
                         <thead class="bg-gray-200 text-gray-600">
                             <tr>
                                 <th class="py-3 px-4 border w-1/12">No</th>
@@ -84,13 +112,13 @@ $_SESSION['username'] = "NamaPengguna"; // Simpan username saat login
                         @foreach ($pengajuanList as $pengajuan)
                             <tr>
                                 <td class="py-3 px-4 border">{{ $loop->iteration }}</td>
-                                <td class="py-3 px-4 border">{{ $pengajuan->created_at }}</td>
+                                <td class="py-3 px-4 border">{{ $pengajuan->tanggal_pengajuan }}</td>
                                 <td class="py-3 px-4 border">{{ $pengajuan->nama_kegiatan }}</td>
                                 <td class="py-3 px-4 border">{{ $pengajuan->ormawa }}</td>
                                 <td class="py-3 px-4 border">{{ $pengajuan->status }}</td>
                                 <td class="py-3 px-4 border">{{ $pengajuan->keterangan }}</td>
                                 <td class="py-3 px-4 border">
-                                    <a href="" class="bg-purple-600 text-white px-2 py-1 style='border-radius: 5px;">Details</a>
+                                    <a href="#" class="bg-purple-600 text-white px-2 py-1 style='border-radius: 5px;">Details</a>
                                 </td>
                             </tr>
                         @endforeach
@@ -127,7 +155,7 @@ $_SESSION['username'] = "NamaPengguna"; // Simpan username saat login
                                             <option value="HMM">HMJ_Teknik Mesin</option>
                                             <option value="HMRA">HMJ_Teknik Refrigerasi dan Tata Udara</option>
                                             <option value="HIMAS">HMJ_Teknik Sipil</option>
-                                            <option value="UKM_Assalam">UKM_Asosiasi Mahasiswa Islam (Assalam)</option>
+                                            <option value="UKM_Assalam">UKM_Asosiasi Mahasiswa Islam (ASSALAM)</option>
                                             <option value="UKM_BelaDiri">UKM_BELA DIRI</option>
                                             <option value="UKM_BolaBaske">UKM_BOLA BASKET</option>
                                             <option value="UKM_BolaVoli">UKM_BOLA VOLI</option>
@@ -153,11 +181,10 @@ $_SESSION['username'] = "NamaPengguna"; // Simpan username saat login
                                         </select>
                                     </div>
 
-                                    <!-- <div class="mb-3">
+                                    <div class="mb-3">
                                         <label for="nama_pengaju" class="form-label">Nama Pengaju</label>
-                                        <input type="text" name="nama_pengaju" id="nama_pengaju" class="form-control" value="<?php echo $_SESSION['username']; ?>" readonly required>
-                                    </div> -->
-
+                                        <input type="text" name="nama_pengaju" id="nama_pengaju" class="form-control" required>
+                                    </div>
 
                                     <div class="mb-3">
                                         <label for="tanggal_peminjaman" class="form-label">Tanggal Peminjaman</label>
@@ -170,7 +197,7 @@ $_SESSION['username'] = "NamaPengguna"; // Simpan username saat login
                                     </div>
 
                                     <div class="mb-3">
-                                        <label for="waktu" class="form-label">Waktu</label>
+                                        <label for="waktu" class="form-label">Waktu Kegiatan</label>
                                         <input type="time" name="waktu" id="waktu" class="form-control" required>
                                     </div>
 
@@ -240,15 +267,23 @@ $_SESSION['username'] = "NamaPengguna"; // Simpan username saat login
 
                                     <div class="mb-3">
                                         <label for="link" class="form-label">Link Surat Izin Orang Tua</label>
-                                        <input type="url" name="link_surat" id="link_surat" class="form-control" placeholder="https://drive.google.com/drive/folders/surat_izin_orang_tua" required>
+                                        <input type="url" name="link_gdrive" id="link_gdrive" class="form-control" placeholder="https://drive.google.com/drive/folders/surat_izin_orang_tua">
                                     </div>
 
                                     <!-- Submit and Cancel buttons -->
                                     <div class="flex justify-center mt-6">
                                         <button type="submit" class="bg-blue-600 text-white py-2 px-4 rounded-md mr-4">Simpan</button>
-                                        <button type="button" onclick="window.location.href='{{ route('pengajuan.index') }}'" class="bg-orange-600 text-white py-2 px-4 rounded-md mr-4">Batal</button>
-
+                                        <button type="button" class="bg-orange-600 text-white py-2 px-4 rounded-md mr-4" onclick="window.location.href='{{ route('pengajuan.index') }}'">Batal</button>
                                     </div>
+                                    @if ($errors->any())
+                                        <div class="alert alert-danger">
+                                            <ul>
+                                                @foreach ($errors->all() as $error)
+                                                    <li>{{ $error }}</li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    @endif
                                 </form>
                             </div>
                         </div>
@@ -257,35 +292,85 @@ $_SESSION['username'] = "NamaPengguna"; // Simpan username saat login
             </div>
         </div>
 
-        <!-- Table Riwayat -->
-            <!-- <div class="overflow-x-auto">
-                    <table class="min-w-full bg-white border border-gray-200 mt-2 table-fixed">
-                        <thead class="bg-gray-100 text-gray-600">
+        <!-- Card Riwayat -->
+        <div id="riwayatCard" class="bg-white shadow-md rounded-lg p-6 max-w-sm mx-auto hidden"> 
+            <div class="relative">
+                <div class="h-1 bg-orange-500 py-6"></div>
+                <div class="bg-gray-100 p-2 border-b border-gray-300">
+                    <div class="flex justify-between mb-4">
+
+                        <!-- Sort Dropdown -->
+                        <div class="w-1/4 pr-4">
+                          <div class="relative">
+                              <select class="appearance-none border border-gray-300 rounded-md p-2 w-full pr-10">
+                                  <option value="">Sort Status</option>
+                                  <option value="selesai">Selesai</option>
+                                  <option value="ditolak">Ditolak</option>
+                              </select>
+                              <!-- Custom Dropdown Icon -->
+                              <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                                      <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 011.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                  </svg>
+                              </div>
+                          </div>
+                      </div>
+
+                        <!-- Search Box -->
+                        <div class="flex items-center mt-2 grow sm:mt-0 sm:mr-6 md:mr-0 lg:flex lg:basis-auto">
+                          <div class="flex items-center md:ml-auto md:pr-4">
+                            <div class="relative flex flex-wrap items-stretch w-full transition-all rounded-lg ease-soft">
+                              <span class="text-sm ease-soft leading-5.6 absolute z-50 -ml-px flex h-full items-center whitespace-nowrap rounded-lg rounded-tr-none rounded-br-none border border-r-0 border-transparent bg-transparent py-2 px-2.5 text-center font-normal text-slate-500 transition-all">
+                                <i class="fas fa-search"></i>
+                              </span>
+                              <input type="text" class="pl-8.75 text-sm focus:shadow-soft-primary-outline ease-soft w-1/100 leading-5.6 relative -ml-px block min-w-0 flex-auto rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding py-2 pr-3 text-gray-700 transition-all placeholder:text-gray-500 focus:border-fuchsia-300 focus:outline-none focus:transition-shadow" placeholder="Cari..." />
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table Riwayat -->
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white border border-gray-200 mmt-2 max-w-full">
+                    <thead class="bg-gray-200 text-gray-600">
+                        <tr>
+                            <th class="py-3 px-4 border w-1/12">No</th>
+                            <th class="py-3 px-4 border w-1/12">Tanggal Pengajuan</th>
+                            <th class="py-3 px-4 border w-1/12">Nama Kegiatan</th>
+                            <th class="py-3 px-4 border w-1/12">Ormawa</th>
+                            <th class="py-3 px-4 border w-1/12">Status</th>
+                            <th class="py-3 px-4 border w-1/12">Keterangan</th>
+                            <th class="py-3 px-4 border w-1/12">Aksi</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                    @foreach ($pengajuanList as $pengajuan)
+                        <tr>
+                            <td class="py-3 px-4 border">{{ $loop->iteration }}</td>
+                            <td class="py-3 px-4 border">{{ $pengajuan->tanggal_pengajuan }}</td>
+                            <td class="py-3 px-4 border">{{ $pengajuan->nama_kegiatan }}</td>
+                            <td class="py-3 px-4 border">{{ $pengajuan->ormawa }}</td>
+                            <td class="py-3 px-4 border">{{ $pengajuan->status }}</td>
+                            <td class="py-3 px-4 border">{{ $pengajuan->keterangan }}</td>
+                            <td class="py-3 px-4 border">
+                                <!-- <a href="#" class="bg-purple-600 text-white px-2 py-1 rounded-md hover:bg-purple-700 transition">Details</a> -->
+                            </td>
+                        </tr>
+
+                        @if($pengajuanList->isEmpty())
                             <tr>
-                                <th class="py-3 px-4 border w-1/12">No</th>
-                                <th class="py-3 px-4 border w-2/12">Tanggal Pengajuan</th>
-                                <th class="py-3 px-4 border w-3/12">Nama Kegiatan</th>
-                                <th class="py-3 px-4 border w-2/12">Ormawa</th>
-                                <th class="py-3 px-4 border w-1/12">Status</th>
-                                <th class="py-3 px-4 border w-2/12">Keterangan</th>
-                                <th class="py-3 px-4 border w-1/12">Aksi</th>
+                                <td colspan="7" class="text-center">Tidak ada data pengajuan</td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td class="py-3 px-4 border">002</td>
-                                <td class="py-3 px-4 border">15-09-2024</td>
-                                <td class="py-3 px-4 border">Festival Budaya</td>
-                                <td class="py-3 px-4 border">UKM Budaya</td>
-                                <td class="py-3 px-4 border">Ditolak</td>
-                                <td class="py-3 px-4 border">Keterangan Festival</td>
-                                <td class="py-3 px-4 border">
-                                <button class="bg-purple-600 text-white px-2 py-1" style="border-radius: 5px;">Details</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div> -->
+                        @endif
+                        
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
     
         <footer class="pt-4">
             <div class="w-full px-6 mx-auto">
@@ -331,14 +416,10 @@ $_SESSION['username'] = "NamaPengguna"; // Simpan username saat login
         });
     });
 
-    const username = "NamaPengguna"; 
-    document.getElementById("nama_pengaju").value = username;
+    // const username = "NamaPengguna"; 
+    // document.getElementById("nama_pengaju").value = username;
 
-    function saveData() {
-    alert("Data berhasil disimpan!");
-
-    document.getElementById("nama_pengaju").value = "";
-    }
+    // document.getElementById("nama_pengaju").value = "";
 
     document.getElementById("link").addEventListener("blur", function() {
         // Ambil nilai link dari form
@@ -355,32 +436,32 @@ $_SESSION['username'] = "NamaPengguna"; // Simpan username saat login
     });
 
     function showCard(card) {
-            // Reset all tab buttons
-            document.getElementById('diajukanBtn').classList.remove('active', 'bg-white', 'text-gray-800');
-            document.getElementById('diajukanBtn').classList.add('bg-gray-200', 'text-gray-400');
-            document.getElementById('riwayatBtn').classList.remove('active', 'bg-white', 'text-gray-800');
-            document.getElementById('riwayatBtn').classList.add('bg-gray-200', 'text-gray-400');
-
-            // Hide all cards
-            document.getElementById('diajukanCard').classList.add('hidden');
-            document.getElementById('riwayatCard').classList.add('hidden');
-
-            // Show selected card and set active tab button
-            if (card === 'diajukan') {
-                document.getElementById('diajukanBtn').classList.add('active', 'bg-white', 'text-gray-800');
-                document.getElementById('diajukanBtn').classList.remove('bg-gray-200', 'text-gray-400');
-                document.getElementById('diajukanCard').classList.remove('hidden');
-            } else {
-                document.getElementById('riwayatBtn').classList.add('active', 'bg-white', 'text-gray-800');
-                document.getElementById('riwayatBtn').classList.remove('bg-gray-200', 'text-gray-400');
-                document.getElementById('riwayatCard').classList.remove('hidden');
-            }
+        // Sembunyikan kedua card terlebih dahulu
+        document.getElementById('diajukanCard').classList.add('hidden');
+        document.getElementById('riwayatCard').classList.add('hidden');
+        
+        // Atur ulang button style
+        document.getElementById('diajukanBtn').classList.remove('bg-white', 'text-gray-800', 'shadow-md');
+        document.getElementById('diajukanBtn').classList.add('bg-gray-200', 'text-gray-400');
+        document.getElementById('riwayatBtn').classList.remove('bg-white', 'text-gray-800', 'shadow-md');
+        document.getElementById('riwayatBtn').classList.add('bg-gray-200', 'text-gray-400');
+        
+        // Tampilkan card sesuai tombol yang diklik
+        if (card === 'diajukan') {
+            document.getElementById('diajukanCard').classList.remove('hidden');
+            document.getElementById('diajukanBtn').classList.add('bg-white', 'text-gray-800', 'shadow-md');
+            document.getElementById('diajukanBtn').classList.remove('bg-gray-200', 'text-gray-400');
+        } else if (card === 'riwayat') {
+            document.getElementById('riwayatCard').classList.remove('hidden');
+            document.getElementById('riwayatBtn').classList.add('bg-white', 'text-gray-800', 'shadow-md');
+            document.getElementById('riwayatBtn').classList.remove('bg-gray-200', 'text-gray-400');
         }
+    }
 
-        // Set default tab as Diajukan
-        document.addEventListener('DOMContentLoaded', function () {
-            showCard('diajukan');
-        });
+    // Set default tab as Diajukan
+    document.addEventListener('DOMContentLoaded', function () {
+        showCard('diajukan');
+    });
 </script>
 
 <!-- Bootstrap CSS -->
