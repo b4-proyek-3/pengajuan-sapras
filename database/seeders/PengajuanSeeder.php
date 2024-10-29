@@ -36,7 +36,6 @@ class PengajuanSeeder extends Seeder
                 'tanggal_akhir' => now()->addDays(14),
                 'waktu_pengajuan' => now()->format('H:i:s'),
                 'nama_kegiatan' => 'Kegiatan ' . $i,
-                'dokumen' => null, // Misalkan tidak ada dokumen
             ]);
         }
     }

@@ -11,7 +11,6 @@ class Pengajuan extends Model
 
     public $keyType = 'string';
     protected $table = 'pengajuan';
-
     protected $primaryKey = 'id_pengajuan'; // Menggunakan id_pengajuan sebagai primary key
 
     protected $fillable = [
@@ -23,7 +22,7 @@ class Pengajuan extends Model
         'tanggal_akhir',
         'waktu_pengajuan',
         'nama_kegiatan',
-        'dokumen',
+        'dokum  en',
     ];
 
     public $timestamps = false;
@@ -35,7 +34,17 @@ class Pengajuan extends Model
 
     public function reviewers()
     {
-        return $this->belongsToMany(Reviewer::class, 'reviews', 'id_pengajuan', 'nip');
+        return $this->belongsToMany(Reviewer::class, 'reviews', 'id_pengajuan', 'id_reviewer');
+    }
+
+    public function dokumen()
+    {
+        return $this->hasMany(Dokumen::class, 'id_pengajuan', 'id_pengajuan');
+    }
+
+    public function tempat()
+    {
+        return $this->belongsTo(Tempat::class, 'id_tempat', 'id_tempat');
     }
 
 }

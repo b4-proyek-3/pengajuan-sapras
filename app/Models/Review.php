@@ -13,7 +13,7 @@ class Review extends Model
     protected $primaryKey = 'id_review';
     protected $fillable = [
         'id_pengajuan',
-        'nip', 
+        'id_reviewer', 
         'review', 
         'status', 
         'tanggal_review',
@@ -28,6 +28,6 @@ class Review extends Model
 
     public function reviewer()
     {
-        return $this->belongsTo(Reviewer::class, 'nip', 'nip');
+        return $this->belongsTo(Reviewer::class, 'id_reviewer', 'id_reviewer');
     }
 }

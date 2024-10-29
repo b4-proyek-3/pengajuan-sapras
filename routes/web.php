@@ -9,7 +9,7 @@ Route::get('/', function () {
 
 
 // Route untuk menampilkan daftar pengajuan
-Route::get('/pengajuan/{id_pengajuan}', [PengajuanController::class, 'index'])->name('pengajuan.index');
+Route::get('/pengajuan/detail/{id_pengajuan}', [PengajuanController::class, 'index'])->name('pengajuan.index');
 
 // Route untuk menampilkan form pengajuan baru
 Route::get('/pengajuan/create', [PengajuanController::class, 'create'])->name('pengajuan.create');
