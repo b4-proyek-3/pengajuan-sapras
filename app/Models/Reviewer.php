@@ -22,8 +22,14 @@ class Reviewer extends Authenticatable
         'id_role',
     ];
 
-    public function reviews()
+    public function pengajuan()
     {
-        return $this->belongsToMany(Pengajuan::class, 'reviews', 'id_reviewer', 'id_pengajuan');
+        return $this->belongsToMany(Pengajuan::class, 'reviews', 'id_reviewer', 'id_pengajuan')
+            ->withPivot('tanggal_review', 'status', 'review');
     }
+
+    public function roles()
+{
+    return $this->belongsTo(Role::class, 'id_role');
+}
 }

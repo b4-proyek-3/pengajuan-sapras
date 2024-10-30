@@ -16,15 +16,8 @@
                     <p class="mb-0 text-sm leading-normal">
                     <i class="fa fa-calendar text-cyan-500"></i>
                       <span class="ml-1 font-semibold">No Pengajuan #</span>
-                      {{ $pengajuans->id_pengajuan ?? 'N/A' }}
+                      {{ $pengajuan->id_pengajuan ?? 'N/A' }}
                     </p>
-                  </div>
-                  <div class="flex-none w-1/12 max-w-full px-3 my-auto text-right lg:w-1/2 lg:flex-none">
-                    <div class="relative pr-6 lg:float-right">
-                      <a dropdown-trigger class="cursor-pointer" aria-expanded="false" onclick="openModal('editPengajuanModal')">
-                        <i class="fa fa-ellipsis-v"></i>
-                      </a>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -46,7 +39,7 @@
                                     <h6 class="mb-0 text-sm leading-normal">:</h6>
                                 </div>
                                 <div class="flex flex-col justify-center pl-2">
-                                    <h6 class="mb-0 text-sm leading-normal">{{ $pengajuans->pengaju->nama ?? 'N/A' }}</h6>
+                                    <h6 class="mb-0 text-sm leading-normal">{{ $pengajuan->pengaju->nama ?? 'N/A' }}</h6>
                                 </div>
                             </div>
                         </td>
@@ -61,7 +54,7 @@
                                     <h6 class="mb-0 text-sm leading-normal">:</h6>
                                 </div>
                                 <div class="flex flex-col justify-center pl-2">
-                                    <h6 class="mb-0 text-sm leading-normal">{{ $pengajuans->nama_kegiatan ?? 'N/A' }}</h6>
+                                    <h6 class="mb-0 text-sm leading-normal">{{ $pengajuan->nama_kegiatan ?? 'N/A' }}</h6>
                                 </div>
                             </div>
                         </td>
@@ -76,7 +69,7 @@
                                   <h6 class="mb-0 text-sm leading-normal">:</h6>
                                 </div>
                                 <div class="flex flex-col justify-center pl-2">
-                                <h6 class="mb-0 text-sm leading-normal">{{ $pengajuans->tanggal_pinjam ?? 'N/A' }}</h6>
+                                <h6 class="mb-0 text-sm leading-normal">{{ $pengajuan->tanggal_pinjam ?? 'N/A' }}</h6>
                                 </div>
                             </div>
                         </td>
@@ -91,7 +84,7 @@
                                   <h6 class="mb-0 text-sm leading-normal">:</h6>
                                 </div>
                                 <div class="flex flex-col justify-center pl-2">
-                                <h6 class="mb-0 text-sm leading-normal">{{ $pengajuans->tanggal_akhir ?? 'N/A' }}</h6>
+                                <h6 class="mb-0 text-sm leading-normal">{{ $pengajuan->tanggal_akhir ?? 'N/A' }}</h6>
                                 </div>
                             </div>
                         </td>
@@ -106,7 +99,7 @@
                                   <h6 class="mb-0 text-sm leading-normal">:</h6>
                                 </div>
                                 <div class="flex flex-col justify-center pl-2">
-                                    <h6 class="mb-0 text-sm leading-normal">{{ $pengajuans->tempat->nama_tempat ?? 'N/A' }}</h6>
+                                    <h6 class="mb-0 text-sm leading-normal">{{ $pengajuan->tempat->nama_tempat ?? 'N/A' }}</h6>
                                 </div>
                             </div>
                         </td>
@@ -171,31 +164,12 @@
                   <div class="flex-none w-7/12 max-w-full px-3 mt-0 lg:w-1/2 lg:flex-none">
                     <h6>Dokumen</h6>
                   </div>
-                  <div class="flex-none w-5/12 max-w-full px-3 my-auto text-right lg:w-1/2 lg:flex-none">
-                    <div class="relative pr-6 lg:float-right">
-                      <a dropdown-trigger class="cursor-pointer" aria-expanded="false">
-                        <i class="fa fa-ellipsis-v text-slate-400"></i>
-                      </a>
-                      <p class="hidden transform-dropdown-show"></p>
-                      <ul dropdown-menu class="z-100 text-sm transform-dropdown shadow-soft-3xl duration-250 before:duration-350 before:font-awesome before:ease-soft min-w-44 -ml-34 before:text-5.5 pointer-events-none absolute top-0 m-0 mt-2 list-none rounded-lg border-0 border-solid border-transparent bg-white bg-clip-padding px-2 py-4 text-left text-slate-500 opacity-0 transition-all before:absolute before:top-0 before:right-7 before:left-auto before:z-40 before:text-white before:transition-all before:content-['\f0d8']">
-                        <li class="relative">
-                          <a class="py-1.2 lg:ease-soft clear-both block w-full whitespace-nowrap rounded-lg border-0 bg-transparent px-4 text-left font-normal text-slate-500 lg:transition-colors lg:duration-300" href="javascript:;">Action</a>
-                        </li>
-                        <li class="relative">
-                          <a class="py-1.2 lg:ease-soft clear-both block w-full whitespace-nowrap rounded-lg border-0 bg-transparent px-4 text-left font-normal text-slate-500 lg:transition-colors lg:duration-300" href="javascript:;">Another action</a>
-                        </li>
-                        <li class="relative">
-                          <a class="py-1.2 lg:ease-soft clear-both block w-full whitespace-nowrap rounded-lg border-0 bg-transparent px-4 text-left font-normal text-slate-500 lg:transition-colors lg:duration-300" href="javascript:;">Something else here</a>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
                 </div>
               </div>
               <table class="items-center w-full mb-2 mt-2 align-top border-gray-200 text-slate-500">
                 <td class="p-0 mb-4 mt-4 align-middle bg-transparent border-b whitespace-nowrap">
                 <tbody>
-                    @foreach ($pengajuans->dokumen as $dokumen)
+                    @foreach ($pengajuan->dokumen as $dokumen)
                       <tr>
                         <td class="p-2 align-middle bg-transparent whitespace-nowrap">
                           <div class="flex px-4 py-1">
@@ -222,7 +196,7 @@
             <div class="border-black/12.5 shadow-soft-xl relative flex h-full min-w-0 flex-col break-words rounded-2xl border-0 border-solid bg-white bg-clip-border">
               <div class="flex-auto p-2">
                 <div class="before:border-r-solid relative before:absolute before:top-0 before:left-4 before:h-full before:border-r-2 before:border-r-slate-100 before:content-[''] before:lg:-ml-px">
-                  <iframe id="dokumen-frame" src="{{ asset(str_replace('public/', '', $pengajuans->dokumen->first()->path  ?? 'N/A' )) }}" style="width:100%; height:500px;" frameborder="0"></iframe>
+                  <iframe id="dokumen-frame" src="{{ asset(str_replace('public/', '', $pengajuan->dokumen->first()->path  ?? 'N/A' )) }}" style="width:100%; height:500px;" frameborder="0"></iframe>
                 </div>
               </div>
             </div>
@@ -231,7 +205,8 @@
         <!-- cards row 3 -->
         <h5 class="font-bold px-6 mt-6 mb-0">Catatan</h5>
         <div class="w-full max-w-full px-6 mb-6 mt-6">           
-          <form>
+          <form action="{{ route('reviewer.review', ['id_pengajuan' => $pengajuan->id_pengajuan]) }}" method="POST">
+            @csrf
             <div class="w-full mb-4 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
                 <div class="flex items-center justify-between px-3 py-2 border-b dark:border-gray-600">
                     <div class="flex flex-wrap items-center divide-gray-200 sm:divide-x sm:rtl:divide-x-reverse dark:divide-gray-600">
@@ -311,14 +286,14 @@
                 </div>
                 <div class="px-4 py-2 bg-white rounded-b-lg dark:bg-gray-800">
                     <label for="editor" class="sr-only">Publish post</label>
-                    <textarea id="editor" rows="8" class="block w-full px-0 text-sm text-gray-800 bg-white border-0 dark:bg-gray-800 focus:ring-0 dark:text-white dark:placeholder-gray-400" placeholder="Write an article..." required ></textarea>
+                    <textarea id="editor" rows="8" class="block w-full px-0 text-sm text-gray-800 bg-white border-0 dark:bg-gray-800 focus:ring-0 dark:text-white dark:placeholder-gray-400" placeholder="Write an article..." ></textarea>
                 </div>
             </div>
             <div class="flex justify-end">
-                <button type="submit" class="mt-2 bg-gradient-to-tl from-blue-600 to-teal-400 px-2.5 text-xs rounded-1.8 py-1.4 inline-block whitespace-nowrap text-center align-baseline font-bold uppercase leading-none text-white">
+                <button type="submit" name="action" value="terima" class="mt-2 bg-gradient-to-tl from-blue-600 to-teal-400 px-2.5 text-xs rounded-1.8 py-1.4 inline-block whitespace-nowrap text-center align-baseline font-bold uppercase leading-none text-white">
                     terima
                 </button>
-                <button type="button" class="mt-2 bg-gradient-to-tl from-slate-600 to-slate-300 px-2.5 text-xs rounded-1.8 py-1.4 inline-block whitespace-nowrap text-center align-baseline font-bold uppercase leading-none text-white ml-2">
+                <button type="submit" name="action" value= "tolak" class="mt-2 bg-gradient-to-tl from-slate-600 to-slate-300 px-2.5 text-xs rounded-1.8 py-1.4 inline-block whitespace-nowrap text-center align-baseline font-bold uppercase leading-none text-white ml-2">
                     tolak
                 </button>
             </div>
@@ -350,16 +325,6 @@
           </div>
         </footer>
 </div>
-@include('modal.modal_edit_pengajuan')
-<script>
-    function openModal(modalId) {
-        document.getElementById(modalId).classList.remove('hidden');
-    }
-
-    function closeModal(modalId) {
-        document.getElementById(modalId).classList.add('hidden');
-    }
-</script>
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     // Ambil semua elemen dengan class 'dokumen-link'
@@ -379,5 +344,4 @@
     });
   });
 </script>
-
 @endsection

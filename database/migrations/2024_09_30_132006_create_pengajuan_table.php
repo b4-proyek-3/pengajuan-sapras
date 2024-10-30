@@ -22,6 +22,7 @@ return new class extends Migration
             $table->date('tanggal_akhir');
             $table->time('waktu_pengajuan');
             $table->string('nama_kegiatan');
+            $table->boolean('edited')->default(false);
         });
     }
 

@@ -26,4 +26,9 @@ class Pengaju extends Authenticatable
     {
         return $this->hasMany(Pengajuan::class, 'nim', 'nim');
     }
+
+    public function ormawa()
+    {
+        return $this->belongsTo(Ormawa::class, 'id_ormawa', 'id_ormawa');
+    }
 }

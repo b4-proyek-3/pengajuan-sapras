@@ -22,7 +22,6 @@ class Pengajuan extends Model
         'tanggal_akhir',
         'waktu_pengajuan',
         'nama_kegiatan',
-        'dokum  en',
     ];
 
     public $timestamps = false;
@@ -34,7 +33,8 @@ class Pengajuan extends Model
 
     public function reviewers()
     {
-        return $this->belongsToMany(Reviewer::class, 'reviews', 'id_pengajuan', 'id_reviewer');
+        return $this->belongsToMany(Reviewer::class, 'reviews', 'id_pengajuan', 'id_reviewer')
+                    ->withPivot('status', 'review', 'tanggal_review');
     }
 
     public function dokumen()

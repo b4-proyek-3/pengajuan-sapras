@@ -11,34 +11,42 @@
             </div>
             <!-- Modal body -->
             <div class="p-4 md:p-5">
-                <form class="space-y-4" action="#">
-                    <div class="flex flex-col">
-                        <label for="nama-kegiatan" class="block mt-2 mb-2 text-sm font-medium text-gray-900 dark:text-white">Nama Kegiatan</label>
-                        <input type="text" id="nama-kegiatan" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
-                    </div>
-                    <div class="flex flex-col">
-                        <label for="tanggal-kegiatan" class="block mt-2 mb-2 text-sm font-medium text-gray-900 dark:text-white">Tanggal Kegiatan</label>
-                        <input type="date" id="tanggal-kegiatan" class="bg-gray-50 px-3 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
-                    </div>
-                    <div class="flex flex-col">
-                        <label for="tempat-kegiatan" class="block mt-2 mb-2 text-sm font-medium text-gray-900 dark:text-white">Tempat Kegiatan</label>
-                        <input type="text" id="tempat-kegiatan" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
-                    </div>
-                    <div class="flex flex-col">
-                        <label for="kategori-kegiatan" class="block mt-2 mb-2 text-sm font-medium text-gray-900 dark:text-white">Kategori Kegiatan</label>
-                        <input type="text" id="kategori-kegiatan" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
-                    </div>
+                <form class="space-y-4" action="{{ route('pengaju.update', $pengajuans->id_pengajuan) }}" method="POST">
+                    @csrf
+                    @method('PUT')
                     <div class="flex flex-col">
                         <label for="nama-pengaju" class="block mt-2 mb-2 text-sm font-medium text-gray-900 dark:text-white">Nama Pengaju</label>
-                        <input type="text" id="nama-pengaju" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
-                    </div>
-                    <div class="flex flex-col">
-                        <label for="kontak" class="block mt-2 mb-2 text-sm font-medium text-gray-900 dark:text-white">Kontak</label>
-                        <input type="text" id="kontak" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
+                        <input id="nama-pengaju" value="{{ $pengajuans->pengaju->nama }}" class="bg-gray-50 px-3 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" readonly/>
                     </div>
                     <div class="flex flex-col">
                         <label for="ormawa" class="block mt-2 mb-2 text-sm font-medium text-gray-900 dark:text-white">Ormawa</label>
-                        <input type="text" id="ormawa" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
+                        <input id="ormawa" value="{{ $pengajuans->pengaju->ormawa->nama_ormawa }}" class="bg-gray-50 px-3 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" readonly/>
+                    </div>
+                    <div class="flex flex-col">
+                        <label for="nama-kegiatan" class="block mt-2 mb-2 text-sm font-medium text-gray-900 dark:text-white">Nama Kegiatan</label>
+                        <input type="text" id="nama-kegiatan" name="nama_kegiatan" value="{{ $pengajuans->nama_kegiatan }}" class="bg-gray-50 px-3 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"/>
+                    </div>
+                    <div class="flex flex-col">
+                        <label for="tanggal-kegiatan" class="block mt-2 mb-2 text-sm font-medium text-gray-900 dark:text-white">Tanggal Kegiatan</label>
+                        <input type="date" id="tanggal-kegiatan" name ="tanggal_pinjam" value="{{ $pengajuans->tanggal_pinjam }}" class="bg-gray-50 px-3 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"/>
+                    </div>
+                    <div class="flex flex-col">
+                        <label for="tanggal-kegiatan" class="block mt-2 mb-2 text-sm font-medium text-gray-900 dark:text-white">Tanggal Berakhir</label>
+                        <input type="date" id="tanggal-akhir" name ="tanggal_akhir" value="{{ $pengajuans->tanggal_akhir }}" class="bg-gray-50 px-3 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"/>
+                    </div>
+                    <div class="flex flex-col">
+                        <label for="tanggal-kegiatan" class="block mt-2 mb-2 text-sm font-medium text-gray-900 dark:text-white">Waktu Kegiatan</label>
+                        <input type="time" id="waktu-kegiatan" name ="waktu_pengajuan" value="{{ $pengajuans->waktu_pengajuan }}" class="bg-gray-50 px-3 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"/>
+                    </div>
+                    <div class="flex flex-col">
+                        <label for="tempat-kegiatan" class="block mt-2 mb-2 text-sm font-medium text-gray-900 dark:text-white">Tempat Kegiatan</label>
+                        <select name="id_tempat" class="bg-gray-50 px-3 border border-gray-300 text-gray-900 text-sm rounded-lg">
+                            @foreach ($tempatList as $tempat)
+                                <option value="{{ $tempat->id_tempat }}" {{ $tempat->id_tempat == $pengajuans->id_tempat ? 'selected' : '' }}>
+                                    {{ $tempat->nama_tempat }}
+                                </option>
+                            @endforeach
+                        </select>
                     </div>
                     <div class="flex justify-end">
                         <button type="submit" class="mt-2 bg-gradient-to-tl from-blue-600 to-teal-400 px-2.5 text-xs rounded-1.8 py-1.4 inline-block whitespace-nowrap text-center align-baseline font-bold uppercase leading-none text-white">

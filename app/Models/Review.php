@@ -10,7 +10,6 @@ class Review extends Model
     use HasFactory;
 
     protected $table = 'reviews'; // Nama tabel
-    protected $primaryKey = 'id_review';
     protected $fillable = [
         'id_pengajuan',
         'id_reviewer', 
@@ -19,15 +18,6 @@ class Review extends Model
         'tanggal_review',
     ];
 
+    public $incrementing = false;
     public $timestamps = false;
-
-    public function pengajuan()
-    {
-        return $this->belongsTo(Pengajuan::class, 'id_pengajuan', 'id_pengajuan');
-    }
-
-    public function reviewer()
-    {
-        return $this->belongsTo(Reviewer::class, 'id_reviewer', 'id_reviewer');
-    }
 }

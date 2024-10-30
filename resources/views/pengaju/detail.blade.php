@@ -21,9 +21,11 @@
                   </div>
                   <div class="flex-none w-1/12 max-w-full px-3 my-auto text-right lg:w-1/2 lg:flex-none">
                     <div class="relative pr-6 lg:float-right">
+                    @if ($pengajuans->status == 'direvisi')
                       <a dropdown-trigger class="cursor-pointer" aria-expanded="false" onclick="openModal('editPengajuanModal')">
                         <i class="fa fa-ellipsis-v"></i>
                       </a>
+                    @endif
                     </div>
                   </div>
                 </div>
@@ -55,6 +57,21 @@
                         <td class="p-2 align-middle bg-transparent whitespace-nowrap">
                             <div class="flex px-4 py-1">
                                 <div class="flex flex-col justify-center" style="min-width: 150px;">
+                                    <h6 class="mb-0 text-sm leading-normal">Ormawa</h6>
+                                </div>
+                                <div class="flex flex-col justify-center" style="min-width: 10px; text-align: right;">
+                                    <h6 class="mb-0 text-sm leading-normal">:</h6>
+                                </div>
+                                <div class="flex flex-col justify-center pl-2">
+                                    <h6 class="mb-0 text-sm leading-normal">{{ $pengajuans->pengaju->ormawa->nama_ormawa ?? 'N/A' }}</h6>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="p-2 align-middle bg-transparent whitespace-nowrap">
+                            <div class="flex px-4 py-1">
+                                <div class="flex flex-col justify-center" style="min-width: 150px;">
                                     <h6 class="mb-0 text-sm leading-normal">Nama Kegiatan</h6>
                                 </div>
                                 <div class="flex flex-col justify-center" style="min-width: 10px; text-align: right;">
@@ -70,7 +87,7 @@
                         <td class="p-2 align-middle bg-transparent whitespace-nowrap">
                             <div class="flex px-4 py-1">
                                 <div class="flex flex-col justify-center" style="min-width: 150px;">
-                                    <h6 class="mb-0 text-sm leading-normal">Tanggal Mulai</h6>
+                                    <h6 class="mb-0 text-sm leading-normal">Tanggal Kegiatan</h6>
                                 </div>
                                 <div class="flex flex-col justify-center" style="min-width: 10px; text-align: right;">
                                   <h6 class="mb-0 text-sm leading-normal">:</h6>
@@ -92,6 +109,21 @@
                                 </div>
                                 <div class="flex flex-col justify-center pl-2">
                                 <h6 class="mb-0 text-sm leading-normal">{{ $pengajuans->tanggal_akhir ?? 'N/A' }}</h6>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="p-2 align-middle bg-transparent whitespace-nowrap">
+                            <div class="flex px-4 py-1">
+                                <div class="flex flex-col justify-center" style="min-width: 150px;">
+                                    <h6 class="mb-0 text-sm leading-normal">Waktu Kegiatan</h6> <!-- Replace 'tempat' with the correct field -->
+                                </div>
+                                <div class="flex flex-col justify-center" style="min-width: 10px; text-align: right;">
+                                  <h6 class="mb-0 text-sm leading-normal">:</h6>
+                                </div>
+                                <div class="flex flex-col justify-center pl-2">
+                                    <h6 class="mb-0 text-sm leading-normal">{{ $pengajuans->waktu_pengajuan ?? 'N/A' }}</h6>
                                 </div>
                             </div>
                         </td>
@@ -145,9 +177,9 @@
                         <i class="fas fa-check relative z-10 leading-none text-green-500"></i> <!-- Ganti dengan ikon centang -->
                     </span>
                     <div class="ml-11.252 pt-1.4 lg:max-w-120 relative -top-1.5 w-auto">
-                        <h6 class="mb-0 text-sm font-semibold leading-normal text-slate-700">Review SEKUM BEM</h6>
-                        <p class="mt-1 mb-0 text-xs font-semibold leading-tight text-slate-400">Revisi</p>
-                        <p class="mt-1 mb-0 text-xs font-semibold leading-tight text-slate-400">21 DEC 11 PM</p>
+                        <h6 class="mb-0 text-sm font-semibold leading-normal text-slate-700">Review {{ $pengajuans->pivot->reviewers->roles->nama_role ?? 'N/A' }}</h6>
+                        <p class="mt-1 mb-0 text-xs font-semibold leading-tight text-slate-400">{{ $pengajuans->pivot->status ?? 'N/A' }}</p>
+                        <p class="mt-1 mb-0 text-xs font-semibold leading-tight text-slate-400">{{ $pengajuans->pivot->tanggal_review ?? 'N/A'}}</p>
                     </div>
                 </div>
               </div>
@@ -313,14 +345,6 @@
                     <label for="editor" class="sr-only">Publish post</label>
                     <textarea id="editor" rows="8" class="block w-full px-0 text-sm text-gray-800 bg-white border-0 dark:bg-gray-800 focus:ring-0 dark:text-white dark:placeholder-gray-400" placeholder="Write an article..." required ></textarea>
                 </div>
-            </div>
-            <div class="flex justify-end">
-                <button type="submit" class="mt-2 bg-gradient-to-tl from-blue-600 to-teal-400 px-2.5 text-xs rounded-1.8 py-1.4 inline-block whitespace-nowrap text-center align-baseline font-bold uppercase leading-none text-white">
-                    terima
-                </button>
-                <button type="button" class="mt-2 bg-gradient-to-tl from-slate-600 to-slate-300 px-2.5 text-xs rounded-1.8 py-1.4 inline-block whitespace-nowrap text-center align-baseline font-bold uppercase leading-none text-white ml-2">
-                    tolak
-                </button>
             </div>
           </form>
         </div>

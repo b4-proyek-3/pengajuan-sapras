@@ -10,6 +10,8 @@ use Database\Seeders\ReviewerSeeder;
 use Database\Seeders\TempatSeeder; 
 use Database\Seeders\PengajuSeeder;
 use Database\Seeders\RoleSeeder;
+use Database\Seeders\PengajuanSeeder;
+use Database\Seeders\DokumenSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -24,6 +26,8 @@ class DatabaseSeeder extends Seeder
             TempatSeeder::class,
             PengajuSeeder::class,
             RoleSeeder::class,
+            PengajuanSeeder::class,
+            DokumenSeeder::class,
         ]);
     }
 }
