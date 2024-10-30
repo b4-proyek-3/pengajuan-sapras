@@ -20,18 +20,18 @@
                 </button>
             </div>
 
-            <!-- Notifikasi pop-up -->
-            <div class="container mx-auto mt-4">
+            <div class="container mx-auto">
                 <!-- Notifikasi sukses -->
                 @if (session('success'))
                     <div x-data="{ show: true }" 
                         x-show="show" 
                         x-init="setTimeout(() => show = false, 5000)" 
-                        class="fixed top-0 right-0 mt-4 mr-4 bg-green-500 text-white px-6 py-4 rounded shadow-lg z-50"
+                        class="fixed top-10 left-1/2 transform -translate-x-1/2 bg-orange-500 bg-opacity-100 text-white text-center px-4 py-2 rounded shadow-lg z-50"
+                        style="width: 350px; text-align: center;"
                         role="alert">
                         <span class="block sm:inline">{{ session('success') }}</span>
-                        <button @click="show = false" class="absolute top-0 right-0 mt-2 mr-2 text-white">
-                            <svg class="fill-current h-6 w-6" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                        <button @click="show = false" class="absolute top-1 right-1 text-white">
+                            <svg class="fill-current h-6 w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" role="button">
                                 <path d="M14.348 5.652a1 1 0 10-1.414-1.414L10 7.172 7.066 4.238a1 1 0 10-1.414 1.414L8.586 8.586l-2.936 2.936a1 1 0 001.414 1.414L10 9.828l2.936 2.936a1 1 0 001.414-1.414L11.414 8.586l2.936-2.936z"/>
                             </svg>
                         </button>
@@ -43,11 +43,12 @@
                     <div x-data="{ show: true }" 
                         x-show="show" 
                         x-init="setTimeout(() => show = false, 5000)" 
-                        class="fixed top-0 right-0 mt-4 mr-4 bg-red-500 text-white px-6 py-4 rounded shadow-lg z-50"
+                        class="fixed top-20 left-1/2 transform -translate-x-1/2 bg-red-600 bg-opacity-100 text-white px-6 py-4 rounded shadow-lg z-50"
+                        style="width: 300px; text-align: center;"
                         role="alert">
                         <span class="block sm:inline">{{ session('failed') }}</span>
-                        <button @click="show = false" class="absolute top-0 right-0 mt-2 mr-2 text-white">
-                            <svg class="fill-current h-6 w-6" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                        <button @click="show = false" class="absolute top-1 right-1 text-white">
+                            <svg class="fill-current h-6 w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" role="button">
                                 <path d="M14.348 5.652a1 1 0 10-1.414-1.414L10 7.172 7.066 4.238a1 1 0 10-1.414 1.414L8.586 8.586l-2.936 2.936a1 1 0 001.414 1.414L10 9.828l2.936 2.936a1 1 0 001.414-1.414L11.414 8.586l2.936-2.936z"/>
                             </svg>
                         </button>
@@ -415,11 +416,6 @@
             placeholder: "Pilih Organisasi Mahasiswa"
         });
     });
-
-    // const username = "NamaPengguna"; 
-    // document.getElementById("nama_pengaju").value = username;
-
-    // document.getElementById("nama_pengaju").value = "";
 
     document.getElementById("link").addEventListener("blur", function() {
         // Ambil nilai link dari form

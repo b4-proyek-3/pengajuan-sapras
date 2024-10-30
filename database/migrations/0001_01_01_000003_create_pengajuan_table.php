@@ -10,9 +10,9 @@ class CreatePengajuanTable extends Migration
     {
         Schema::create('pengajuan', function (Blueprint $table) {
             $table->string('id_pengajuan', length:6)->primary();
-            $table->dateTimeTz('tanggal_pengajuan');
+            $table->dateTime('tanggal_pengajuan');
             $table->string('ormawa');
-            $table->string('nama_pengaju')->nullable();
+            $table->string('nama_pengaju');
             $table->date('tanggal_peminjaman');
             $table->date('tanggal_berakhir');
             $table->string('waktu');

@@ -19,6 +19,7 @@ class Pengajuan extends Model
         'id_pengajuan',
         'tanggal_pengajuan',
         'ormawa',
+        'nama_pengaju',
         'tanggal_peminjaman',
         'tanggal_berakhir',
         'waktu',

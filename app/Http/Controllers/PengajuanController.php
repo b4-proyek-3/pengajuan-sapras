@@ -44,12 +44,11 @@ class PengajuanController extends Controller
     public function form(Request $request)
     {
         try {
-            // Validasi data form tanpa validasi id_pengajuan
             $validatedData = $request->validate([
                 'ormawa' => 'required|string',
                 'nama_pengaju' => 'required|string',
                 'tanggal_peminjaman' => 'required|date',
-                'tanggal_berakhir' => 'required|date',
+                'tanggal_berakhir' => 'required|date|after_or_equal:tanggal_peminjaman',
                 'waktu' => 'required|string',
                 'nama_kegiatan' => 'required|string',
                 'tempat_peminjaman' => 'required|string',
@@ -62,7 +61,7 @@ class PengajuanController extends Controller
                 'dokumen7' => 'nullable|file|mimes:pdf|max:2048',
                 'link_gdrive' => 'nullable|url',
             ]);
-            
+
             // Menyimpan file dokumen dan mendapatkan path-nya
             $dokumen1 = $request->file('dokumen1')->store('dokumen', 'public');
             $dokumen2 = $request->file('dokumen2') ? $request->file('dokumen2')->store('dokumen', 'public') : null;
@@ -71,10 +70,10 @@ class PengajuanController extends Controller
             $dokumen5 = $request->file('dokumen5') ? $request->file('dokumen5')->store('dokumen', 'public') : null;
             $dokumen6 = $request->file('dokumen6') ? $request->file('dokumen6')->store('dokumen', 'public') : null;
             $dokumen7 = $request->file('dokumen7') ? $request->file('dokumen7')->store('dokumen', 'public') : null;
-            
+
             // Generate id_pengajuan
             $id_pengajuan = strtoupper(Str::random(6));
-            
+
             // Simpan data ke database
             $pengajuan = Pengajuan::create([
                 'id_pengajuan' => $id_pengajuan,
@@ -96,13 +95,16 @@ class PengajuanController extends Controller
                 'link_gdrive' => $request->link_gdrive,
             ]);
 
-            // Debugging jika berhasil
             return redirect()->route('pengajuan.index')->with('success', 'Pengajuan berhasil disimpan!');
 
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Tangkap kesalahan validasi dan kembalikan ke halaman form dengan error
+            return redirect()->back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
+            // Tangkap kesalahan lain dan berikan pesan gagal
             return redirect()->route('pengajuan.index')->with('failed', 'Pengajuan gagal disimpan!');
         }
-}
+    }
 
     public function details()
     {

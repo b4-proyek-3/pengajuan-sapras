@@ -24,7 +24,6 @@ class PengajuanTest extends TestCase
             'nama_kegiatan' => 'Kegiatan Contoh',
             'tempat_peminjaman' => 'Tempat Contoh',
             'dokumen1' => UploadedFile::fake()->create('dokumen1.pdf', 100, 'application/pdf'),
-            // tambahkan dokumen lainnya jika perlu
         ];
 
         // Melewati middleware CSRF
@@ -94,10 +93,9 @@ class PengajuanTest extends TestCase
             'dokumen1' => null, // Tidak mengirim dokumen, akan menyebabkan validasi gagal
         ];
 
-        // Nonaktifkan middleware CSRF
         $response = $this->withoutMiddleware()->post(route('pengajuan.form'), $data);
 
-        // Pastikan respon gagal
+        // Pastikan validasi gagal untuk dokumen1
         $response->assertSessionHasErrors(['dokumen1']);
     }
 }
