@@ -33,7 +33,6 @@ class PengajuanController extends Controller
             'tanggal_akhir' => $request->tanggal_akhir,
             'waktu_pengajuan' => $request->waktu_pengajuan,
             'nama_kegiatan' => $request->nama_kegiatan,
-            'dokumen' => $dokumenPath ?? null,
         ]);
 
         return redirect()->route('pages.detail');

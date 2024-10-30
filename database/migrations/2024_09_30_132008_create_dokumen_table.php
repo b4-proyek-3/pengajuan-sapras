@@ -13,8 +13,12 @@ return new class extends Migration
     {
         Schema::create('dokumen', function (Blueprint $table) {
             $table->id('no_dokumen');
+            $table->string('id_pengajuan', length: 6);
             $table->string('nama_dokumen', length: 50);
+            $table->string('path');
             $table->timestamps();
+
+            $table->foreign('id_pengajuan')->references('id_pengajuan')->on('pengajuan')->onDelete('cascade');
         });
     }
 
