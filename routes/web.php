@@ -1,11 +1,8 @@
 <?php
 
+use App\Http\Controllers\PengajuanController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('pages.test');
-});
-
-Route::get('/detail', function () {
-    return view('pages.detail');
-})->name('detail');
+Route::get('/pengajuan', [PengajuanController::class, 'index'])->name('pengajuan.index');
+    
+Route::post('/pengajuan/form', [PengajuanController::class, 'form'])->name('pengajuan.form');
