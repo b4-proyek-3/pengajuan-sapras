@@ -17,11 +17,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="apple-touch-icon" sizes="76x76" href="./assets/img/apple-icon.png" />
+    <link rel="logo-polban" sizes="16x16" href="{{ asset('assets/img/polban.png') }}" />
+    <link rel="icon" type="image/png" href="{{ asset('assets/img/polban.png') }}" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="icon" type="image/png" href="./assets/img/favicon.png" />
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-    <title>Pengajuan Sarpras</title>
+    <title>Pengajuan Sarana dan Prasarana</title>
     @include('layout.partial.link')
   </head>
 

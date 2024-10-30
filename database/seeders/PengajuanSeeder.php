@@ -1,0 +1,42 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use App\Models\Pengajuan;
+use App\Models\Pengaju;
+use App\Models\Tempat;
+
+use Illuminate\Support\Str;
+
+class PengajuanSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        // Mengambil NIM dan ID tempat dari tabel pengaju dan tempat
+        $nims = Pengaju::pluck('nim')->toArray();
+        $tempatIds = Tempat::pluck('id_tempat')->toArray();
+
+        $existingCount = Pengajuan::count();
+        // Membuat beberapa data pengajuan
+        for ($i = 1; $i < 20; $i++) {
+            $idPengajuan = 'P' . str_pad($existingCount + $i, 5, '0', STR_PAD_LEFT);
+
+            Pengajuan::create([
+                'id_pengajuan' => $idPengajuan,
+                'nim' => $nims[array_rand($nims)], // Mengambil NIM secara acak
+                'tanggal_pengajuan' => now(),
+                'id_tempat' => $tempatIds[array_rand($tempatIds)], // Mengambil ID tempat secara acak
+                'tanggal_pinjam' => now()->addDays(7),
+                'tanggal_akhir' => now()->addDays(14),
+                'waktu_pengajuan' => now()->format('H:i:s'),
+                'nama_kegiatan' => 'Kegiatan ' . $i,
+            ]);
+        }
+    }
+}

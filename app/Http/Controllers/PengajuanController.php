@@ -36,6 +36,12 @@ class PengajuanController extends Controller
         return view('pengajuan.index', compact('pengajuanList'));
     }
 
+    public function show(string $id_pengajuan)
+    {
+        $pengajuans = Pengajuan::with('pengaju', 'reviewers')->findOrFail($id_pengajuan);
+        return view('pages.detail', compact('pengajuans'));
+    }
+
     public function create()
     {
         return view('pengajuan.index');
@@ -76,8 +82,10 @@ class PengajuanController extends Controller
 
             // Simpan data ke database
             $pengajuan = Pengajuan::create([
+                'nim' => $request->nim,
                 'id_pengajuan' => $id_pengajuan,
                 'tanggal_pengajuan' => now(),
+                'id_tempat' => $request-> id_tempat,
                 'ormawa' => $request->ormawa,
                 'nama_pengaju' => $request->nama_pengaju,
                 'tanggal_peminjaman' => $request->tanggal_peminjaman,
@@ -104,12 +112,5 @@ class PengajuanController extends Controller
             // Tangkap kesalahan lain dan berikan pesan gagal
             return redirect()->route('pengajuan.index')->with('failed', 'Pengajuan gagal disimpan!');
         }
-    }
-
-    public function details()
-    {
-        //$pengajuan = Pengajuan::findOrFail($id); 
-
-        //return view('pengajuan.details'); 
     }
 }
