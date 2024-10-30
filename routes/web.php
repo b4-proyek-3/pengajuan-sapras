@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PengajuanController;
+use App\Http\Controllers\TrackingController;
+
 
 Route::get('/', function () {
     return view('progress2');
@@ -16,3 +18,6 @@ Route::get('/pengajuan/create', [PengajuanController::class, 'create'])->name('p
 
 // Route untuk menyimpan data pengajuan baru
 Route::post('/pengajuan', [PengajuanController::class, 'store'])->name('pengajuan.store');
+
+// Routes untuk Status Tracker
+Route::get('/tracking/{id_pengajuan}', [TrackingController::class, 'show'])->name('tracking.show');

@@ -9,13 +9,13 @@ class Review extends Model
 {
     use HasFactory;
 
-    protected $table = 'reviews'; // Nama tabel
+    protected $table = 'reviews';
     protected $primaryKey = 'id_review';
     protected $fillable = [
         'id_pengajuan',
-        'nip', 
-        'review', 
-        'status', 
+        'nip',
+        'review',
+        'status',
         'tanggal_review',
     ];
 

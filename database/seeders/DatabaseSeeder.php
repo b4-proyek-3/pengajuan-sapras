@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Database\Seeders\OrmawaSeeder; 
 use Database\Seeders\ReviewerSeeder; 
+use Database\Seeders\HasilReviewSeeder;
 use Database\Seeders\TempatSeeder; 
 use Database\Seeders\PengajuSeeder;
 use Database\Seeders\RoleSeeder;
@@ -19,11 +20,12 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            OrmawaSeeder::class,
+            RoleSeeder::class,
             ReviewerSeeder::class,
+            OrmawaSeeder::class,
             TempatSeeder::class,
             PengajuSeeder::class,
-            RoleSeeder::class,
+            HasilReviewSeeder::class,
         ]);
     }
 }

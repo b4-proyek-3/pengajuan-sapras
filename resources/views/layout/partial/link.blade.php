@@ -10,48 +10,36 @@
     <!-- Main Styling -->
     <link href="{{ asset('/assets/css/soft-ui-dashboard-tailwind.css?v=1.0.5') }}" rel="stylesheet" />
     <!-- Nepcha Analytics (nepcha.com) -->
-<<<<<<< HEAD
-    <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
     <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
-    <link
-rel="stylesheet"
-data-purpose="Layout StyleSheet"
-title="Web Awesome"
-href="/css/app-wa-3b124ff0e0d7a67cd8c995d0aeb1d15a.css?vsn=d"
->
 
-<link
-  rel="stylesheet"
-  href="https://site-assets.fontawesome.com/releases/v6.6.0/css/all.css"
->
+  <link rel="stylesheet" data-purpose="Layout StyleSheet" title="Web Awesome" href="/css/app-wa-3b124ff0e0d7a67cd8c995d0aeb1d15a.css?vsn=d">
 
-<link
-  rel="stylesheet"
-  href="https://site-assets.fontawesome.com/releases/v6.6.0/css/sharp-duotone-solid.css"
->
+  <link
+    rel="stylesheet"
+    href="https://site-assets.fontawesome.com/releases/v6.6.0/css/all.css"
+  >
 
-<link
-  rel="stylesheet"
-  href="https://site-assets.fontawesome.com/releases/v6.6.0/css/sharp-thin.css"
->
+  <link
+    rel="stylesheet"
+    href="https://site-assets.fontawesome.com/releases/v6.6.0/css/sharp-duotone-solid.css"
+  >
 
-<link
-  rel="stylesheet"
-  href="https://site-assets.fontawesome.com/releases/v6.6.0/css/sharp-solid.css"
->
+  <link
+    rel="stylesheet"
+    href="https://site-assets.fontawesome.com/releases/v6.6.0/css/sharp-thin.css"
+  >
 
-<link
-  rel="stylesheet"
-  href="https://site-assets.fontawesome.com/releases/v6.6.0/css/sharp-regular.css"
->
+  <link
+    rel="stylesheet"
+    href="https://site-assets.fontawesome.com/releases/v6.6.0/css/sharp-solid.css"
+  >
 
-<link
-  rel="stylesheet"
-  href="https://site-assets.fontawesome.com/releases/v6.6.0/css/sharp-light.css"
->
-=======
-    <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
-    <script>
-        var assetPath = "{{ asset('') }}";
-    </script>
->>>>>>> feature/detail-pengajuan
+  <link
+    rel="stylesheet"
+    href="https://site-assets.fontawesome.com/releases/v6.6.0/css/sharp-regular.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="https://site-assets.fontawesome.com/releases/v6.6.0/css/sharp-light.css"
+  >
