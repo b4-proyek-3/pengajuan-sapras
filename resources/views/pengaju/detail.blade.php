@@ -177,9 +177,9 @@
                         <i class="fas fa-check relative z-10 leading-none text-green-500"></i> <!-- Ganti dengan ikon centang -->
                     </span>
                     <div class="ml-11.252 pt-1.4 lg:max-w-120 relative -top-1.5 w-auto">
-                        <h6 class="mb-0 text-sm font-semibold leading-normal text-slate-700">Review {{ $pengajuans->pivot->reviewers->roles->nama_role ?? 'N/A' }}</h6>
-                        <p class="mt-1 mb-0 text-xs font-semibold leading-tight text-slate-400">{{ $pengajuans->pivot->status ?? 'N/A' }}</p>
-                        <p class="mt-1 mb-0 text-xs font-semibold leading-tight text-slate-400">{{ $pengajuans->pivot->tanggal_review ?? 'N/A'}}</p>
+                        <h6 class="mb-0 text-sm font-semibold leading-normal text-slate-700">Review</h6>
+                        <p class="mt-1 mb-0 text-xs font-semibold leading-tight text-slate-400">{{ $pengajuans->reviews->status ?? 'N/A' }}</p>
+                        <p class="mt-1 mb-0 text-xs font-semibold leading-tight text-slate-400">{{ $pengajuans->reviews->tanggal_review ?? 'N/A'}}</p>
                     </div>
                 </div>
               </div>

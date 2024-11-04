@@ -19,6 +19,10 @@
                       {{ $pengajuan->id_pengajuan ?? 'N/A' }}
                     </p>
                   </div>
+                  <div class="flex-none w-1/12 max-w-full px-3 my-auto text-right lg:w-1/2 lg:flex-none">
+                    <div class="relative pr-6 lg:float-right">
+                    </div>
+                  </div>
                 </div>
               </div>
               <div class="flex-auto p-6 px-0 pb-2">
@@ -48,6 +52,21 @@
                         <td class="p-2 align-middle bg-transparent whitespace-nowrap">
                             <div class="flex px-4 py-1">
                                 <div class="flex flex-col justify-center" style="min-width: 150px;">
+                                    <h6 class="mb-0 text-sm leading-normal">Ormawa</h6>
+                                </div>
+                                <div class="flex flex-col justify-center" style="min-width: 10px; text-align: right;">
+                                    <h6 class="mb-0 text-sm leading-normal">:</h6>
+                                </div>
+                                <div class="flex flex-col justify-center pl-2">
+                                    <h6 class="mb-0 text-sm leading-normal">{{ $pengajuan->pengaju->ormawa->nama_ormawa ?? 'N/A' }}</h6>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="p-2 align-middle bg-transparent whitespace-nowrap">
+                            <div class="flex px-4 py-1">
+                                <div class="flex flex-col justify-center" style="min-width: 150px;">
                                     <h6 class="mb-0 text-sm leading-normal">Nama Kegiatan</h6>
                                 </div>
                                 <div class="flex flex-col justify-center" style="min-width: 10px; text-align: right;">
@@ -63,7 +82,7 @@
                         <td class="p-2 align-middle bg-transparent whitespace-nowrap">
                             <div class="flex px-4 py-1">
                                 <div class="flex flex-col justify-center" style="min-width: 150px;">
-                                    <h6 class="mb-0 text-sm leading-normal">Tanggal Mulai</h6>
+                                    <h6 class="mb-0 text-sm leading-normal">Tanggal Kegiatan</h6>
                                 </div>
                                 <div class="flex flex-col justify-center" style="min-width: 10px; text-align: right;">
                                   <h6 class="mb-0 text-sm leading-normal">:</h6>
@@ -85,6 +104,21 @@
                                 </div>
                                 <div class="flex flex-col justify-center pl-2">
                                 <h6 class="mb-0 text-sm leading-normal">{{ $pengajuan->tanggal_akhir ?? 'N/A' }}</h6>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="p-2 align-middle bg-transparent whitespace-nowrap">
+                            <div class="flex px-4 py-1">
+                                <div class="flex flex-col justify-center" style="min-width: 150px;">
+                                    <h6 class="mb-0 text-sm leading-normal">Waktu Kegiatan</h6> <!-- Replace 'tempat' with the correct field -->
+                                </div>
+                                <div class="flex flex-col justify-center" style="min-width: 10px; text-align: right;">
+                                  <h6 class="mb-0 text-sm leading-normal">:</h6>
+                                </div>
+                                <div class="flex flex-col justify-center pl-2">
+                                    <h6 class="mb-0 text-sm leading-normal">{{ $pengajuan->waktu_pengajuan ?? 'N/A' }}</h6>
                                 </div>
                             </div>
                         </td>
@@ -286,12 +320,15 @@
                 </div>
                 <div class="px-4 py-2 bg-white rounded-b-lg dark:bg-gray-800">
                     <label for="editor" class="sr-only">Publish post</label>
-                    <textarea id="editor" rows="8" class="block w-full px-0 text-sm text-gray-800 bg-white border-0 dark:bg-gray-800 focus:ring-0 dark:text-white dark:placeholder-gray-400" placeholder="Write an article..." ></textarea>
+                    <textarea name="catatan" id="editor" rows="8" class="block w-full px-0 text-sm text-gray-800 bg-white border-0 dark:bg-gray-800 focus:ring-0 dark:text-white dark:placeholder-gray-400" placeholder="Write an article..." ></textarea>
                 </div>
             </div>
             <div class="flex justify-end">
                 <button type="submit" name="action" value="terima" class="mt-2 bg-gradient-to-tl from-blue-600 to-teal-400 px-2.5 text-xs rounded-1.8 py-1.4 inline-block whitespace-nowrap text-center align-baseline font-bold uppercase leading-none text-white">
                     terima
+                </button>
+                <button type="submit" name="action" value= "revisi" class="mt-2 bg-gradient-to-tl from-slate-600 to-slate-300 px-2.5 text-xs rounded-1.8 py-1.4 inline-block whitespace-nowrap text-center align-baseline font-bold uppercase leading-none text-white ml-2">
+                    revisi
                 </button>
                 <button type="submit" name="action" value= "tolak" class="mt-2 bg-gradient-to-tl from-slate-600 to-slate-300 px-2.5 text-xs rounded-1.8 py-1.4 inline-block whitespace-nowrap text-center align-baseline font-bold uppercase leading-none text-white ml-2">
                     tolak

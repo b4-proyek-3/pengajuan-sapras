@@ -29,7 +29,7 @@ class Reviewer extends Authenticatable
     }
 
     public function roles()
-{
-    return $this->belongsTo(Role::class, 'id_role');
-}
+    {
+        return $this->belongsTo(Role::class, 'id_role');
+    }
 }

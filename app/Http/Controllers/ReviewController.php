@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Pengajuan;
 use App\Models\Review;
 use App\Models\Reviewer;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,6 +17,7 @@ class ReviewController extends Controller
             $query->select('reviewers.id_reviewer', 'nama', 'reviews.status', 'reviews.review', 'reviews.tanggal_review')
                   ->withPivot('status', 'review', 'tanggal_review');
         }])->findOrFail($id_pengajuan);
+        $pengajuan->waktu_pengajuan = Carbon::createFromFormat('H:i:s', $pengajuan->waktu_pengajuan)->format('H:i');
     
         return view('reviewer.detail_reviewer', compact('pengajuan'));
     }
@@ -51,6 +53,17 @@ class ReviewController extends Controller
                 'tanggal_review' => now(),
             ]);
             return redirect()->back()->with('success', 'Pengajuan berhasil ditolak dengan catatan.');
+        } elseif ($request->input('action') === 'revisi') {
+
+            // Menyimpan data review di tabel reviews
+            Review::create([
+                'id_pengajuan' => $id_pengajuan,
+                'id_reviewer' => $reviewerId,
+                'status' => 'direvisi',
+                'review' => $catatan,
+                'tanggal_review' => now(),
+            ]);
+            return redirect()->back()->with('success', 'Pengajuan direvisi dengan catatan.');
         }
         return redirect()->back()->with('error', 'Aksi tidak valid.');
     }
