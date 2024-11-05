@@ -17,3 +17,7 @@ Route::get('/pengajuan/create', [PengajuanController::class, 'create'])->name('p
 
 // Route untuk menyimpan data pengajuan baru
 Route::post('/pengajuan', [PengajuanController::class, 'store'])->name('pengajuan.store');
+
+Route::get('/pengajuan/{id_pengajuan}/edit', [PengajuanController::class, 'edit'])->name('pengajuan.edit');
+Route::put('/pengajuan/{id_pengajuan}', [PengajuanController::class, 'update'])->name('pengajuan.update');
+
