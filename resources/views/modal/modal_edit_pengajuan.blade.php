@@ -37,8 +37,13 @@
                     </div>
                     <div class="flex flex-col">
                         <label for="tempat-kegiatan" class="block mt-2 mb-2 text-sm font-medium text-gray-900 dark:text-white">Tempat Kegiatan</label>
-                        <input type="number" id="tempat-kegiatan" name="id_tempat" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" value="{{ $pengajuans->tempat->id_tempat ?? 'N/A' }}" />
-                    </div>
+                        <select name="id_tempat" class="bg-gray-50 px-3 border border-gray-300 text-gray-900 text-sm rounded-lg">
+                            @foreach ($tempatList as $tempat)
+                                <option value="{{ $tempat->id_tempat }}" {{ $tempat->id_tempat == $pengajuans->id_tempat ? 'selected' : '' }}>
+                                    {{ $tempat->nama_tempat }}
+                                </option>
+                            @endforeach
+                        </select>                    </div>
                     <div class="flex justify-end">
                         <button type="submit" class="mt-2 bg-gradient-to-tl from-blue-600 to-teal-400 px-2.5 text-xs rounded-1.8 py-1.4 inline-block whitespace-nowrap text-center align-baseline font-bold uppercase leading-none text-white">
                             SIMPAN

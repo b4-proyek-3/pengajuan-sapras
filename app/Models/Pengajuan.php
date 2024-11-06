@@ -38,4 +38,9 @@ class Pengajuan extends Model
         return $this->belongsToMany(Reviewer::class, 'reviews', 'id_pengajuan', 'nip');
     }
 
+    public function tempat()
+    {
+        return $this->belongsTo(Tempat::class, 'id_tempat', 'id_tempat');
+    }
+
 }
