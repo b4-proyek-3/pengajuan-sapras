@@ -23,7 +23,7 @@ class ReviewerSeeder extends Seeder
         foreach ($roleIds as $roleId) {
             // Mengisi tabel pengaju dengan data acak
             DB::table('reviewers')->insert([
-                'nip' => $faker->unique()->numerify('########'), // Membuat NIP acak
+                'id_reviewer' => $faker->unique()->numerify('########'), // Membuat NIP acak
                 'nama' => $faker->name,
                 'email' => $faker->unique()->safeEmail,
                 'password' => bcrypt('password123'), // Enkripsi password

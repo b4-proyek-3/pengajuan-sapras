@@ -12,18 +12,24 @@ class Reviewer extends Authenticatable
 
     public $keyType = 'string';
     protected $table = 'reviewers';
-    protected $primaryKey = 'nip';
+    protected $primaryKey = 'id_reviewer';
 
     protected $fillable = [
-        'nip',
+        'id_reviewer',
         'nama',
         'email',
         'password',
         'id_role',
     ];
 
-    public function reviews()
+    public function pengajuan()
     {
-        return $this->belongsToMany(Pengajuan::class, 'reviews', 'nip', 'id_pengajuan');
+        return $this->belongsToMany(Pengajuan::class, 'reviews', 'id_reviewer', 'id_pengajuan')
+            ->withPivot('tanggal_review', 'status', 'review');
+    }
+
+    public function roles()
+    {
+        return $this->belongsTo(Role::class, 'id_role');
     }
 }

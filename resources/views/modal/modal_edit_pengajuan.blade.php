@@ -8,16 +8,54 @@
                 </h3>
             </div>
             <div class="p-4 md:p-5">
+<<<<<<< HEAD
                 <form class="space-y-4" action="{{ route('pengajuan.update', $pengajuans->id_pengajuan) }}" method="POST">
+=======
+                <form class="space-y-4" action="{{ route('pengaju.update', $pengajuans->id_pengajuan) }}" method="POST">
+>>>>>>> feature/detail-pengajuan
                     @csrf
                     @method('PUT')
                     <div class="flex flex-col">
                         <label for="nama-pengaju" class="block mt-2 mb-2 text-sm font-medium text-gray-900 dark:text-white">Nama Pengaju</label>
+<<<<<<< HEAD
                         <input type="text" id="nama-pengaju" name="nama_pengaju" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" value="{{ $pengajuans->pengaju->nama }}" />
                     </div>
                     <div class="flex flex-col">
                         <label for="ormawa" class="block mt-2 mb-2 text-sm font-medium text-gray-900 dark:text-white">Ormawa</label>
                         <input type="text" id="ormawa" name="nama_ormawa" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" value="{{ $pengajuans->pengaju->ormawa->nama_ormawa ?? 'N/A' }}" />
+=======
+                        <input id="nama-pengaju" value="{{ $pengajuans->pengaju->nama }}" class="bg-gray-50 px-3 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" readonly/>
+                    </div>
+                    <div class="flex flex-col">
+                        <label for="ormawa" class="block mt-2 mb-2 text-sm font-medium text-gray-900 dark:text-white">Ormawa</label>
+                        <input id="ormawa" value="{{ $pengajuans->pengaju->ormawa->nama_ormawa }}" class="bg-gray-50 px-3 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" readonly/>
+                    </div>
+                    <div class="flex flex-col">
+                        <label for="nama-kegiatan" class="block mt-2 mb-2 text-sm font-medium text-gray-900 dark:text-white">Nama Kegiatan</label>
+                        <input type="text" id="nama-kegiatan" name="nama_kegiatan" value="{{ $pengajuans->nama_kegiatan }}" class="bg-gray-50 px-3 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"/>
+                    </div>
+                    <div class="flex flex-col">
+                        <label for="tanggal-kegiatan" class="block mt-2 mb-2 text-sm font-medium text-gray-900 dark:text-white">Tanggal Kegiatan</label>
+                        <input type="date" id="tanggal-kegiatan" name ="tanggal_pinjam" value="{{ $pengajuans->tanggal_pinjam }}" class="bg-gray-50 px-3 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"/>
+                    </div>
+                    <div class="flex flex-col">
+                        <label for="tanggal-kegiatan" class="block mt-2 mb-2 text-sm font-medium text-gray-900 dark:text-white">Tanggal Berakhir</label>
+                        <input type="date" id="tanggal-akhir" name ="tanggal_akhir" value="{{ $pengajuans->tanggal_akhir }}" class="bg-gray-50 px-3 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"/>
+                    </div>
+                    <div class="flex flex-col">
+                        <label for="tanggal-kegiatan" class="block mt-2 mb-2 text-sm font-medium text-gray-900 dark:text-white">Waktu Kegiatan</label>
+                        <input type="time" id="waktu-kegiatan" name ="waktu_pengajuan" value="{{ $pengajuans->waktu_pengajuan }}" class="bg-gray-50 px-3 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"/>
+                    </div>
+                    <div class="flex flex-col">
+                        <label for="tempat-kegiatan" class="block mt-2 mb-2 text-sm font-medium text-gray-900 dark:text-white">Tempat Kegiatan</label>
+                        <select name="id_tempat" class="bg-gray-50 px-3 border border-gray-300 text-gray-900 text-sm rounded-lg">
+                            @foreach ($tempatList as $tempat)
+                                <option value="{{ $tempat->id_tempat }}" {{ $tempat->id_tempat == $pengajuans->id_tempat ? 'selected' : '' }}>
+                                    {{ $tempat->nama_tempat }}
+                                </option>
+                            @endforeach
+                        </select>
+>>>>>>> feature/detail-pengajuan
                     </div>
                     <div class="flex flex-col">
                         <label for="nama-kegiatan" class="block mt-2 mb-2 text-sm font-medium text-gray-900 dark:text-white">Nama Kegiatan</label>

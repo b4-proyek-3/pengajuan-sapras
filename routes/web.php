@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PengajuanController;
+use App\Http\Controllers\ReviewController;
 
 // Route yang mengarah ke view edit_pengajuan
 Route::get('/', function () {
@@ -10,7 +11,8 @@ Route::get('/', function () {
 
 
 // Route untuk menampilkan daftar pengajuan
-Route::get('/pengajuan/{id_pengajuan}', [PengajuanController::class, 'index'])->name('pengajuan.index');
+Route::get('/pengajuan/detail/{id_pengajuan}', [PengajuanController::class, 'show'])->name('pengaju.show');
+Route::put('/pengajuan/detail/{id_pengajuan}', [PengajuanController::class, 'update'])->name('pengaju.update');
 
 // Route untuk menampilkan form pengajuan baru
 Route::get('/pengajuan/create', [PengajuanController::class, 'create'])->name('pengajuan.create');
@@ -18,6 +20,7 @@ Route::get('/pengajuan/create', [PengajuanController::class, 'create'])->name('p
 // Route untuk menyimpan data pengajuan baru
 Route::post('/pengajuan', [PengajuanController::class, 'store'])->name('pengajuan.store');
 
-Route::get('/pengajuan/{id_pengajuan}/edit', [PengajuanController::class, 'edit'])->name('pengajuan.edit');
-Route::put('/pengajuan/{id_pengajuan}', [PengajuanController::class, 'update'])->name('pengajuan.update');
+// Route untuk reviewer
+Route::get('/pengajuan/review/{id_pengajuan}/{id_reviewer}', [ReviewController::class, 'detailReviewer'])->name('reviewer.detail_reviewer');
+Route::post('/pengajuan/review/{id_pengajuan}/{id_reviewer}', [ReviewController::class, 'storeReview'])->name('store_review');
 

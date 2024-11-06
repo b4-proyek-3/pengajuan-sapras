@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('reviewers', function (Blueprint $table) {
-            $table->char('nip', length: 18)->primary();
+            $table->char('id_reviewer', length: 18)->primary();
             $table->string('nama');
             $table->string('email')->unique();
             $table->string('password');
