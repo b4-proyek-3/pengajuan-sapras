@@ -22,7 +22,7 @@ return new class extends Migration
             $table->date('tanggal_akhir');
             $table->time('waktu_pengajuan');
             $table->string('nama_kegiatan');
-            $table->enum('status', ['diterima', 'direvisi', 'ditolak', 'selesai']);
+            $table->enum('status', ['diterima', 'direvisi', 'ditolak', 'selesai', 'diajukan'])->default('diajukan');
             $table->boolean('edited')->default(false);
         });
     }

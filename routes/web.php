@@ -20,5 +20,6 @@ Route::get('/pengajuan/create', [PengajuanController::class, 'create'])->name('p
 Route::post('/pengajuan', [PengajuanController::class, 'store'])->name('pengajuan.store');
 
 // Route untuk reviewer
-Route::get('/pengajuan/review/{id_pengajuan}', [ReviewController::class, 'detailReviewer'])->name('reviewer.detail');
-Route::post('/pengajuan/review/{id_pengajuan}', [ReviewController::class, 'reviewPengajuan'])->name('reviewer.review');
+Route::get('/pengajuan/review/{id_pengajuan}/{id_reviewer}', [ReviewController::class, 'detailReviewer'])->name('reviewer.detail_reviewer');
+Route::post('/pengajuan/review/{id_pengajuan}/{id_reviewer}', [ReviewController::class, 'storeReview'])->name('store_review');
+

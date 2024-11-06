@@ -17,7 +17,7 @@ return new class extends Migration
             $table->char('id_reviewer', length: 18); // Foreign key ke tabel reviewer
             $table->foreign('id_reviewer')->references('id_reviewer')->on('reviewers')->onDelete('cascade');
             $table->text('review')->nullable();
-            $table->enum('status', ['diterima', 'direvisi', 'ditolak', 'selesai']);
+            $table->enum('status', ['diterima', 'direvisi', 'ditolak', 'selesai', 'diajukan']);
             $table->dateTime('tanggal_review', precision: 0);
 
             $table->primary(['id_pengajuan', 'id_reviewer']);

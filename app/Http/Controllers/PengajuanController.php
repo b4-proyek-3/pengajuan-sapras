@@ -16,7 +16,8 @@ class PengajuanController extends Controller
 
     public function show(string $id_pengajuan)
     {
-        $pengajuans = Pengajuan::with('pengaju', 'reviewers')->findOrFail($id_pengajuan);
+        $pengajuans = Pengajuan::with(['pengaju', 'reviewers', 'latestReview'])
+                            ->findOrFail($id_pengajuan);
         $tempatList = Tempat::all();
         $pengajuans->waktu_pengajuan = Carbon::createFromFormat('H:i:s', $pengajuans->waktu_pengajuan)->format('H:i');
         return view('pengaju.detail', compact('pengajuans', 'tempatList'));
