@@ -23,10 +23,8 @@
     @include('layout.partial.link')
   </head>
 
-  <body class="m-0 font-sans text-base antialiased font-normal leading-default bg-gray-50 text-slate-500">
-    @include('layout.partial.header')
+<body class="overflow-hidden">
       @yield('content')
-    @include('layout.partial.footer')
   </body>
   @include('layout.partial.script')
 </html>
