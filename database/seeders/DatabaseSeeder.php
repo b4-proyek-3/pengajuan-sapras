@@ -9,7 +9,6 @@ use Database\Seeders\OrmawaSeeder;
 use Database\Seeders\ReviewerSeeder; 
 use Database\Seeders\TempatSeeder; 
 use Database\Seeders\PengajuSeeder;
-use Database\Seeders\RoleSeeder;
 use Database\Seeders\PengajuanSeeder;
 use Database\Seeders\DokumenSeeder;
 use Database\Seeders\UsersTableSeeder;
@@ -22,14 +21,13 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
+            UsersTableSeeder::class,
             OrmawaSeeder::class,
             ReviewerSeeder::class,
             TempatSeeder::class,
             PengajuSeeder::class,
-            RoleSeeder::class,
             PengajuanSeeder::class,
             DokumenSeeder::class,
-            UsersTableSeeder::class,
         ]);
     }
 }

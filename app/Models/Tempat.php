@@ -11,7 +11,11 @@ class Tempat extends Model
 
     protected $primaryKey = 'id_tempat';
     protected $table = 'tempat';
-    protected $fillable = ['nama_tempat'];
+    protected $fillable = 
+    [
+        'nama_ruangan',
+        'nama_gedung',
+    ];
 
     public function pengajuan() {
         return $this->hasMany(Pengajuan::class, 'id_tempat');

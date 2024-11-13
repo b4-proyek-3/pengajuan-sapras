@@ -25,10 +25,15 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('/logout', 'logout')->name('logout');
 });
 
+// Route untuk menampilkan page pengajuan
+Route::get('/pengajuan', [PengajuanController::class, 'index'])->name('pengajuan.index');
 
-// Route untuk menampilkan daftar pengajuan
-Route::get('/pengajuan/detail/{id_pengajuan}', [PengajuanController::class, 'show'])->name('pengaju.show');
-Route::put('/pengajuan/detail/{id_pengajuan}', [PengajuanController::class, 'update'])->name('pengaju.update');
+// Route untuk menyimpan data pengajuan baru
+Route::post('/pengajuan', [PengajuanController::class, 'store'])->name('pengajuan.form');
+
+// === Detail Pengajuan Route ==== //
+Route::get('/pengajuan/detail/{id_pengajuan}', [PengajuanController::class, 'show'])->name('pengajuan.show');
+Route::put('/pengajuan/detail/{id_pengajuan}', [PengajuanController::class, 'update'])->name('pengajuan.update');
 
 // Route untuk menampilkan form pengajuan baru
 Route::get('/pengajuan/create', [PengajuanController::class, 'create'])->name('pengajuan.create');
@@ -37,6 +42,7 @@ Route::get('/pengajuan/create', [PengajuanController::class, 'create'])->name('p
 Route::post('/pengajuan', [PengajuanController::class, 'store'])->name('pengajuan.store');
 
 // Route untuk reviewer
-Route::get('/pengajuan/review/{id_pengajuan}/{id_reviewer}', [ReviewController::class, 'detailReviewer'])->name('reviewer.detail_reviewer');
-Route::post('/pengajuan/review/{id_pengajuan}/{id_reviewer}', [ReviewController::class, 'storeReview'])->name('store_review');
+Route::get('/reviewer', [ReviewController::class, 'index'])->name('reviewer.index');
+Route::get('/reviewer/{id_pengajuan}/{id_reviewer}', [ReviewController::class, 'detailReviewer'])->name('reviewer.detail_reviewer');
+Route::post('/reviewer/{id_pengajuan}/{id_reviewer}', [ReviewController::class, 'storeReview'])->name('store_review');
 

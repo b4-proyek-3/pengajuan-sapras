@@ -48,7 +48,7 @@
                                     <h6 class="mb-0 text-sm leading-normal">:</h6>
                                 </div>
                                 <div class="flex flex-col justify-center pl-2">
-                                    <h6 class="mb-0 text-sm leading-normal">{{ $pengajuans->pengaju->nama ?? 'N/A' }}</h6>
+                                    <h6 class="mb-0 text-sm leading-normal">{{ $pengajuans->pengaju->user->name ?? 'N/A' }}</h6>
                                 </div>
                             </div>
                         </td>
@@ -123,7 +123,7 @@
                                   <h6 class="mb-0 text-sm leading-normal">:</h6>
                                 </div>
                                 <div class="flex flex-col justify-center pl-2">
-                                    <h6 class="mb-0 text-sm leading-normal">{{ $pengajuans->waktu_pengajuan ?? 'N/A' }}</h6>
+                                    <h6 class="mb-0 text-sm leading-normal">{{ $pengajuans->waktu_pinjam ?? 'N/A' }}</h6>
                                 </div>
                             </div>
                         </td>
@@ -138,7 +138,7 @@
                                   <h6 class="mb-0 text-sm leading-normal">:</h6>
                                 </div>
                                 <div class="flex flex-col justify-center pl-2">
-                                    <h6 class="mb-0 text-sm leading-normal">{{ $pengajuans->tempat->nama_tempat ?? 'N/A' }}</h6>
+                                    <h6 class="mb-0 text-sm leading-normal">{{ $pengajuans->tempat->nama_ruangan ?? 'N/A' }}</h6>
                                 </div>
                             </div>
                         </td>
@@ -269,30 +269,20 @@
           </form>
         </div>
 
-        <footer class="pt-4">
-          <div class="w-full px-6 mx-auto">
-            <div class="flex flex-wrap items-center -mx-3 lg:justify-between">
-              <div class="w-full max-w-full px-3 mt-0 mb-6 shrink-0 lg:mb-0 lg:w-1/2 lg:flex-none">
-              </div>
-              <div class="w-full max-w-full px-3 mt-0 shrink-0 lg:w-1/2 lg:flex-none">
-                <ul class="flex flex-wrap justify-center pl-0 mb-0 list-none lg:justify-end">
-                  <li class="nav-item">
-                    <a href="https://www.creative-tim.com" class="block px-4 pt-0 pb-1 text-sm font-normal transition-colors ease-soft-in-out text-slate-500" target="_blank">Creative Tim</a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="https://www.creative-tim.com/presentation" class="block px-4 pt-0 pb-1 text-sm font-normal transition-colors ease-soft-in-out text-slate-500" target="_blank">About Us</a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="https://creative-tim.com/blog" class="block px-4 pt-0 pb-1 text-sm font-normal transition-colors ease-soft-in-out text-slate-500" target="_blank">Blog</a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="https://www.creative-tim.com/license" class="block px-4 pt-0 pb-1 pr-0 text-sm font-normal transition-colors ease-soft-in-out text-slate-500" target="_blank">License</a>
-                  </li>
-                </ul>
+        <footer class="pt-4 w-full bg-gray-100">
+          <div class="container mx-auto px-6">
+            <div class="flex flex-wrap items-center justify-center">
+              <div class="w-full max-w-full px-3 mt-0 mb-6 lg:mb-0 lg:w-1/2 text-center">
+              <p class="text-center text-sm font-normal text-slate-500">
+                Pengajuan Sarana dan Prasarana<br>
+                Politeknik Negeri Bandung
+              </p>
               </div>
             </div>
           </div>
         </footer>
+
+
 </div>
 @include('modal.modal_edit_pengajuan')
 @include('modal.modal_edit_dokumen')

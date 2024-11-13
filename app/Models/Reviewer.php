@@ -16,20 +16,29 @@ class Reviewer extends Authenticatable
 
     protected $fillable = [
         'id_reviewer',
-        'nama',
-        'email',
-        'password',
-        'id_role',
+        'id_user',
+        'role',
     ];
 
     public function pengajuan()
     {
         return $this->belongsToMany(Pengajuan::class, 'reviews', 'id_reviewer', 'id_pengajuan')
-            ->withPivot('tanggal_review', 'status', 'review');
+            ->withPivot('tanggal_review', 'catatan');
     }
 
-    public function roles()
+    public function user()
     {
-        return $this->belongsTo(Role::class, 'id_role');
+        return $this->belongsTo(User::class, 'id_user', 'id_user');
+    }
+
+    public function scopeOrderedByRole($query)
+    {
+        return $query->orderByRaw("
+        CASE 
+            WHEN role = 'sekum-bem' THEN 1
+            WHEN role = 'kli' THEN 2
+            WHEN role = 'wd-3' THEN 3
+            ELSE 4 
+        END");
     }
 }

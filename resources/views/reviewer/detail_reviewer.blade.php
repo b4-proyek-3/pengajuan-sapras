@@ -43,7 +43,7 @@
                                     <h6 class="mb-0 text-sm leading-normal">:</h6>
                                 </div>
                                 <div class="flex flex-col justify-center pl-2">
-                                    <h6 class="mb-0 text-sm leading-normal">{{ $pengajuan->pengaju->nama ?? 'N/A' }}</h6>
+                                    <h6 class="mb-0 text-sm leading-normal">{{ $pengajuan->pengaju->user->name ?? 'N/A' }}</h6>
                                 </div>
                             </div>
                         </td>
@@ -118,7 +118,7 @@
                                   <h6 class="mb-0 text-sm leading-normal">:</h6>
                                 </div>
                                 <div class="flex flex-col justify-center pl-2">
-                                    <h6 class="mb-0 text-sm leading-normal">{{ $pengajuan->waktu_pengajuan ?? 'N/A' }}</h6>
+                                    <h6 class="mb-0 text-sm leading-normal">{{ $pengajuan->waktu_pinjam ?? 'N/A' }}</h6>
                                 </div>
                             </div>
                         </td>
@@ -133,7 +133,7 @@
                                   <h6 class="mb-0 text-sm leading-normal">:</h6>
                                 </div>
                                 <div class="flex flex-col justify-center pl-2">
-                                    <h6 class="mb-0 text-sm leading-normal">{{ $pengajuan->tempat->nama_tempat ?? 'N/A' }}</h6>
+                                    <h6 class="mb-0 text-sm leading-normal">{{ $pengajuan->tempat->nama_ruangan ?? 'N/A' }}</h6>
                                 </div>
                             </div>
                         </td>
@@ -167,8 +167,8 @@
                               leading-pro bg-clip-text fill-transparent"></i>
                         </span>
                         <div class="ml-11.252 pt-1.4 lg:max-w-120 relative -top-1.5 w-auto">
-                            <h6 class="mb-0 text-sm font-semibold leading-normal text-slate-700">{{ $review->reviewer->roles->nama_role ?? 'N/A' }}</h6>
-                            <p class="mt-1 mb-0 text-xs font-semibold leading-tight text-slate-400">{{ $review->status ?? 'N/A' }}</p>
+                            <h6 class="mb-0 text-sm font-semibold leading-normal text-slate-700">{{ $review->reviewer->role ?? 'N/A' }}</h6>
+                            <p class="mt-1 mb-0 text-xs font-semibold leading-tight text-slate-400">{{ $pengajuan->status ?? 'N/A' }}</p>
                             <p class="mt-1 mb-0 text-xs font-semibold leading-tight text-slate-400">{{ $review->tanggal_review ?? 'N/A' }}</p>
                         </div>
                     @endforeach

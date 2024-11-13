@@ -27,7 +27,6 @@ class UsersTableSeeder extends Seeder
                 'email_verified_at' => now(), 
                 'password' => $hashedPassword, 
                 // Menggunakan hashed password 
-                'role_id' => 'mahasiswa', 
                 'remember_token' => Str::random(10), 
                 'created_at' => now(), 
                 'updated_at' => now(), 
@@ -38,7 +37,6 @@ class UsersTableSeeder extends Seeder
                 'email_verified_at' => now(), 
                 'password' => $hashedPassword, 
                 // Menggunakan hashed password 
-                'role_id' => 'kli', 
                 'remember_token' => Str::random(10), 
                 'created_at' => now(), 
                 'updated_at' => now(), 
@@ -49,7 +47,6 @@ class UsersTableSeeder extends Seeder
                 'email_verified_at' => now(), 
                 'password' => $hashedPassword, 
                 // Menggunakan hashed password 
-                'role_id' => 'ketua_jurusan', 
                 'remember_token' => Str::random(10), 
                 'created_at' => now(), 
                 'updated_at' => now(), 
@@ -59,7 +56,6 @@ class UsersTableSeeder extends Seeder
             'email_verified_at' => now(), 
             'password' => $hashedPassword, 
             // Menggunakan hashed password 
-            'role_id' => 'wd-3', 
             'remember_token' => Str::random(10), 
             'created_at' => now(), 
             'updated_at' => now(), 

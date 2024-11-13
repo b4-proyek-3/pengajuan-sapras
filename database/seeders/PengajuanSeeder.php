@@ -34,8 +34,10 @@ class PengajuanSeeder extends Seeder
                 'id_tempat' => $tempatIds[array_rand($tempatIds)], // Mengambil ID tempat secara acak
                 'tanggal_pinjam' => now()->addDays(7),
                 'tanggal_akhir' => now()->addDays(14),
-                'waktu_pengajuan' => now()->format('H:i:s'),
+                'waktu_pinjam' => now()->format('H:i:s'),
                 'nama_kegiatan' => 'Kegiatan ' . $i,
+                'jenis_kegiatan' => 'proker',
+                'link_drive' => 'https://google.com'
             ]);
         }
     }

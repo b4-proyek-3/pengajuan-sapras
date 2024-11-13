@@ -13,8 +13,7 @@ class Review extends Model
     protected $fillable = [
         'id_pengajuan',
         'id_reviewer', 
-        'review', 
-        'status', 
+        'catatan', 
         'tanggal_review',
     ];
 

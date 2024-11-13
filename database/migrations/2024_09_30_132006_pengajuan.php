@@ -15,14 +15,16 @@ return new class extends Migration
             $table->string('id_pengajuan', length: 6)->primary(); // id_pengajuan sebagai primary key
             $table->char('nim', 8); // nim sebagai foreign key dari tabel pengajus
             $table->foreign('nim')->references('nim')->on('pengaju')->onDelete('cascade');
-            $table->dateTimeTz('tanggal_pengajuan', precision: 0); // otomatis mengisi tanggal saat pengajuan dibuat
+            $table->dateTime('tanggal_pengajuan', precision: 0); // otomatis mengisi tanggal saat pengajuan dibuat
             $table->id('id_tempat');
             $table->foreign('id_tempat')->references('id_tempat')->on('tempat')->onDelete('cascade');
             $table->date('tanggal_pinjam');
             $table->date('tanggal_akhir');
-            $table->time('waktu_pengajuan');
+            $table->time('waktu_pinjam');
             $table->string('nama_kegiatan');
+            $table->enum('jenis_kegiatan', ['proker', 'pergerakan']);
             $table->enum('status', ['diterima', 'direvisi', 'ditolak', 'selesai', 'diajukan'])->default('diajukan');
+            $table->string('link_drive');
             $table->boolean('edited')->default(false);
         });
     }

@@ -20,13 +20,16 @@ class Pengajuan extends Model
         'id_tempat',
         'tanggal_pinjam',
         'tanggal_akhir',
-        'waktu_pengajuan',
+        'waktu_pinjam',
         'nama_kegiatan',
+        'jenis_kegiatan',
+        'link_drive',
         'status', // Menambahkan status
         'edited', // Menambahkan edited
     ];
 
     public $timestamps = false;
+    public $incrementing = false;
 
     public function pengaju()
     {
@@ -36,7 +39,7 @@ class Pengajuan extends Model
     public function reviewers()
     {
         return $this->belongsToMany(Reviewer::class, 'reviews', 'id_pengajuan', 'id_reviewer')
-                    ->withPivot('status', 'review', 'tanggal_review');
+                    ->withPivot('catatan', 'tanggal_review');
     }
 
     public function latestReview()

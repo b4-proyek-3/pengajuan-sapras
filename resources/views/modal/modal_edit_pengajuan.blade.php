@@ -11,7 +11,7 @@
             </div>
             <!-- Modal body -->
             <div class="p-4 md:p-5">
-                <form class="space-y-4" action="{{ route('pengaju.update', $pengajuans->id_pengajuan) }}" method="POST">
+                <form class="space-y-4" action="{{ route('pengajuan.update', $pengajuans->id_pengajuan) }}" method="POST">
                     @csrf
                     @method('PUT')
                     <div class="flex flex-col">

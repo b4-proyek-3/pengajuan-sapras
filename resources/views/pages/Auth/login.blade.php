@@ -1,4 +1,4 @@
-@extends('layout.main')
+@extends('layout.login')
 @section('content')
 
 <main class="flex items-center justify-center h-screen bg-gray-100">
