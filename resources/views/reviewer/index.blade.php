@@ -1,68 +1,57 @@
 @extends('layout.main')
 @section('content')
 
-<!-- cards -->
+<!-- Cards -->
 <div class="w-full px-6 py-6 mx-auto">
     <div class="container mx-auto mt-6">
         <!-- Tabs -->
-        <div class="flex justify-end">
-            <button id="diajukanBtn" onclick="showCard('diajukan')" class="tab-button active bg-white text-gray-800 font-bold py-2 px-6 rounded-t-lg shadow-md mr-2">Diajukan</button>
-            <button id="riwayatBtn" onclick="showCard('riwayat')" class="tab-button bg-gray-200 text-gray-400 font-bold py-2 px-6 rounded-t-lg mr-2">Riwayat</button>
+        <div class="flex justify-end -mb-px">
+            <button id="diajukanBtn" onclick="showCard('diajukan')" class="tab-button bg-white text-gray-800 font-bold py-2 px-6 rounded-t-lg shadow-md mr-2">Diajukan</button>
+            <button id="riwayatBtn" onclick="showCard('riwayat')" class="tab-button bg-gray-200 text-gray-400 font-bold py-2 px-6 rounded-t-lg border-b-0 mr-2">Riwayat</button>
         </div>
 
         <!-- Card Diajukan -->
-        <div id="diajukanCard" class="bg-white shadow-md rounded-lg p-6 max-w-sm mx-auto">
-
-            <div class="container mx-auto">
-                <!-- Notifikasi sukses -->
+        <div id="diajukanCard" class="bg-white shadow-md rounded-lg p-6 -mt-1 relative">
+            <!-- Tombol Pengajuan -->
+            <div class="flex flex-col items-start">
+                <button data-bs-toggle="modal" data-bs-target="#pengajuanModal" class="flex items-center bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg transition duration-200 ease-in-out">
+                    <span class="mr-2 text-lg font-bold">+</span>Tambah Pengajuan
+                </button>
                 @if (session('success'))
                     <div x-data="{ show: true }" 
                         x-show="show" 
                         x-init="setTimeout(() => show = false, 5000)" 
-                        class="fixed top-10 left-1/2 transform -translate-x-1/2 bg-green-500 bg-opacity-100 text-black text-center px-4 py-2 rounded shadow-lg z-50"
-                        style="width: 350px; text-align: center;"
+                        class="text-green-400 px-4 py-4 z-10"
                         role="alert">
                         <span class="block sm:inline">{{ session('success') }}</span>
-                        <button @click="show = false" class="absolute top-1 right-1 text-white">
-                            <svg class="fill-current h-6 w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" role="button">
-                                <path d="M14.348 5.652a1 1 0 10-1.414-1.414L10 7.172 7.066 4.238a1 1 0 10-1.414 1.414L8.586 8.586l-2.936 2.936a1 1 0 001.414 1.414L10 9.828l2.936 2.936a1 1 0 001.414-1.414L11.414 8.586l2.936-2.936z"/>
-                            </svg>
-                        </button>
                     </div>
                 @endif
 
-                <!-- Notifikasi gagal -->
                 @if (session('failed'))
                     <div x-data="{ show: true }" 
                         x-show="show" 
                         x-init="setTimeout(() => show = false, 5000)" 
-                        class="fixed top-20 left-1/2 transform -translate-x-1/2 bg-red-600 bg-opacity-100 text-black px-6 py-4 rounded shadow-lg z-50"
-                        style="width: 300px; text-align: center;"
+                        class="text-red-400 px-4 py-4 z-10"
                         role="alert">
                         <span class="block sm:inline">{{ session('failed') }}</span>
-                        <button @click="show = false" class="absolute top-1 right-1 text-white">
-                            <svg class="fill-current h-6 w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" role="button">
-                                <path d="M14.348 5.652a1 1 0 10-1.414-1.414L10 7.172 7.066 4.238a1 1 0 10-1.414 1.414L8.586 8.586l-2.936 2.936a1 1 0 001.414 1.414L10 9.828l2.936 2.936a1 1 0 001.414-1.414L11.414 8.586l2.936-2.936z"/>
-                            </svg>
-                        </button>
                     </div>
                 @endif
             </div>
 
             <!-- Sorting dan Pencarian -->
-            <div class="relative">
-                <div class="h-1 bg-orange-500 py-6"></div> <!-- Top Orange Line -->
+            <div class="bg-orange-500 p-4 border-b border-orange-500 mt-4"></div>
                 <div class="bg-gray-100 p-4 border-b border-gray-300">
                     <form method="GET" action="{{ route('pengajuan.index') }}" class="flex justify-between items-center">
                         <!-- Sort Dropdown -->
                         <div class="w-1/4">
                             <div class="relative">
-                                <select name="sort_status" class="appearance-none border border-gray-300 rounded-md p-2 w-full pr-10" onchange="this.form.submit()">
-                                    <option value="">Sort Status</option>
-                                    <option value="diajukan" {{ request('sort_status') == 'diajukan' ? 'selected' : '' }}>Diajukan</option>
-                                    <option value="direview" {{ request('sort_status') == 'direview' ? 'selected' : '' }}>Direview</option>
-                                    <option value="direvisi" {{ request('sort_status') == 'direvisi' ? 'selected' : '' }}>Direvisi</option>
+                                <select name="status_filter" class="appearance-none border border-gray-300 rounded-md p-2 w-full pr-10" onchange="this.form.submit()">
+                                    <option value=""> Pilih Status </option>
+                                    <option value="diajukan">Diajukan</option>
+                                    <option value="direview">Direvisi</option>
+                                    <option value="direvisi">Ditolak</option>
                                 </select>
+
                                 <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
                                         <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 011.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -72,17 +61,13 @@
                         </div>
 
                         <!-- Search Input -->
-                        <div class="flex items-center mt-2 lg:flex-1">
-                            <div class="relative flex items-stretch w-full transition-all rounded-lg ease-soft">
-                                <span class="text-sm ease-soft leading-5.6 absolute z-50 -ml-px flex h-full items-center whitespace-nowrap rounded-lg rounded-tr-none rounded-br-none border border-r-0 border-transparent bg-transparent py-2 px-2.5 text-center font-normal text-gray-500 transition-all">
-                                    <i class="fas fa-search"></i>
-                                </span>
-                                <input type="text" name="search" value="{{ request('search') }}" class="pl-8.75 text-sm focus:shadow-soft-primary-outline ease-soft w-full leading-5.6 relative -ml-px block min-w-0 flex-auto rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding py-2 pr-3 text-gray-700 transition-all placeholder:text-gray-500 focus:border-fuchsia-300 focus:outline-none focus:transition-shadow" placeholder="Cari...">
-                            </div>
-
-                            <!-- Tombol reset hanya muncul jika ada pencarian atau sorting -->
+                        <div class="relative flex items-center space-x-2">
+                            <span class="text-sm flex items-center px-2 text-gray-500">
+                                <i class="fas fa-search"></i>
+                            </span>
+                            <input type="text" name="search" value="{{ request('search') }}" class="pl-8.75 text-sm border border-gray-300 rounded-md p-2 w-full" placeholder=" Cari">
                             @if(request('search') || request('sort_status'))
-                            <a href="{{ route('pengajuan.index') }}" class="bg-gray-600 text-white py-2 px-4 rounded-md ml-4">Reset</a>
+                                <a href="{{ route('pengajuan.index') }}" class="bg-gray-600 text-white py-2 px-4 rounded-md ml-4">Reset</a>
                             @endif
                         </div>
                     </form>
@@ -90,257 +75,123 @@
 
                 <!-- Data Pengajuan -->
                 <div class="overflow-x-auto">
-                    <table class="min-w-full bg-white border border-gray-200 mmt-2 max-w-full">
+                    <table class="min-w-full w-full bg-white border border-gray-200 mt-2">
                         <thead class="bg-gray-200 text-gray-600">
                             <tr>
-                                <th class="py-3 px-4 border w-1/12">No</th>
-                                <th class="py-3 px-4 border w-1/12">Tanggal Pengajuan</th>
-                                <th class="py-3 px-4 border w-1/12">Nama Kegiatan</th>
-                                <th class="py-3 px-4 border w-1/12">Ormawa</th>
-                                <th class="py-3 px-4 border w-1/12">Status</th>
-                                <th class="py-3 px-4 border w-1/12">Keterangan</th>
-                                <th class="py-3 px-4 border w-1/12">Aksi</th>
+                                <th class="py-3 px-4 border">No</th>
+                                <th class="py-3 px-4 border">Tanggal Pengajuan</th>
+                                <th class="py-3 px-4 border">Nama Kegiatan</th>
+                                <th class="py-3 px-4 border">Ormawa</th>
+                                <th class="py-3 px-4 border">Status</th>
+                                <th class="py-3 px-4 border">Keterangan</th>
+                                <th class="py-3 px-4 border">Aksi</th>
                             </tr>
                         </thead>
 
                         <tbody>
-                        @foreach ($pengajuanDiajukan as $pengajuan)
-                            <tr>
-                                <td class="py-3 px-4 border">{{ $loop->iteration }}</td>
-                                <td class="py-3 px-4 border">{{ $pengajuan->tanggal_pengajuan }}</td>
-                                <td class="py-3 px-4 border">{{ $pengajuan->nama_kegiatan }}</td>
-                                <td class="py-3 px-4 border">{{ $pengajuan->pengaju->ormawa->nama_ormawa }}</td>
-                                <td class="py-3 px-4 border">{{ $pengajuan->status }}</td>
-                                <td class="py-3 px-4 border">{{ $pengajuan->keterangan }}</td>
-                                <td class="py-3 px-4 border">
-                                <button onclick="window.location='{{ route('reviewer.detail_reviewer', ['id_pengajuan' => $pengajuan->id_pengajuan, 'id_reviewer' => auth()->user()->reviewer->id_reviewer]) }}'" class="bg-blue-600 text-white px-4 py-2 rounded-lg">Detail</button>
-                                </td>
-                            </tr>
-                        @endforeach
+                            @foreach ($pengajuanDiajukan as $pengajuan)
+                                <tr>
+                                    <td class="py-3 px-4 border">{{ $loop->iteration }}</td>
+                                    <td class="py-3 px-4 border">{{ $pengajuan->tanggal_pengajuan }}</td>
+                                    <td class="py-3 px-4 border">{{ $pengajuan->nama_kegiatan }}</td>
+                                    <td class="py-3 px-4 border">{{ $pengajuan->pengaju->ormawa->nama_ormawa }}</td>
+                                    <td class="py-3 px-4 border">{{ $pengajuan->status }}</td>
+                                    <td class="py-3 px-4 border">{{ $pengajuan->keterangan }}</td>
+                                    <td class="py-3 px-4 border">
+                                    <button onclick="window.location='{{ route('reviewer.detail_reviewer', ['id_pengajuan' => $pengajuan->id_pengajuan, 'id_reviewer' => auth()->user()->reviewer->id_reviewer]) }}'" class="bg-blue-600 text-white px-4 py-2 rounded-lg">Detail</button>
+                                    </td>
+                                </tr>
+                            @endforeach
 
-                        @if($pengajuanDiajukan->isEmpty())
-                            <tr>
-                                <td colspan="7" class="text-center">Tidak ada pengajuan yang diajukan</td>
-                            </tr>
-                        @endif
+                            @if($pengajuanDiajukan->isEmpty())
+                                <tr>
+                                    <td colspan="7" class="text-center">Tidak ada pengajuan yang diajukan</td>
+                                </tr>
+                            @endif
                         </tbody>
                     </table>
                 </div>
+            </div>
 
-                <!-- Modal -->
-                <div class="modal fade" id="pengajuanModal" tabindex="-1" aria-labelledby="pengajuanModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="pengajuanModalLabel">Form Pengajuan Sarana dan Prasarana</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <!-- Card Riwayat -->
+            <div id="riwayatCard" class="bg-white shadow-md rounded-lg p-6 -mt-1 relative hidden">
+                
+                <!-- Sorting dan Pencarian -->
+                <div class="relative">
+                    <div class="bg-orange-500 p-4 border-b border-orange-500 mt-4"></div>
+                    <div class="bg-gray-100 p-4 border-b border-gray-300">
+                        <form method="GET" action="{{ route('pengajuan.index') }}" class="flex justify-between items-center">
+                            <!-- Sort Dropdown -->
+                            <div class="w-1/4">
+                                <div class="relative">
+                                    <select name="status_filter" class="appearance-none border border-gray-300 rounded-md p-2 w-full pr-10" onchange="this.form.submit()">
+                                        <option value=""> Pilih Status </option>
+                                        <option value="diterima">Diterima</option>
+                                        <option value="ditolak">Ditolak</option>
+                                    </select>
+
+                                    <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 011.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="modal-body">
-                                <form method="POST" enctype="multipart/form-data" action="{{ route('pengajuan.store') }}">
-                                    @csrf <!-- CSRF token for security -->
-                                    
-                                    <!-- Form fields -->
-                                    <div class="mb-3">
-                                    <label for="ormawa">Pilih Ormawa</label>
-                                        <select name="ormawa" id="ormawa" class="form-control" required>
-                                            <option value="">-- Pilih Ormawa --</option>
-                                            @foreach ($ormawaList as $ormawa)
-                                                <option value="{{ $ormawa->id_ormawa }}">{{ $ormawa->nama_ormawa }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
 
-                                    <div class="mb-3">
-                                        <label for="nim" class="form-label">NIM Pengaju</label>
-                                        <input type="text" name="nim" id="nim" class="form-control" required>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="tanggal_peminjaman" class="form-label">Tanggal Peminjaman</label>
-                                        <input type="date" name="tanggal_pinjam" id="tanggal_pinjam" class="form-control" required>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="tanggal_berakhir" class="form-label">Tanggal Berakhir</label>
-                                        <input type="date" name="tanggal_akhir" id="tanggal_akhir" class="form-control" required>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="waktu" class="form-label">Waktu Kegiatan</label>
-                                        <input type="time" name="waktu_pengajuan" id="waktu_pengajuan" class="form-control" required>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="nama_kegiatan" class="form-label">Nama Kegiatan</label>
-                                        <input type="text" name="nama_kegiatan" id="nama_kegiatan" class="form-control" required>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="id_tempat">Pilih Tempat</label>
-                                        <select name="id_tempat" id="id_tempat" class="form-control" required>
-                                            <option value="">-- Pilih Tempat --</option>
-                                            @foreach($tempatList as $tempat)
-                                                <option value="{{ $tempat->id_tempat }}">{{ $tempat->nama_tempat }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="activity_type" class="form-label">Jenis Kegiatan</label>
-                                        <select name="activity_type" id="activity_type" class="form-control" required onchange="showFileInputs()">
-                                            <option value="" disabled selected>Pilih Jenis Kegiatan</option>
-                                            <option value="program_kerja">Program Kerja</option>
-                                            <option value="pergerakan">Pergerakan</option>
-                                        </select>
-                                    </div>
-
-                                    <!-- File upload field khusus untuk Program Kerja (Proposal) -->
-                                    <div id="program_kerja_files" style="display: none;">
-                                        <div class="mb-3">
-                                            <label for="dokumen1" class="form-label">Proposal</label>
-                                            <input type="file" name="dokumen1" id="dokumen1" class="form-control" accept=".pdf">
-                                        </div>
-                                    </div>
-
-                                    <!-- File upload field khusus untuk Pergerakan (Term of Reference) -->
-                                    <div id="pergerakan_files" style="display: none;">
-                                        <div class="mb-3">
-                                            <label for="dokumen2" class="form-label">Term of Reference</label>
-                                            <input type="file" name="dokumen2" id="dokumen2" class="form-control" accept=".pdf">
-                                        </div>
-                                    </div>
-
-                                    <!-- File upload fields yang sama untuk kedua jenis kegiatan -->
-                                    <div id="common_files" style="display: none;">
-                                        <div class="mb-3">
-                                            <label for="dokumen3" class="form-label">Surat Peminjaman Sarana Prasarana</label>
-                                            <input type="file" name="dokumen3" id="dokumen3" class="form-control" accept=".pdf">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="dokumen4" class="form-label">Surat Izin Berkegiatan</label>
-                                            <input type="file" name="dokumen4" id="dokumen4" class="form-control" accept=".pdf">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="dokumen5" class="form-label">Surat Pernyataan Ketua Ormawa</label>
-                                            <input type="file" name="dokumen5" id="dokumen5" class="form-control" accept=".pdf">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="dokumen6" class="form-label">Surat Pendampingan Pembina</label>
-                                            <input type="file" name="dokumen6" id="dokumen6" class="form-control" accept=".pdf">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="dokumen7" class="form-label">Lampiran Daftar Peserta</label>
-                                            <input type="file" name="dokumen7" id="dokumen7" class="form-control" accept=".pdf">
-                                        </div>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="link" class="form-label">Link Surat Izin Orang Tua</label>
-                                        <input type="url" name="link_gdrive" id="link_gdrive" class="form-control" placeholder="https://drive.google.com/drive/folders/surat_izin_orang_tua">
-                                    </div>
-
-                                    <!-- Submit and Cancel buttons -->
-                                    <div class="flex justify-center mt-6">
-                                        <button type="submit" class="bg-blue-600 text-white py-2 px-4 rounded-md mr-4">Simpan</button>
-                                        <button type="button" class="bg-orange-600 text-white py-2 px-4 rounded-md mr-4" onclick="window.location.href='{{ route('pengajuan.index') }}'">Batal</button>
-                                    </div>
-                                    <!-- Setelah form pengajuan -->
-                                    @if ($errors->any())
-                                        <div class="alert alert-danger">
-                                            <ul>
-                                                @foreach ($errors->all() as $error)
-                                                    <li>{{ $error }}</li>
-                                                @endforeach
-                                            </ul>
-                                        </div>
-                                    @endif
-                                </form>
+                            <!-- Search Input -->
+                            <div class="relative flex items-center space-x-2">
+                                <span class="text-sm flex items-center px-2 text-gray-500">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                                <input type="text" name="search" value="{{ request('search') }}" class="pl-8.75 text-sm border border-gray-300 rounded-md p-2 w-full" placeholder=" Cari">
+                                @if(request('search') || request('sort_status'))
+                                    <a href="{{ route('pengajuan.index') }}" class="bg-gray-600 text-white py-2 px-4 rounded-md ml-4">Reset</a>
+                                @endif
                             </div>
-                        </div>
+                        </form>
+                    </div>
+
+                    <!-- Table Riwayat Pengajuan -->
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full bg-white border border-gray-200 mt-2">
+                            <thead class="bg-gray-200 text-gray-600">
+                                <tr>
+                                    <th class="py-3 px-4 border">No</th>
+                                    <th class="py-3 px-4 border">Tanggal Pengajuan</th>
+                                    <th class="py-3 px-4 border">Nama Kegiatan</th>
+                                    <th class="py-3 px-4 border">Ormawa</th>
+                                    <th class="py-3 px-4 border">Status</th>
+                                    <th class="py-3 px-4 border">Keterangan</th>
+                                    <th class="py-3 px-4 border">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($pengajuanRiwayat as $pengajuan)
+                                    <tr>
+                                        <td class="py-3 px-4 border">{{ $loop->iteration }}</td>
+                                        <td class="py-3 px-4 border">{{ $pengajuan->tanggal_pengajuan }}</td>
+                                        <td class="py-3 px-4 border">{{ $pengajuan->nama_kegiatan }}</td>
+                                        <td class="py-3 px-4 border">{{ $pengajuan->pengaju->ormawa->nama_ormawa }}</td>
+                                        <td class="py-3 px-4 border">{{ $pengajuan->status }}</td>
+                                        <td class="py-3 px-4 border">{{ $pengajuan->keterangan }}</td>
+                                        <td class="py-3 px-4 border">
+                                        <button onclick="window.location='{{ route('reviewer.detail_reviewer', ['id_pengajuan' => $pengajuan->id_pengajuan, 'id_reviewer' => auth()->user()->reviewer->id_reviewer]) }}'" class="bg-blue-600 text-white px-4 py-2 rounded-lg">Detail</button>
+                                        </td>
+                                    </tr>
+                                @endforeach
+
+                                @if($pengajuanRiwayat->isEmpty())
+                                    <tr>
+                                        <td colspan="7" class="text-center">Tidak ada pengajuan selain yang diajukan</td>
+                                    </tr>
+                                @endif
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Card Riwayat -->
-        <div id="riwayatCard" class="bg-white shadow-md rounded-lg p-6 max-w-sm mx-auto hidden"> 
-            <div class="relative">
-                <div class="h-1 bg-orange-500 py-6"></div>
-                <div class="bg-gray-100 p-2 border-b border-gray-300">
-                    <div class="flex justify-between mb-4">
-
-                        <!-- Sort Dropdown -->
-                        <div class="w-1/4 pr-4">
-                          <div class="relative">
-                              <select class="appearance-none border border-gray-300 rounded-md p-2 w-full pr-10">
-                                  <option value="">Sort Status</option>
-                                  <option value="selesai">Selesai</option>
-                                  <option value="ditolak">Ditolak</option>
-                              </select>
-                              <!-- Custom Dropdown Icon -->
-                              <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                                      <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 011.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                  </svg>
-                              </div>
-                          </div>
-                      </div>
-
-                        <!-- Search Box -->
-                        <div class="flex items-center mt-2 grow sm:mt-0 sm:mr-6 md:mr-0 lg:flex lg:basis-auto">
-                          <div class="flex items-center md:ml-auto md:pr-4">
-                            <div class="relative flex flex-wrap items-stretch w-full transition-all rounded-lg ease-soft">
-                              <span class="text-sm ease-soft leading-5.6 absolute z-50 -ml-px flex h-full items-center whitespace-nowrap rounded-lg rounded-tr-none rounded-br-none border border-r-0 border-transparent bg-transparent py-2 px-2.5 text-center font-normal text-slate-500 transition-all">
-                                <i class="fas fa-search"></i>
-                              </span>
-                              <input type="text" class="pl-8.75 text-sm focus:shadow-soft-primary-outline ease-soft w-1/100 leading-5.6 relative -ml-px block min-w-0 flex-auto rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding py-2 pr-3 text-gray-700 transition-all placeholder:text-gray-500 focus:border-fuchsia-300 focus:outline-none focus:transition-shadow" placeholder="Cari..." />
-                            </div>
-                          </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Table Riwayat -->
-            <div class="overflow-x-auto">
-                <table class="min-w-full bg-white border border-gray-200 mmt-2 max-w-full">
-                    <thead class="bg-gray-200 text-gray-600">
-                        <tr>
-                            <th class="py-3 px-4 border w-1/12">No</th>
-                            <th class="py-3 px-4 border w-1/12">Tanggal Pengajuan</th>
-                            <th class="py-3 px-4 border w-1/12">Nama Kegiatan</th>
-                            <th class="py-3 px-4 border w-1/12">Ormawa</th>
-                            <th class="py-3 px-4 border w-1/12">Status</th>
-                            <th class="py-3 px-4 border w-1/12">Keterangan</th>
-                            <th class="py-3 px-4 border w-1/12">Aksi</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                    @foreach ($pengajuanRiwayat as $pengajuan)
-                        <tr>
-                            <td class="py-3 px-4 border">{{ $loop->iteration }}</td>
-                            <td class="py-3 px-4 border">{{ $pengajuan->tanggal_pengajuan }}</td>
-                            <td class="py-3 px-4 border">{{ $pengajuan->nama_kegiatan }}</td>
-                            <td class="py-3 px-4 border">{{ $pengajuan->pengaju->ormawa->nama_ormawa }}</td>
-                            <td class="py-3 px-4 border">{{ $pengajuan->status }}</td>
-                            <td class="py-3 px-4 border">{{ $pengajuan->keterangan }}</td>
-                            <td class="py-3 px-4 border">
-                            <button onclick="window.location='{{ route('reviewer.detail_reviewer', ['id_pengajuan' => $pengajuan->id_pengajuan, 'id_reviewer' => auth()->user()->reviewer->id_reviewer]) }}'" class="bg-blue-600 text-white px-4 py-2 rounded-lg">Detail</button>
-                            </td>
-                        </tr>
-                    @endforeach
-
-                    @if($pengajuanRiwayat->isEmpty())
-                        <tr>
-                            <td colspan="7" class="text-center">Tidak ada pengajuan selain yang diajukan</td>
-                        </tr>
-                    @endif
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    
         <footer class="pt-4">
             <div class="w-full px-6 mx-auto">
                 <div class="flex flex-wrap items-center -mx-3 lg:justify-between">
@@ -446,78 +297,4 @@
     });
 </script>
 
-<!-- Bootstrap CSS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-<style>
-    .container {
-        max-width: 90%;
-        margin: auto;
-    }
-
-    table {
-        border-spacing: 0;
-        border-collapse: collapse;
-    }
-
-    th, td {
-        text-align: center;
-    }
-
-    input:focus, select:focus {
-        outline: none;
-        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
-    }
-
-    .bg-blue-600 {
-        background-color: #3B82F6;
-    }
-
-    .bg-orange-500 {
-        background-color: #F97316;
-    }
-
-    .bg-gray-200 {
-        background-color: #E5E7EB;
-    }
-
-    .bg-yellow-400 {
-        background-color: #FBBF24;
-    }
-
-    .bg-green-400 {
-        background-color: #34D399;
-    }
-
-    .bg-red-400 {
-        background-color: #F87171;
-    }
-
-    .text-gray-500, .text-gray-600 {
-        color: #6B7280;
-    }
-
-    .rounded-md {
-        border-radius: 0.375rem;
-    }
-
-    .rounded-full {
-        border-radius: 9999px;
-    }
-
-    .h-8 {
-        height: 2rem;
-    }
-
-    .overflow-x-auto {
-        overflow-x: auto;
-    }
-
-    button {
-        z-index: 10;
-        display: inline-block;
-    }
-</style>
 @endsection

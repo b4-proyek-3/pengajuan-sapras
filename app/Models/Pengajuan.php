@@ -12,12 +12,7 @@ class Pengajuan extends Model
     protected $table = 'pengajuan'; 
     protected $primaryKey = 'id_pengajuan';
     public $keyType = 'string';
-    protected $table = 'pengajuan';
-    protected $primaryKey = 'id_pengajuan';
-
     protected $fillable = [
-        'id_pengajuan',
-        'id_ormawa',
         'nim',
         'tanggal_pengajuan',
         'tanggal_pinjam',
@@ -31,9 +26,7 @@ class Pengajuan extends Model
     ];
     
     public $incrementing = false;
-
     public $timestamps = false;
-    public $incrementing = false;
 
     public function pengaju()
     {

@@ -115,7 +115,7 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <form action="{{ route('pengajuan.form') }}" method="POST" enctype="multipart/form-data">
+                                <form action="{{ route('pengajuan.store') }}" method="POST" enctype="multipart/form-data">
                                     @csrf <!-- CSRF token for security -->
                                     
                                     <!-- Form fields -->
@@ -154,7 +154,7 @@
                                         <select name="id_tempat" id="id_tempat" class="form-control" required>
                                             <option value=""> Pilih Tempat </option>
                                             @foreach($tempatList as $tempat)
-                                                <option value="{{ $tempat->id_tempat }}">{{ $tempat->nama_tempat }}</option>
+                                                <option value="{{ $tempat->id_tempat }}">{{ $tempat->nama_gedung }}</option>
                                             @endforeach
                                         </select>
                                     </div>
