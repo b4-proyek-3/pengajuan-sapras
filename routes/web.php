@@ -2,17 +2,28 @@
 
 use App\Http\Controllers\PengajuanController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PengajuanController;
+use Illuminate\Support\Facades\Auth;
 
-Route::get('/', function () {
-    return view('test');
+// Route untuk login
+Route::controller(AuthController::class)->group(function () {
+    Route::get('/login', 'index')->name('login');
+    Route::post('/login', 'login')->name('login.submit');
+
+    // Forgot password process
+    Route::post('/forgot-password', 'forgotPassword')->name('password.forgot');
+    Route::post('/verify-code', 'verifyCode')->name('password.verifyCode');
+    Route::get('/reset-password', 'showResetPasswordForm')->name('password.reset');
+    Route::post('/reset-password', 'resetPassword')->name('password.update');
+
+    // Logout route should be outside the '/home' route
+    Route::post('/logout', 'logout')->name('logout');
 });
 
 // Route untuk menampilkan page pengajuan
 Route::get('/pengajuan', [PengajuanController::class, 'index'])->name('pengajuan.index');
 
 // Route untuk menyimpan data pengajuan baru
-Route::post('/pengajuan/form', [PengajuanController::class, 'form'])->name('pengajuan.form');
+Route::post('/pengajuan', [PengajuanController::class, 'store'])->name('pengajuan.form');
 
-// Route untuk menampilkan daftar pengajuan
-Route::get('/pengajuan/detail/{id_pengajuan}', [PengajuanController::class, 'index'])->name('pengajuan.index');
+// Route untuk menampilkan detail pengajuan
+Route::get('pengajuan/detail/{id_pengajuan}', [PengajuanController::class, 'show'])->name('pengajuan.show');

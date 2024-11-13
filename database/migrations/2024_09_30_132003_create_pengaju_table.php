@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pengaju', function (Blueprint $table) {
-            $table->char('nim', length: 8)->primary();
+            $table->char('nim', length: 9)->primary();
             $table->string('nama');
             $table->string('email')->unique();
             $table->string('password');

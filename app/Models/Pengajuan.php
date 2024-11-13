@@ -8,31 +8,25 @@ use Illuminate\Database\Eloquent\Model;
 class Pengajuan extends Model
 {
     use HasFactory;
-
+    
     protected $table = 'pengajuan'; 
     protected $primaryKey = 'id_pengajuan';
     public $keyType = 'string';
     
     protected $fillable = [
         'id_pengajuan',
+        'id_ormawa',
         'nim',
         'tanggal_pengajuan',
-        'ormawa',
-        'nama_pengaju',
-        'tanggal_peminjaman',
-        'tanggal_berakhir',
-        'waktu',
+        'tanggal_pinjam',
+        'tanggal_akhir',
+        'waktu_pengajuan',
+        'id_tempat',
         'nama_kegiatan',
-        'dokumen1',
-        'dokumen2',
-        'dokumen3',
-        'dokumen4',
-        'dokumen5',
-        'dokumen6',
-        'dokumen7',
         'link_gdrive',
+        'status',
     ];
-
+    
     public $incrementing = false;
 
     public $timestamps = false;
@@ -55,5 +49,10 @@ class Pengajuan extends Model
     public function tempat()
     {
         return $this->belongsTo(Tempat::class, 'id_tempat', 'id_tempat');
+    }
+
+    public function ormawa()
+    {
+        return $this->belongsTo(Ormawa::class, 'id_ormawa', 'id_ormawa');
     }
 }

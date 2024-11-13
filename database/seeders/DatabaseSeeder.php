@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             TempatSeeder::class,
             PengajuSeeder::class,
             RoleSeeder::class,
+            PengajuanSeeder::class,
         ]);
     }
 }
