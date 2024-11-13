@@ -7,16 +7,17 @@
     <div class="w-full max-w-lg px-3 mb-6 lg:mb-0 lg:flex-none">
       <div class="relative flex flex-col min-w-0 break-words bg-white shadow-soft-xl rounded-2xl bg-clip-border">
           <div class="flex-auto p-4">
-              <div class="flex flex-col items-center mb-7 mt-6"> <!-- Menambahkan mt-6 untuk jarak dari atas -->
+              <div class="flex flex-col items-center mb-7 mt-6">
                 <div class="bg-green-500 w-24 h-24 rounded-full p-6 mb-3">
                     <i class="fa-sharp fa-solid fa-badge-check fa-7x text-lime-500"></i>
                 </div>
               </div>
-              <div class="flex flex-col mx-4"> <!-- Mengubah flex-wrap menjadi flex-col dan menambahkan items-center -->
+              <div class="flex flex-col mx-4">
                   <h5 class="font-bold">Informasi Dokumen</h5>
               </div>
+              
               <!-- Kotak Abu-abu -->
-              <div class="bg-gray-200 rounded-xl p-5 shadow-soft-xl mx-4 mb-4"> <!-- Menambahkan mx-4 untuk jarak kanan-kiri dan mengubah p-4 menjadi p-5 -->
+              <div class="bg-gray-200 rounded-xl p-5 shadow-soft-xl mx-4 mb-4">
                   <div class="p-4 mx-4 pt-6">
                       <p class="text-sm text-gray-700">Status Dokumen</p>
                       <p class="text-sm text-gray-700">Nomor Surat</p>
