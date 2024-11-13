@@ -180,40 +180,4 @@ class PengajuanController extends Controller
             return redirect()->route('pengaju.show', $id_pengajuan)->with('failed', 'Informasi pengajuan tidak berhasil diperbarui.');
         }
     }
-    
-    public function updateDokumen(Request $request, string $id_pengajuan)
-    {
-        $request->validate([
-            'dokumen.*' => 'required|file|mimes:pdf,doc,docx|max:2048', // Ubah sesuai kebutuhan
-        ]);
-
-        $pengajuan = Pengajuan::where('id_pengajuan', $id_pengajuan)->firstOrFail();
-        
-        // Simpan dokumen baru
-        foreach ($request->file('dokumen') as $file) {
-            $path = $file->store('dokumen');
-
-            $pengajuan->dokumen()->create([
-                'nama_dokumen' => $file->getClientOriginalName(),
-                'path' => $path,
-            ]);
-        }
-
-        return redirect()->route('pengaju.show', $pengajuan->id_pengajuan)->with('success', 'Dokumen berhasil diunggah.');
-    }
-
-    // Menangani penghapusan dokumen
-    public function destroyDokumen(string $id_pengajuan, int $dokumenId)
-    {
-        $pengajuan = Pengajuan::where('id_pengajuan', $id_pengajuan)->firstOrFail();
-        $dokumen = $pengajuan->dokumen()->findOrFail($dokumenId);
-        
-        // Hapus file dari penyimpanan
-        Storage::delete($dokumen->path);
-        
-        // Hapus dari database
-        $dokumen->delete();
-
-        return redirect()->route('pengaju.show', $pengajuan->id_pengajuan)->with('success', 'Dokumen berhasil dihapus.');
-    }
 }
