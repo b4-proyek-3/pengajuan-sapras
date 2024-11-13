@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Pengajuan;
 use App\Models\Tempat;
 use App\Models\Ormawa;
+use App\Models\Dokumen;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -13,29 +14,34 @@ class PengajuanController extends Controller
     public function index(Request $request)
     {
         $sortStatus = $request->input('sort_status');
-        $search = $request->input('search');
-
-        $query = Pengajuan::with(['pengaju.ormawa']);
-
-        if ($sortStatus) {
-            $query->where('status', $sortStatus);
+        $search = $request->input('search');  
+        $statusFilter = $request->input('status_filter');  
+        
+        $query = Pengajuan::query();
+        
+        if ($statusFilter) {
+            $query->where('status', $statusFilter);
         }
-
+        
+        if ($sortStatus && in_array(strtolower($sortStatus), ['asc', 'desc'])) {
+            $query->orderBy('status', strtolower($sortStatus)); 
+        }
+        
         if ($search) {
-            $query->where(function ($query) use ($search) {
-                $query->where('nama_kegiatan', 'like', '%' . $search . '%')
-                      ->orWhereHas('pengaju.ormawa', function ($query) use ($search) {
-                          $query->where('nama_ormawa', 'like', '%' . $search . '%'); 
-                      });
+            $query->where(function($q) use ($search) {
+                $q->where('nama_kegiatan', 'like', '%' . $search . '%')
+                  ->orWhereHas('ormawa', function($q) use ($search) {
+                      $q->where('nama_ormawa', 'like', '%' . $search . '%');
+                  });
             });
         }
 
-        $pengajuanList = $query->get();
+        $pengajuanList = $query->with('ormawa')->get();
         $ormawaList = Ormawa::all(); 
         $tempatList = Tempat::all(); 
-
+    
         return view('pengajuan.index', compact('pengajuanList', 'ormawaList', 'tempatList'));
-    }
+    } 
 
     public function show(string $id_pengajuan)
     {
@@ -45,9 +51,13 @@ class PengajuanController extends Controller
         $pengajuans->waktu_pinjam = Carbon::createFromFormat('H:i:s', $pengajuans->waktu_pinjam)->format('H:i');
         return view('pengajuan.detail', compact('pengajuans', 'tempatList'));
     }
-    
+
     public function create()
     {
+        $ormawaList = Ormawa::all(); 
+        $tempatList = Tempat::all(); 
+
+        return view('pengajuan.index', compact('ormawaList', 'tempatList'));
         $ormawaList = Ormawa::all(); 
         $tempatList = Tempat::all(); 
 
@@ -56,46 +66,89 @@ class PengajuanController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'nim' => 'nullable|exists:pengaju,nim',
-            'ormawa' => 'required|exists:ormawa,id_ormawa',
-            'tanggal_pinjam' => 'required|date',
-            'tanggal_akhir' => 'required|date|after_or_equal:tanggal_pinjam',
-            'waktu_pengajuan' => 'required',
-            'id_tempat' => 'required|exists:tempat,id_tempat',
-            'nama_kegiatan' => 'required|string|max:100',
-            'link_gdrive' => 'nullable|url',
-            'status' => 'diajukan',
-            'dokumen1' => 'nullable|file|mimes:pdf|max:2048',
-            'dokumen2' => 'nullable|file|mimes:pdf|max:2048',
-            'dokumen3' => 'nullable|file|mimes:pdf|max:2048',
-            'dokumen4' => 'nullable|file|mimes:pdf|max:2048',
-            'dokumen5' => 'nullable|file|mimes:pdf|max:2048',
-            'dokumen6' => 'nullable|file|mimes:pdf|max:2048',
-            'dokumen7' => 'nullable|file|mimes:pdf|max:2048',
-        ]);
+        try {
+            // Validasi input
+            $request->validate([
+                'tanggal_pinjam' => 'required|date',
+                'tanggal_akhir' => 'required|date',
+                'waktu_pengajuan' => 'required|date_format:H:i',
+                'id_tempat' => 'required|exists:tempat,id_tempat',
+                'nama_kegiatan' => 'required|string',
+                'activity_type' => 'required|in:program_kerja,pergerakan',
+                'link_gdrive' => 'nullable|url',
+                'dokumen1' => 'nullable|file|mimes:pdf',
+                'dokumen2' => 'nullable|file|mimes:pdf',
+                'dokumen3' => 'nullable|file|mimes:pdf',
+                'dokumen4' => 'nullable|file|mimes:pdf',
+                'dokumen5' => 'nullable|file|mimes:pdf',
+                'dokumen6' => 'nullable|file|mimes:pdf',
+                'dokumen7' => 'nullable|file|mimes:pdf',
+            ]);
 
-        // Membuat ID pengajuan unik
-        $id_pengajuan = Str::random(6);
+            $id_pengajuan = strtoupper(Str::random(6));
 
-        // Menyimpan data pengajuan
-        $pengajuan = Pengajuan::create([
-            'id_pengajuan' => $id_pengajuan,
-            'id_ormawa' => $request->ormawa,
-            'nim' => $request->nim,
-            'tanggal_pengajuan' => now(),
-            'id_tempat' => $request->id_tempat,
-            'tanggal_pinjam' => $request->tanggal_pinjam,
-            'tanggal_akhir' => $request->tanggal_akhir,
-            'waktu_pengajuan' => $request->waktu_pengajuan,
-            'nama_kegiatan' => $request->nama_kegiatan,
-            'link_gdrive' => $request->link_gdrive,
-         ]);
+            $id_ormawa = auth()->user()->id_ormawa;
 
-        // Simpan setiap dokumen yang diunggah
-        $this->simpanDokumen($request, $id_pengajuan);
+            // Menyimpan data pengajuan
+            $pengajuan = Pengajuan::create([
+                'id_pengajuan' => $id_pengajuan,
+                'id_ormawa' => $id_ormawa,
+                'nim' => auth()->user()->nim,
+                'tanggal_pengajuan' => now(),
+                'tanggal_pinjam' => $request->tanggal_pinjam,
+                'tanggal_akhir' => $request->tanggal_akhir,
+                'waktu_pengajuan' => $request->waktu_pengajuan,
+                'id_tempat' => $request->id_tempat,
+                'nama_kegiatan' => $request->nama_kegiatan,
+                'jenis_kegiatan' => $request->activity_type == 'program_kerja' ? 'proker' : 'pergerakan',
+                'link_gdrive' => $request->link_gdrive,
+            ]);
 
-        return redirect()->route('pengajuan.index')->with('success', 'Pengajuan berhasil ditambahkan!');
+            // Menyimpan dokumen sesuai jenis kegiatan
+            $dokumenFiles = [
+                'dokumen1' => $request->file('dokumen1'), // Proposal untuk Program Kerja
+                'dokumen2' => $request->file('dokumen2'), // Term of Reference untuk Pergerakan
+                'dokumen3' => $request->file('dokumen3'), // Surat Peminjaman Sarana Prasarana
+                'dokumen4' => $request->file('dokumen4'), // Surat Izin Berkegiatan
+                'dokumen5' => $request->file('dokumen5'), // Surat Pernyataan Ketua Ormawa
+                'dokumen6' => $request->file('dokumen6'), // Surat Pendampingan Pembina
+                'dokumen7' => $request->file('dokumen7'), // Lampiran Daftar Peserta
+            ];
+
+            foreach ($dokumenFiles as $key => $file) {
+                if ($file) {
+                    // Generate nama file unik dan path penyimpanan
+                    $fileName = Str::uuid() . '.' . $file->getClientOriginalExtension();
+                    $path = 'dokumen/' . $pengajuan->jenis_kegiatan . '/' . $fileName;
+                    
+                    // Simpan file ke storage
+                    Storage::put($path, file_get_contents($file));
+
+                    // Simpan data dokumen ke database
+                    Dokumen::create([
+                        'no_dokumen' => strtoupper(Str::random(6)), // Generate ID dokumen unik
+                        'id_pengajuan' => $pengajuan->id_pengajuan,
+                        'nama_dokumen' => $key,
+                        'path' => $path,
+                    ]);
+                }
+            }
+
+            return response()->json(['message' => 'Pengajuan dan dokumen berhasil disimpan'], 201);
+
+        } catch (\Exception $e) {
+            // Hapus file yang sudah diunggah jika terjadi error
+            if (isset($pengajuan)) {
+                foreach ($dokumenFiles as $key => $file) {
+                    if ($file && Storage::exists($path)) {
+                        Storage::delete($path);
+                    }
+                }
+            }
+            
+            // Tangani error dan kirim respons gagal
+            return response()->json(['error' => 'Gagal menyimpan pengajuan: ' . $e->getMessage()], 500);
+        }
     }
 
     private function simpanDokumen(Request $request, $id_pengajuan)

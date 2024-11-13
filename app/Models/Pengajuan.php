@@ -8,16 +8,18 @@ use Illuminate\Database\Eloquent\Model;
 class Pengajuan extends Model
 {
     use HasFactory;
-
+    
+    protected $table = 'pengajuan'; 
+    protected $primaryKey = 'id_pengajuan';
     public $keyType = 'string';
     protected $table = 'pengajuan';
     protected $primaryKey = 'id_pengajuan';
 
     protected $fillable = [
         'id_pengajuan',
+        'id_ormawa',
         'nim',
         'tanggal_pengajuan',
-        'id_tempat',
         'tanggal_pinjam',
         'tanggal_akhir',
         'waktu_pinjam',
@@ -27,6 +29,8 @@ class Pengajuan extends Model
         'status', // Menambahkan status
         'edited', // Menambahkan edited
     ];
+    
+    public $incrementing = false;
 
     public $timestamps = false;
     public $incrementing = false;

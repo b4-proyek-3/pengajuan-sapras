@@ -13,9 +13,12 @@ return new class extends Migration
     {
         Schema::create('pengajuan', function (Blueprint $table) {
             $table->string('id_pengajuan', length: 6)->primary(); // id_pengajuan sebagai primary key
-            $table->char('nim', 8); // nim sebagai foreign key dari tabel pengajus
+            $table->id('id_ormawa');
+            $table->foreign('id_ormawa')->references('id_ormawa')->on('ormawa')->onDelete('cascade');
+            $table->char('nim', 9)->nullable(); // nim sebagai foreign key dari tabel pengaju
             $table->foreign('nim')->references('nim')->on('pengaju')->onDelete('cascade');
             $table->dateTime('tanggal_pengajuan', precision: 0); // otomatis mengisi tanggal saat pengajuan dibuat
+<<<<<<< HEAD:database/migrations/2024_09_30_132006_pengajuan.php
             $table->id('id_tempat');
             $table->foreign('id_tempat')->references('id_tempat')->on('tempat')->onDelete('cascade');
             $table->date('tanggal_pinjam');
@@ -26,6 +29,17 @@ return new class extends Migration
             $table->enum('status', ['diterima', 'direvisi', 'ditolak', 'selesai', 'diajukan'])->default('diajukan');
             $table->string('link_drive');
             $table->boolean('edited')->default(false);
+=======
+            $table->date('tanggal_pinjam');
+            $table->date('tanggal_akhir');
+            $table->time('waktu_pengajuan');
+            $table->id('id_tempat');
+            $table->foreign('id_tempat')->references('id_tempat')->on('tempat')->onDelete('cascade');
+            $table->string('nama_kegiatan');
+            $table->enum('jenis_kegiatan', ['proker', 'pergerakan']);
+            $table->string('link_gdrive')->nullable();
+            $table->enum('status', ['diajukan', 'direview', 'diterima', 'direvisi', 'ditolak'])->default('diajukan');
+>>>>>>> feature/pengajuan:database/migrations/2024_09_30_132006_create_pengajuan_table.php
         });
     }
 
@@ -34,6 +48,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pengajuan');
+        Schema::table('pengajuan', function (Blueprint $table) {
+            $table->char('nim', 9)->nullable()->change();
+        });
     }
 };

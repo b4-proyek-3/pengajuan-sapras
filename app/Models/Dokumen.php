@@ -9,8 +9,8 @@ class Dokumen extends Model
 {
     use HasFactory;
 
-    protected $table = 'dokumen'; // Nama tabel
-    protected $primaryKey = 'no_dokumen'; // Primary key adalah no_dokumen
+    protected $table = 'dokumen'; 
+    protected $primaryKey = 'no_dokumen';
 
     protected $fillable = [
         'id_pengajuan',

@@ -35,8 +35,8 @@ Route::post('/pengajuan', [PengajuanController::class, 'store'])->name('pengajua
 Route::get('/pengajuan/detail/{id_pengajuan}', [PengajuanController::class, 'show'])->name('pengajuan.show');
 Route::put('/pengajuan/detail/{id_pengajuan}', [PengajuanController::class, 'update'])->name('pengajuan.update');
 
-// Route untuk menampilkan form pengajuan baru
-Route::get('/pengajuan/create', [PengajuanController::class, 'create'])->name('pengajuan.create');
+// Route untuk menampilkan page pengajuan
+Route::get('/pengajuan', [PengajuanController::class, 'index'])->name('pengajuan.index');
 
 // Route untuk menyimpan data pengajuan baru
 Route::post('/pengajuan', [PengajuanController::class, 'store'])->name('pengajuan.store');
