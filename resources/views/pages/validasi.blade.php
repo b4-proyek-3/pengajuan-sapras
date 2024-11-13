@@ -8,9 +8,9 @@
       <div class="relative flex flex-col min-w-0 break-words bg-white shadow-soft-xl rounded-2xl bg-clip-border">
           <div class="flex-auto p-4">
               <div class="flex flex-col items-center mb-7 mt-6"> <!-- Menambahkan mt-6 untuk jarak dari atas -->
-                  <div class="bg-[#E1EDC7] rounded-full p-6 mb-4"> <!-- Latar belakang bulat -->
-                      <i class="fa-sharp fa-solid fa-badge-check fa-5x text-lime-500"></i>
-                  </div>
+                <div class="bg-green-500 w-24 h-24 rounded-full p-6 mb-3">
+                    <i class="fa-sharp fa-solid fa-badge-check fa-7x text-lime-500"></i>
+                </div>
               </div>
               <div class="flex flex-col mx-4"> <!-- Mengubah flex-wrap menjadi flex-col dan menambahkan items-center -->
                   <h5 class="font-bold">Informasi Dokumen</h5>
