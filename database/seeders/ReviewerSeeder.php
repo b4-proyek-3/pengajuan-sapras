@@ -2,10 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use App\Models\Role; // Import model Role
 use Faker\Factory as Faker;
 
 class ReviewerSeeder extends Seeder
@@ -17,20 +15,32 @@ class ReviewerSeeder extends Seeder
     {
         $faker = Faker::create();
 
-        // Mengambil semua id_ormawa yang ada di tabel ormawa
-        $roleIds = Role::pluck('id_role')->toArray();
+        // Mengambil semua id_user yang ada di tabel users
+        $userIds = DB::table('users')->pluck('id_user')->toArray();
 
-        foreach ($roleIds as $roleId) {
-            // Mengisi tabel pengaju dengan data acak
+        // Mengecek apakah ada user yang tersedia
+        if (empty($userIds)) {
+            $this->command->error('Tidak ada data pengguna di tabel users!');
+            return;
+        }
+
+        // Role yang akan digunakan untuk reviewer
+        $roles = ['sekum-bem', 'kli', 'ketua_jurusan', 'wd-3'];
+
+        // Menambahkan data reviewer ke tabel reviewers
+        foreach ($roles as $role) {
+            // Memilih id_user acak dari tabel users
+            $idUser = $faker->randomElement($userIds);
+
+            // Menambahkan data reviewer ke tabel reviewers
             DB::table('reviewers')->insert([
-                'id_reviewer' => $faker->unique()->numerify('########'), // Membuat NIP acak
-                'nama' => $faker->name,
-                'email' => $faker->unique()->safeEmail,
-                'password' => bcrypt('password123'), // Enkripsi password
-                'id_role' => $roleId, // Menggunakan ID role yang diambil
+                'id_user' => $idUser,  // Menggunakan id_user acak dari tabel users
+                'role' => $role,       // Role reviewer (sekum-bem, kli, ketua_jurusan, wd-3)
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
         }
+
+        $this->command->info('Seeder untuk tabel reviewers berhasil dijalankan!');
     }
 }

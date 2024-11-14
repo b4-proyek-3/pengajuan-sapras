@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Tempat;
+use Illuminate\Support\Facades\DB;
+use Faker\Factory as Faker;
 
 class TempatSeeder extends Seeder
 {
@@ -13,9 +13,18 @@ class TempatSeeder extends Seeder
      */
     public function run(): void
     {
-        Tempat::create(['nama_tempat' => 'Pendopo']);
-        Tempat::create(['nama_tempat' => 'Gedung H']);
-        Tempat::create(['nama_tempat' => 'Gedung P2T']);
-        Tempat::create(['nama_tempat' => 'Gedung D']);
+        $faker = Faker::create();
+
+        // Menambahkan data acak untuk tabel tempat
+        for ($i = 0; $i < 10; $i++) {
+            DB::table('tempat')->insert([
+                'nama_ruangan' => $faker->word(),  // Nama ruangan acak
+                'nama_gedung' => $faker->word(),   // Nama gedung acak
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
+        $this->command->info('Seeder untuk tabel tempat berhasil dijalankan!');
     }
 }
