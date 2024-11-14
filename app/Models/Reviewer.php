@@ -26,4 +26,9 @@ class Reviewer extends Authenticatable
     {
         return $this->belongsToMany(Pengajuan::class, 'reviews', 'id_reviewer', 'id_pengajuan');
     }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'id_role', 'id_role');
+    }
 }

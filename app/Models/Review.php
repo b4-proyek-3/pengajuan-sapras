@@ -15,7 +15,8 @@ class Review extends Model
         'id_pengajuan',
         'id_reviewer', 
         'review', 
-        'status', 
+        'status',
+        'status_code', 
         'tanggal_review',
     ];
 

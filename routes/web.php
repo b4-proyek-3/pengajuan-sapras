@@ -9,7 +9,6 @@ Route::get('/', function () {
     return view('progress2');
 });
 
-
 // Route untuk menampilkan daftar pengajuan
 Route::get('/pengajuan/detail/{id_pengajuan}', [PengajuanController::class, 'index'])->name('pengajuan.index');
 

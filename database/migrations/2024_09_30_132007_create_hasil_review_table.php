@@ -12,13 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('reviews', function (Blueprint $table) {
-            $table->string('id_pengajuan', length: 6); // Foreign key ke tabel pengajuan
+            $table->string('id_pengajuan', 6); // Foreign key ke tabel pengajuan
             $table->foreign('id_pengajuan')->references('id_pengajuan')->on('pengajuan')->onDelete('cascade');
-            $table->char('id_reviewer', length: 18); // Foreign key ke tabel reviewer
+            $table->char('id_reviewer', 18); // Foreign key ke tabel reviewer
             $table->foreign('id_reviewer')->references('id_reviewer')->on('reviewers')->onDelete('cascade');
             $table->text('review');
-            $table->enum('status', ['diterima', 'direvisi', 'ditolak', 'selesai']);
-            $table->dateTimeTz('tanggal_review', precision: 0);
+            $table->string('status', 255);
+            $table->timestamp('tanggal_review');
         });
     }
 
