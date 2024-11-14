@@ -283,6 +283,23 @@ a {
   animation: progressLine 1s ease-in-out;
 }
 
+/* Revised Steps Styling with Animation */
+#progressbar li.revisi .circle {
+  border-color: #2196F3;
+  background-color: #ffffff;
+  animation: pulseCircle 1s ease-in-out;
+}
+
+#progressbar li.revisi i {
+  color: #2196F3;
+  animation: fadeIcon 1s ease-in-out;
+}
+
+#progressbar li.revisi:after {
+  background: #2196F3;
+  animation: progressLine 1s ease-in-out;
+}
+
 /* Animation Keyframes */
 @keyframes pulseCircle {
   0% {
@@ -319,6 +336,16 @@ a {
     background: #FF9800;
   }
 }
+
+#progressbar li.revisi:after {
+  background: #2196F3; /* Blue color for revision */
+}
+
+/* Status Tracker Dots */
+.tracking_status_item.revisi .tracking_status_dot {
+    background-color: #2196F3; /* Change the dot color to blue */
+}
+
 
 /* form pengajuan */
 .form-pengajuan {
@@ -522,6 +549,11 @@ a {
       left: -24px;
   }
 }
+
+.tracking_status_item.revisi .tracking_status_dot {
+  background-color: #2196F3; /* Change the dot color */
+}
+
 
 /* riwayat dokumen */
 /* Default width */

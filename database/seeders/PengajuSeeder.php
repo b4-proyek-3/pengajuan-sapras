@@ -25,7 +25,8 @@ class PengajuSeeder extends Seeder
             foreach ($ormawaIds as $ormawaId) {
                 // Mengisi tabel pengaju dengan data acak
                 DB::table('pengaju')->insert([
-                    'nim' => $faker->unique()->numerify('########'), // Membuat NIM acak
+                    'nim' => $faker->unique()->numerify('####
+                    ####'), // Membuat NIM acak
                     'id_user' => $user->id_user, // Menggunakan id_user dari data user yang ditemukan
                     'id_ormawa' => $ormawaId, // Menggunakan ID ormawa yang diambil
                     'created_at' => now(),

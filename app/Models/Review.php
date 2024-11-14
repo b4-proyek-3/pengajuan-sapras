@@ -1,5 +1,5 @@
 <?php
-
+// app/Models/Review.php
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -10,17 +10,21 @@ class Review extends Model
     use HasFactory;
 
     protected $table = 'reviews';
-    protected $primaryKey = 'id_review';
+    // Remove primary key since we're using composite key
+    public $incrementing = false;
     protected $fillable = [
         'id_pengajuan',
-        'id_reviewer', 
-        'review', 
+        'id_reviewer',
         'status',
-        'status_code', 
+        'catatan',
         'tanggal_review',
     ];
 
+    // Disable timestamps since we don't have them in migration
     public $timestamps = false;
+
+    // Define the composite primary key
+    protected $primaryKey = ['id_pengajuan', 'id_reviewer'];
 
     public function pengajuan()
     {
