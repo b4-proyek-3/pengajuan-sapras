@@ -21,8 +21,6 @@ class PengajuanSeeder extends Seeder
         // Mengambil data dari tabel pengaju, tempat, dan ormawa
         $nims = Pengaju::pluck('nim')->toArray();
         $tempatIds = Tempat::pluck('id_tempat')->toArray();
-        $ormawaIds = Ormawa::pluck('id_ormawa')->toArray();
-
         $existingCount = Pengajuan::count();
 
         // Membuat beberapa data pengajuan
@@ -31,7 +29,6 @@ class PengajuanSeeder extends Seeder
 
             Pengajuan::create([
                 'id_pengajuan' => $idPengajuan,
-                'id_ormawa' => $ormawaIds[array_rand($ormawaIds)], // Mengambil ID ormawa secara acak
                 'nim' => $nims[array_rand($nims)], // Mengambil NIM secara acak
                 'tanggal_pengajuan' => now(),
                 'id_tempat' => $tempatIds[array_rand($tempatIds)], // Mengambil ID tempat secara acak
