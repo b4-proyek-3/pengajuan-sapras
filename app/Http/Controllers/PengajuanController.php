@@ -62,15 +62,13 @@ class PengajuanController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nim' => 'nullable|exists:pengaju,nim',
-            'ormawa' => 'required|exists:ormawa,id_ormawa',
             'tanggal_pinjam' => 'required|date',
             'tanggal_akhir' => 'required|date|after_or_equal:tanggal_pinjam',
             'waktu_pengajuan' => 'required',
             'id_tempat' => 'required|exists:tempat,id_tempat',
             'nama_kegiatan' => 'required|string|max:100',
             'link_gdrive' => 'nullable|url',
-            'status' => 'diajukan',
+            
             'dokumen1' => 'nullable|file|mimes:pdf|max:2048',
             'dokumen2' => 'nullable|file|mimes:pdf|max:2048',
             'dokumen3' => 'nullable|file|mimes:pdf|max:2048',

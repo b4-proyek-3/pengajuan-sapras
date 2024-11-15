@@ -5,10 +5,6 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PengajuanController;
 use App\Http\Controllers\ReviewController;
 
-Route::get('/', function () {
-    return view('pages.test');
-});
-
 // ========================================================================================
 // AUTHENTICATION ROUTES ==================================================================
 Route::controller(AuthController::class)->group(function () {
