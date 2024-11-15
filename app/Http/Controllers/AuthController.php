@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Pengaju;
+use App\Models\Reviewer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -16,7 +18,7 @@ class AuthController extends Controller
     public function index()
     {
         if (Auth::check()) {
-            return redirect()->route('beasiswa.index');
+            return redirect()->route('pengajuan.index');
         }
         return view('pages.Auth.login');
     }
@@ -40,7 +42,15 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->intended('/beasiswa');
+            // Dapatkan user yang login
+            $user = Auth::user();
+
+            // Cek apakah user adalah pengaju atau reviewer
+            if (Pengaju::where('id_user', $user->id_user)->exists()) {
+                return redirect()->intended('/pengajuan');
+            } elseif (Reviewer::where('id_user', $user->id_user)->exists()) {
+                return redirect()->intended('/reviewer');
+            }
         }
 
         return back()->withErrors(['email' => 'Email or password is incorrect.'])->onlyInput('email');
@@ -75,6 +85,8 @@ class AuthController extends Controller
      */
     public function resetPassword(Request $request)
     {
+        \Log::info('Session auth_email:', ['email' => Session::get('auth_email')]);
+
         $request->validate([
             'password' => 'required|min:6|confirmed',
         ]);

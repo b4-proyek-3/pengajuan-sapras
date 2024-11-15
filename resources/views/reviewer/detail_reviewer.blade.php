@@ -16,14 +16,11 @@
                     <p class="mb-0 text-sm leading-normal">
                     <i class="fa fa-calendar text-cyan-500"></i>
                       <span class="ml-1 font-semibold">No Pengajuan #</span>
-                      {{ $pengajuans->id_pengajuan ?? 'N/A' }}
+                      {{ $pengajuan->id_pengajuan ?? 'N/A' }}
                     </p>
                   </div>
                   <div class="flex-none w-1/12 max-w-full px-3 my-auto text-right lg:w-1/2 lg:flex-none">
                     <div class="relative pr-6 lg:float-right">
-                      <a dropdown-trigger class="cursor-pointer" aria-expanded="false" onclick="openModal('editPengajuanModal')">
-                        <i class="fa fa-ellipsis-v"></i>
-                      </a>
                     </div>
                   </div>
                 </div>
@@ -46,7 +43,22 @@
                                     <h6 class="mb-0 text-sm leading-normal">:</h6>
                                 </div>
                                 <div class="flex flex-col justify-center pl-2">
-                                    <h6 class="mb-0 text-sm leading-normal">{{ $pengajuans->pengaju->nama ?? 'N/A' }}</h6>
+                                    <h6 class="mb-0 text-sm leading-normal">{{ $pengajuan->pengaju->user->name ?? 'N/A' }}</h6>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="p-2 align-middle bg-transparent whitespace-nowrap">
+                            <div class="flex px-4 py-1">
+                                <div class="flex flex-col justify-center" style="min-width: 150px;">
+                                    <h6 class="mb-0 text-sm leading-normal">Ormawa</h6>
+                                </div>
+                                <div class="flex flex-col justify-center" style="min-width: 10px; text-align: right;">
+                                    <h6 class="mb-0 text-sm leading-normal">:</h6>
+                                </div>
+                                <div class="flex flex-col justify-center pl-2">
+                                    <h6 class="mb-0 text-sm leading-normal">{{ $pengajuan->pengaju->ormawa->nama_ormawa ?? 'N/A' }}</h6>
                                 </div>
                             </div>
                         </td>
@@ -61,7 +73,7 @@
                                     <h6 class="mb-0 text-sm leading-normal">:</h6>
                                 </div>
                                 <div class="flex flex-col justify-center pl-2">
-                                    <h6 class="mb-0 text-sm leading-normal">{{ $pengajuans->nama_kegiatan ?? 'N/A' }}</h6>
+                                    <h6 class="mb-0 text-sm leading-normal">{{ $pengajuan->nama_kegiatan ?? 'N/A' }}</h6>
                                 </div>
                             </div>
                         </td>
@@ -70,13 +82,13 @@
                         <td class="p-2 align-middle bg-transparent whitespace-nowrap">
                             <div class="flex px-4 py-1">
                                 <div class="flex flex-col justify-center" style="min-width: 150px;">
-                                    <h6 class="mb-0 text-sm leading-normal">Tanggal Mulai</h6>
+                                    <h6 class="mb-0 text-sm leading-normal">Tanggal Kegiatan</h6>
                                 </div>
                                 <div class="flex flex-col justify-center" style="min-width: 10px; text-align: right;">
                                   <h6 class="mb-0 text-sm leading-normal">:</h6>
                                 </div>
                                 <div class="flex flex-col justify-center pl-2">
-                                <h6 class="mb-0 text-sm leading-normal">{{ $pengajuans->tanggal_pinjam ?? 'N/A' }}</h6>
+                                <h6 class="mb-0 text-sm leading-normal">{{ $pengajuan->tanggal_pinjam ?? 'N/A' }}</h6>
                                 </div>
                             </div>
                         </td>
@@ -91,7 +103,22 @@
                                   <h6 class="mb-0 text-sm leading-normal">:</h6>
                                 </div>
                                 <div class="flex flex-col justify-center pl-2">
-                                <h6 class="mb-0 text-sm leading-normal">{{ $pengajuans->tanggal_akhir ?? 'N/A' }}</h6>
+                                <h6 class="mb-0 text-sm leading-normal">{{ $pengajuan->tanggal_akhir ?? 'N/A' }}</h6>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="p-2 align-middle bg-transparent whitespace-nowrap">
+                            <div class="flex px-4 py-1">
+                                <div class="flex flex-col justify-center" style="min-width: 150px;">
+                                    <h6 class="mb-0 text-sm leading-normal">Waktu Kegiatan</h6> <!-- Replace 'tempat' with the correct field -->
+                                </div>
+                                <div class="flex flex-col justify-center" style="min-width: 10px; text-align: right;">
+                                  <h6 class="mb-0 text-sm leading-normal">:</h6>
+                                </div>
+                                <div class="flex flex-col justify-center pl-2">
+                                    <h6 class="mb-0 text-sm leading-normal">{{ $pengajuan->waktu_pinjam ?? 'N/A' }}</h6>
                                 </div>
                             </div>
                         </td>
@@ -106,7 +133,7 @@
                                   <h6 class="mb-0 text-sm leading-normal">:</h6>
                                 </div>
                                 <div class="flex flex-col justify-center pl-2">
-                                    <h6 class="mb-0 text-sm leading-normal">{{ $pengajuans->tempat->nama_tempat ?? 'N/A' }}</h6>
+                                    <h6 class="mb-0 text-sm leading-normal">{{ $pengajuan->tempat->nama_ruangan ?? 'N/A' }}</h6>
                                 </div>
                             </div>
                         </td>
@@ -132,24 +159,31 @@
               <div class="flex-auto p-4">
                 <div class="before:border-r-solid relative before:absolute before:top-0 before:left-4 before:h-full before:border-r-2 before:border-r-slate-100 before:content-[''] before:lg:-ml-px">
                   <div class="relative mb-4 mt-0 after:clear-both after:table after:content-['']">
-                    <span class="w-6.5 h-6.5 text-base absolute left-4 z-10 inline-flex -translate-x-1/2 items-center justify-center rounded-full bg-white text-center font-semibold">
-                      <i class="relative z-10 leading-none text-transparent ni ni-bell-55 leading-pro bg-gradient-to-tl from-green-600 to-lime-400 bg-clip-text fill-transparent"></i>
-                    </span>
-                    <div class="ml-11.252 pt-1.4 lg:max-w-120 relative -top-1.5 w-auto">
-                      <h6 class="mb-0 text-sm font-semibold leading-normal text-slate-700">Review KLI</h6>
-                      <p class="mt-1 mb-0 text-xs font-semibold leading-tight text-slate-400">NOW</p>
-                    </div>
+                  @if($pengajuan->latestReview->isNotEmpty())
+                    @foreach ($pengajuan->latestReview as $index => $review)
+                        <span class="w-6.5 h-6.5 text-base absolute left-4 z-10 inline-flex -translate-x-1/2 items-center justify-center rounded-full bg-white text-center font-semibold">
+                            <i class="relative z-10 leading-none text-transparent 
+                              {{ $index === 0 ? 'ni ni-bell-55 bg-gradient-to-tl from-green-600 to-lime-400' : 'ni ni-time-alarm bg-gradient-to-tl from-blue-600 to-indigo-400' }} 
+                              leading-pro bg-clip-text fill-transparent"></i>
+                        </span>
+                        <div class="ml-11.252 pt-1.4 lg:max-w-120 relative -top-1.5 w-auto">
+                            <h6 class="mb-0 text-sm font-semibold leading-normal text-slate-700">{{ $review->reviewer->role ?? 'N/A' }}</h6>
+                            <p class="mt-1 mb-0 text-xs font-semibold leading-tight text-slate-400">{{ $pengajuan->status ?? 'N/A' }}</p>
+                            <p class="mt-1 mb-0 text-xs font-semibold leading-tight text-slate-400">{{ $review->tanggal_review ?? 'N/A' }}</p>
+                        </div>
+                    @endforeach
+                  @endif
                   </div>
-                  <div class="relative mb-4 after:clear-both after:table after:content-['']">
-                    <span class="w-6.5 h-6.5 text-base absolute left-4 z-10 inline-flex -translate-x-1/2 items-center justify-center rounded-full bg-white text-center font-semibold">
-                        <i class="fas fa-check relative z-10 leading-none text-green-500"></i> <!-- Ganti dengan ikon centang -->
-                    </span>
-                    <div class="ml-11.252 pt-1.4 lg:max-w-120 relative -top-1.5 w-auto">
-                        <h6 class="mb-0 text-sm font-semibold leading-normal text-slate-700">Review SEKUM BEM</h6>
-                        <p class="mt-1 mb-0 text-xs font-semibold leading-tight text-slate-400">Revisi</p>
-                        <p class="mt-1 mb-0 text-xs font-semibold leading-tight text-slate-400">21 DEC 11 PM</p>
-                    </div>
-                </div>
+                  <div class="relative mb-4 mt-0 after:clear-both after:table after:content-['']">
+                      <span class="w-6.5 h-6.5 text-base absolute left-4 z-10 inline-flex -translate-x-1/2 items-center justify-center rounded-full bg-white text-center font-semibold">
+                          <i class="relative z-10 leading-none text-transparent ni ni-time-alarm bg-gradient-to-tl from-blue-600 to-indigo-400 
+                            leading-pro bg-clip-text fill-transparent"></i>
+                      </span>
+                      <div class="ml-11.252 pt-1.4 lg:max-w-120 relative -top-1.5 w-auto">
+                          <h6 class="mb-0 text-sm font-semibold leading-normal text-slate-700">Pengajuan Dibuat</h6>
+                          <p class="mt-1 mb-0 text-xs font-semibold leading-tight text-slate-400">{{ $pengajuan->tanggal_pengajuan ?? 'N/A' }}</p>
+                      </div>
+                  </div>
               </div>
               <div class="flex-none w-1/2 max-w-full px-3 text-right">
                     <button class="inline-block w-full px-8 py-2 mb-0 font-bold text-center uppercase align-middle transition-all bg-transparent border border-solid rounded-lg shadow-none cursor-pointer leading-pro ease-soft-in text-xs bg-150 active:opacity-85 hover:scale-102 tracking-tight-soft bg-x-25 border-fuchsia-500 text-fuchsia-500 hover:opacity-75">View All</button>
@@ -171,31 +205,12 @@
                   <div class="flex-none w-7/12 max-w-full px-3 mt-0 lg:w-1/2 lg:flex-none">
                     <h6>Dokumen</h6>
                   </div>
-                  <div class="flex-none w-5/12 max-w-full px-3 my-auto text-right lg:w-1/2 lg:flex-none">
-                    <div class="relative pr-6 lg:float-right">
-                      <a dropdown-trigger class="cursor-pointer" aria-expanded="false">
-                        <i class="fa fa-ellipsis-v text-slate-400"></i>
-                      </a>
-                      <p class="hidden transform-dropdown-show"></p>
-                      <ul dropdown-menu class="z-100 text-sm transform-dropdown shadow-soft-3xl duration-250 before:duration-350 before:font-awesome before:ease-soft min-w-44 -ml-34 before:text-5.5 pointer-events-none absolute top-0 m-0 mt-2 list-none rounded-lg border-0 border-solid border-transparent bg-white bg-clip-padding px-2 py-4 text-left text-slate-500 opacity-0 transition-all before:absolute before:top-0 before:right-7 before:left-auto before:z-40 before:text-white before:transition-all before:content-['\f0d8']">
-                        <li class="relative">
-                          <a class="py-1.2 lg:ease-soft clear-both block w-full whitespace-nowrap rounded-lg border-0 bg-transparent px-4 text-left font-normal text-slate-500 lg:transition-colors lg:duration-300" href="javascript:;">Action</a>
-                        </li>
-                        <li class="relative">
-                          <a class="py-1.2 lg:ease-soft clear-both block w-full whitespace-nowrap rounded-lg border-0 bg-transparent px-4 text-left font-normal text-slate-500 lg:transition-colors lg:duration-300" href="javascript:;">Another action</a>
-                        </li>
-                        <li class="relative">
-                          <a class="py-1.2 lg:ease-soft clear-both block w-full whitespace-nowrap rounded-lg border-0 bg-transparent px-4 text-left font-normal text-slate-500 lg:transition-colors lg:duration-300" href="javascript:;">Something else here</a>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
                 </div>
               </div>
               <table class="items-center w-full mb-2 mt-2 align-top border-gray-200 text-slate-500">
                 <td class="p-0 mb-4 mt-4 align-middle bg-transparent border-b whitespace-nowrap">
                 <tbody>
-                    @foreach ($pengajuans->dokumen as $dokumen)
+                    @foreach ($pengajuan->dokumen as $dokumen)
                       <tr>
                         <td class="p-2 align-middle bg-transparent whitespace-nowrap">
                           <div class="flex px-4 py-1">
@@ -222,7 +237,7 @@
             <div class="border-black/12.5 shadow-soft-xl relative flex h-full min-w-0 flex-col break-words rounded-2xl border-0 border-solid bg-white bg-clip-border">
               <div class="flex-auto p-2">
                 <div class="before:border-r-solid relative before:absolute before:top-0 before:left-4 before:h-full before:border-r-2 before:border-r-slate-100 before:content-[''] before:lg:-ml-px">
-                  <iframe id="dokumen-frame" src="{{ asset(str_replace('public/', '', $pengajuans->dokumen->first()->path  ?? 'N/A' )) }}" style="width:100%; height:500px;" frameborder="0"></iframe>
+                  <iframe id="dokumen-frame" src="{{ asset(str_replace('public/', '', $pengajuan->dokumen->first()->path  ?? 'N/A' )) }}" style="width:100%; height:500px;" frameborder="0"></iframe>
                 </div>
               </div>
             </div>
@@ -231,7 +246,8 @@
         <!-- cards row 3 -->
         <h5 class="font-bold px-6 mt-6 mb-0">Catatan</h5>
         <div class="w-full max-w-full px-6 mb-6 mt-6">           
-          <form>
+          <form action="{{ route('store_review', ['id_pengajuan' => $pengajuan->id_pengajuan, 'id_reviewer' => $id_reviewer]) }}" method="POST">
+            @csrf
             <div class="w-full mb-4 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
                 <div class="flex items-center justify-between px-3 py-2 border-b dark:border-gray-600">
                     <div class="flex flex-wrap items-center divide-gray-200 sm:divide-x sm:rtl:divide-x-reverse dark:divide-gray-600">
@@ -311,17 +327,28 @@
                 </div>
                 <div class="px-4 py-2 bg-white rounded-b-lg dark:bg-gray-800">
                     <label for="editor" class="sr-only">Publish post</label>
-                    <textarea id="editor" rows="8" class="block w-full px-0 text-sm text-gray-800 bg-white border-0 dark:bg-gray-800 focus:ring-0 dark:text-white dark:placeholder-gray-400" placeholder="Write an article..." required ></textarea>
+                    <textarea 
+                      name="catatan" 
+                      id="editor" 
+                      rows="8" 
+                      class="block w-full px-0 text-sm text-gray-800 bg-white border-0 dark:bg-gray-800 focus:ring-0 dark:text-white dark:placeholder-gray-400" 
+                      placeholder="Write an article..."
+                      @if ($hasReviewed && $pengajuan->edited != 'true') readonly @endif ></textarea>
                 </div>
             </div>
-            <div class="flex justify-end">
-                <button type="submit" class="mt-2 bg-gradient-to-tl from-blue-600 to-teal-400 px-2.5 text-xs rounded-1.8 py-1.4 inline-block whitespace-nowrap text-center align-baseline font-bold uppercase leading-none text-white">
-                    terima
-                </button>
-                <button type="button" class="mt-2 bg-gradient-to-tl from-slate-600 to-slate-300 px-2.5 text-xs rounded-1.8 py-1.4 inline-block whitespace-nowrap text-center align-baseline font-bold uppercase leading-none text-white ml-2">
-                    tolak
-                </button>
-            </div>
+            @if (!$hasReviewed || $pengajuan->edited == 'true')
+              <div class="flex justify-end">
+                  <button type="submit" name="status" value="diterima" class="mt-2 bg-gradient-to-tl from-blue-600 to-teal-400 px-2.5 text-xs rounded-1.8 py-1.4 inline-block whitespace-nowrap text-center align-baseline font-bold uppercase leading-none text-white">
+                      terima
+                  </button>
+                  <button type="submit" name="status" value= "direvisi" class="mt-2 bg-gradient-to-tl from-slate-600 to-slate-300 px-2.5 text-xs rounded-1.8 py-1.4 inline-block whitespace-nowrap text-center align-baseline font-bold uppercase leading-none text-white ml-2">
+                      revisi
+                  </button>
+                  <button type="submit" name="status" value= "ditolak" class="mt-2 bg-gradient-to-tl from-slate-600 to-slate-300 px-2.5 text-xs rounded-1.8 py-1.4 inline-block whitespace-nowrap text-center align-baseline font-bold uppercase leading-none text-white ml-2">
+                      tolak
+                  </button>
+              </div>
+            @endif
           </form>
         </div>
 
@@ -350,19 +377,8 @@
           </div>
         </footer>
 </div>
-@include('modal.modal_edit_pengajuan')
-<script>
-    function openModal(modalId) {
-        document.getElementById(modalId).classList.remove('hidden');
-    }
-
-    function closeModal(modalId) {
-        document.getElementById(modalId).classList.add('hidden');
-    }
-</script>
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-    // Ambil semua elemen dengan class 'dokumen-link'
     const dokumenLinks = document.querySelectorAll('.dokumen-link');
 
     // Loop melalui setiap link dokumen
@@ -379,5 +395,4 @@
     });
   });
 </script>
-
 @endsection

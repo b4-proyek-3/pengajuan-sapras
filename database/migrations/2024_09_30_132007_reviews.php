@@ -14,11 +14,13 @@ return new class extends Migration
         Schema::create('reviews', function (Blueprint $table) {
             $table->string('id_pengajuan', length: 6); // Foreign key ke tabel pengajuan
             $table->foreign('id_pengajuan')->references('id_pengajuan')->on('pengajuan')->onDelete('cascade');
-            $table->char('id_reviewer', length: 18); // Foreign key ke tabel reviewer
+            $table->id('id_reviewer'); // Foreign key ke tabel reviewer
             $table->foreign('id_reviewer')->references('id_reviewer')->on('reviewers')->onDelete('cascade');
-            $table->text('review');
-            $table->enum('status', ['diajukan', 'direview', 'diterima', 'direvisi', 'ditolak']);
+            $table->enum('status', ['diterima', 'direvisi', 'ditolak']);
+            $table->text('catatan')->nullable();
             $table->dateTime('tanggal_review', precision: 0);
+
+            $table->primary(['id_pengajuan', 'id_reviewer']);
         });
     }
 

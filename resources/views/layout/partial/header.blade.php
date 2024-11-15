@@ -148,12 +148,31 @@
             <h6 class="mb-0 font-bold capitalize">Dashboard</h6>
           </nav>
 
+          <div class="flex items-center mt-2 grow sm:mt-0 sm:mr-6 md:mr-0 lg:flex lg:basis-auto">
+            <div class="flex items-center md:ml-auto md:pr-4">
+            </div>
             <ul class="flex flex-row justify-end pl-0 mb-0 list-none md-max:w-full">
               <li class="flex items-center">
-                <a href="./pages/sign-in.html" class="block px-0 py-2 text-sm font-semibold transition-all ease-nav-brand text-slate-500">
-                  <i class="fa fa-user sm:mr-1"></i>
-                  <span class="hidden sm:inline">Sign In</span>
-                </a>
+                  @if(Auth::check())
+                      <!-- Jika pengguna sudah login -->
+                      <a href="{{ route('logout') }}" 
+                        class="block px-0 py-2 text-sm font-semibold transition-all ease-nav-brand text-slate-500"
+                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                          <i class="fa fa-sign-out sm:mr-1"></i>
+                          <span class="hidden sm:inline">Logout</span>
+                      </a>
+
+                      <!-- Form logout untuk mengirimkan permintaan logout -->
+                      <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                          @csrf
+                      </form>
+                  @else
+                      <!-- Jika pengguna belum login -->
+                      <a href="{{ route('login') }}" class="block px-0 py-2 text-sm font-semibold transition-all ease-nav-brand text-slate-500">
+                          <i class="fa fa-user sm:mr-1"></i>
+                          <span class="hidden sm:inline">Sign In</span>
+                      </a>
+                  @endif
               </li>
               <li class="flex items-center pl-4 xl:hidden">
                 <a href="javascript:;" class="block p-0 text-sm transition-all ease-nav-brand text-slate-500" sidenav-trigger>
@@ -250,4 +269,4 @@
         </div>
       </nav>
 
-      <!-- end Navbar -->
+<!-- end Navbar -->

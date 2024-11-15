@@ -9,25 +9,30 @@ class Review extends Model
 {
     use HasFactory;
 
-    protected $table = 'reviews'; // Nama tabel
-    protected $primaryKey = 'id_review';
+    protected $table = 'reviews';
     protected $fillable = [
         'id_pengajuan',
         'id_reviewer', 
-        'review', 
-        'status', 
+        'catatan', 
         'tanggal_review',
     ];
 
+    protected $primaryKey = ['id_pengajuan', 'id_reviewer'];
+    // Disable auto-incrementing since we're using a composite key
+    public $incrementing = false;
+
+    // Disable timestamps if not used
     public $timestamps = false;
+    protected $keyType = 'string';
 
     public function pengajuan()
     {
-        return $this->belongsTo(Pengajuan::class, 'id_pengajuan', 'id_pengajuan');
+        return $this->belongsTo(Pengajuan::class, 'id_pengajuan');
     }
 
+    // Relasi dengan model Reviewer
     public function reviewer()
     {
-        return $this->belongsTo(Reviewer::class, 'id_reviewer', 'id_reviewer');
+        return $this->belongsTo(Reviewer::class, 'id_reviewer');
     }
 }
