@@ -2,29 +2,61 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
-use Database\Seeders\OrmawaSeeder; 
-use Database\Seeders\ReviewerSeeder; 
-use Database\Seeders\TempatSeeder; 
-use Database\Seeders\PengajuSeeder;
-use Database\Seeders\RoleSeeder;
+use Illuminate\Support\Facades\DB;
 
-class DatabaseSeeder extends Seeder
+class DokumenSeeder extends Seeder
 {
     /**
-     * Seed the application's database.
+     * Run the database seeds.
      */
     public function run(): void
     {
-        $this->call([
-            OrmawaSeeder::class,
-            ReviewerSeeder::class,
-            TempatSeeder::class,
-            PengajuSeeder::class,
-            RoleSeeder::class,
-            PengajuanSeeder::class,
+        DB::table('dokumen')->insert([
+            [
+                'id_pengajuan' => 'P0001',
+                'nama_dokumen' => 'Proposal Kegiatan',
+                'path' => 'public/assets/file/jadwal.pdf',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'id_pengajuan' => 'P0001',
+                'nama_dokumen' => 'Surat Peminjaman Sarana dan Prasarana',
+                'path' => 'public/assets/file/laporan_akhir.pdf',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'id_pengajuan' => 'P0001',
+                'nama_dokumen' => 'Surat Pernyataan Ketua Ormawa',
+                'path' => 'public/assets/file/surat_izin.pdf',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'id_pengajuan' => 'P0001',
+                'nama_dokumen' => 'Surat Izin Berkegiatan',
+                'path' => 'public/assets/file/proposal.pdf',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'id_pengajuan' => 'P0001',
+                'nama_dokumen' => 'Surat Ketersediaan Pembina',
+                'path' => 'public/assets/file/sop.pdf',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'id_pengajuan' => 'P0001',
+                'nama_dokumen' => 'Lampiran Daftar Peserta',
+                'path' => 'public/assets/file/surat_ket.pdf',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
         ]);
     }
 }

@@ -1,10 +1,12 @@
 <?php
 
-use App\Http\Controllers\PengajuanController;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PengajuanController;
+use App\Http\Controllers\ReviewController;
 
-// Route untuk login
+// ========================================================================================
+// AUTHENTICATION ROUTES ==================================================================
 Route::controller(AuthController::class)->group(function () {
     Route::get('/login', 'index')->name('login');
     Route::post('/login', 'login')->name('login.submit');
@@ -19,11 +21,17 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('/logout', 'logout')->name('logout');
 });
 
+// === Detail Pengajuan Route ==== //
+Route::get('/pengajuan/detail/{id_pengajuan}', [PengajuanController::class, 'show'])->name('pengajuan.show');
+Route::put('/pengajuan/detail/{id_pengajuan}', [PengajuanController::class, 'update'])->name('pengajuan.update');
+
 // Route untuk menampilkan page pengajuan
 Route::get('/pengajuan', [PengajuanController::class, 'index'])->name('pengajuan.index');
 
 // Route untuk menyimpan data pengajuan baru
-Route::post('/pengajuan', [PengajuanController::class, 'store'])->name('pengajuan.form');
+Route::post('/pengajuan', [PengajuanController::class, 'store'])->name('pengajuan.store');
 
-// Route untuk menampilkan detail pengajuan
-Route::get('pengajuan/detail/{id_pengajuan}', [PengajuanController::class, 'show'])->name('pengajuan.show');
+// Route untuk reviewer
+Route::get('/reviewer', [ReviewController::class, 'index'])->name('reviewer.index');
+Route::get('/reviewer/{id_pengajuan}/{id_reviewer}', [ReviewController::class, 'detailReviewer'])->name('reviewer.detail_reviewer');
+Route::post('/reviewer/{id_pengajuan}/{id_reviewer}', [ReviewController::class, 'storeReview'])->name('store_review');

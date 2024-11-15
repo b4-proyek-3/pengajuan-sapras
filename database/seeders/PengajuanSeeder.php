@@ -21,8 +21,6 @@ class PengajuanSeeder extends Seeder
         // Mengambil data dari tabel pengaju, tempat, dan ormawa
         $nims = Pengaju::pluck('nim')->toArray();
         $tempatIds = Tempat::pluck('id_tempat')->toArray();
-        $ormawaIds = Ormawa::pluck('id_ormawa')->toArray();
-
         $existingCount = Pengajuan::count();
 
         // Membuat beberapa data pengajuan
@@ -31,17 +29,15 @@ class PengajuanSeeder extends Seeder
 
             Pengajuan::create([
                 'id_pengajuan' => $idPengajuan,
-                'id_ormawa' => $ormawaIds[array_rand($ormawaIds)], // Mengambil ID ormawa secara acak
                 'nim' => $nims[array_rand($nims)], // Mengambil NIM secara acak
                 'tanggal_pengajuan' => now(),
                 'id_tempat' => $tempatIds[array_rand($tempatIds)], // Mengambil ID tempat secara acak
-                'tanggal_pinjam' => now()->addDays(rand(1, 10)),
-                'tanggal_akhir' => now()->addDays(rand(11, 20)),
-                'waktu_pengajuan' => now()->format('H:i:s'),
+                'tanggal_pinjam' => now()->addDays(7),
+                'tanggal_akhir' => now()->addDays(14),
+                'waktu_pinjam' => now()->format('H:i:s'),
                 'nama_kegiatan' => 'Kegiatan ' . $i,
-                'jenis_kegiatan' => rand(0, 1) ? 'proker' : 'pergerakan', // Menentukan jenis kegiatan secara acak
-                'link_gdrive' => 'https://drive.google.com/link' . $i,
-                'status' => 'diajukan', // Set status ke 'diajukan' sebagai default
+                'jenis_kegiatan' => 'proker',
+                'link_drive' => 'https://google.com'
             ]);
         }
     }

@@ -15,22 +15,19 @@ class Pengajuan extends Model
     
     protected $fillable = [
         'id_pengajuan',
-        'id_ormawa',
         'nim',
         'tanggal_pengajuan',
         'tanggal_pinjam',
         'tanggal_akhir',
-        'waktu_pengajuan',
-        'id_tempat',
+        'waktu_pinjam',
         'nama_kegiatan',
-        'link_gdrive',
-        'status',
+        'jenis_kegiatan',
+        'link_drive',
     ];
     
     public $incrementing = false;
-
     public $timestamps = false;
-    
+
     public function pengaju()
     {
         return $this->belongsTo(Pengaju::class, 'nim', 'nim');
@@ -38,7 +35,15 @@ class Pengajuan extends Model
 
     public function reviewers()
     {
-        return $this->belongsToMany(Reviewer::class, 'reviews', 'id_pengajuan', 'id_reviewer');
+        return $this->belongsToMany(Reviewer::class, 'reviews', 'id_pengajuan', 'id_reviewer')
+                    ->withPivot('catatan', 'tanggal_review');
+    }
+
+    public function latestReview()
+    {
+        return $this->hasMany(Review::class, 'id_pengajuan')
+                    ->orderBy('tanggal_review', 'desc')
+                    ->limit(2);
     }
 
     public function dokumen()
@@ -51,8 +56,8 @@ class Pengajuan extends Model
         return $this->belongsTo(Tempat::class, 'id_tempat', 'id_tempat');
     }
 
-    public function ormawa()
+    public function statusHistory()
     {
-        return $this->belongsTo(Ormawa::class, 'id_ormawa', 'id_ormawa');
+        return $this->hasMany(Review::class, 'id_pengajuan', 'id_pengajuan');
     }
 }

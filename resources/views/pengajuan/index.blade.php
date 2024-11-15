@@ -94,7 +94,7 @@
                                     <td class="py-3 px-4 border">{{ $loop->iteration }}</td>
                                     <td class="py-3 px-4 border">{{ $pengajuan->tanggal_pengajuan }}</td>
                                     <td class="py-3 px-4 border">{{ $pengajuan->nama_kegiatan }}</td>
-                                    <td class="py-3 px-4 border">{{ $pengajuan->ormawa->nama_ormawa ?? '-' }}</td>
+                                    <td class="py-3 px-4 border">{{ $pengajuan->pengaju->ormawa->nama_ormawa ?? '-' }}</td>
                                     <td class="py-3 px-4 border">{{ $pengajuan->status }}</td>
                                     <td class="py-3 px-4 border">{{ $pengajuan->keterangan }}</td>
                                     <td class="py-3 px-4 border">
@@ -115,11 +115,11 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <form action="{{ route('pengajuan.form') }}" method="POST" enctype="multipart/form-data">
+                                <form action="{{ route('pengajuan.store') }}" method="POST" enctype="multipart/form-data">
                                     @csrf <!-- CSRF token for security -->
                                     
                                     <!-- Form fields -->
-                                    <div class="mb-3">
+                                    <!-- <div class="mb-3">
                                         <label for="ormawa">Ormawa</label>
                                         <select name="ormawa" id="ormawa" class="form-control" required>
                                             <option value=""> Pilih Ormawa </option>
@@ -127,7 +127,7 @@
                                                 <option value="{{ $ormawa->id_ormawa }}">{{ $ormawa->nama_ormawa }}</option>
                                             @endforeach
                                         </select>
-                                    </div>
+                                    </div> -->
 
                                     <div class="mb-3">
                                         <label for="tanggal_peminjaman" class="form-label">Tanggal Peminjaman</label>
@@ -154,7 +154,7 @@
                                         <select name="id_tempat" id="id_tempat" class="form-control" required>
                                             <option value=""> Pilih Tempat </option>
                                             @foreach($tempatList as $tempat)
-                                                <option value="{{ $tempat->id_tempat }}">{{ $tempat->nama_tempat }}</option>
+                                                <option value="{{ $tempat->id_tempat }}">{{ $tempat->nama_gedung }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -294,7 +294,7 @@
                                         <td class="py-3 px-4 border">{{ $loop->iteration }}</td>
                                         <td class="py-3 px-4 border">{{ $pengajuan->tanggal_pengajuan }}</td>
                                         <td class="py-3 px-4 border">{{ $pengajuan->nama_kegiatan }}</td>
-                                        <td class="py-3 px-4 border">{{ $pengajuan->ormawa->nama_ormawa ?? '-' }}</td>
+                                        <td class="py-3 px-4 border">{{ $pengajuan->pengaju->ormawa->nama_ormawa ?? '-' }}</td>
                                         <td class="py-3 px-4 border">{{ $pengajuan->status }}</td>
                                         <td class="py-3 px-4 border">{{ $pengajuan->keterangan }}</td>
                                         <td class="py-3 px-4 border">
