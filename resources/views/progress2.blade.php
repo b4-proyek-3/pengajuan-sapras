@@ -44,68 +44,68 @@
     <!-- Status Tracker -->
     <div class="tracking_status_container">
         <div class="tracking_status_wrapper">
-        <div class="tracking_status_header">STATUS</div>
-        <ul class="tracking_status_list">
-            @foreach ($stepIcons as $step => $icon)
-                @php
-                    $roleMap = [
-                        'Review Sekretaris BEM' => 'sekum-bem',
-                        'Review KLI' => 'kli',
-                        'Review Wadir 3' => 'wd-3'
-                    ];
-                    $review = $reviews->firstWhere('reviewer.role', $roleMap[$step] ?? '');
-                    
-                    $statusClass = '';
-                    if ($stepStatus[$step]['status']) {
-                        if ($stepStatus[$step]['isDitolak']) {
-                            $statusClass = 'ditolak';
-                        } elseif ($stepStatus[$step]['isRevisi']) {
-                            $statusClass = 'revisi';
-                        } else {
-                            $statusClass = 'active';
+            <div class="tracking_status_header">STATUS</div>
+            <ul class="tracking_status_list">
+                @foreach ($stepIcons as $step => $icon)
+                    @php
+                        $roleMap = [
+                            'Review Sekretaris BEM' => 'sekum-bem',
+                            'Review KLI' => 'kli',
+                            'Review Wadir 3' => 'wd-3'
+                        ];
+                        $review = $reviews->firstWhere('reviewer.role', $roleMap[$step] ?? '');
+                        
+                        $statusClass = '';
+                        if ($stepStatus[$step]['status']) {
+                            if ($stepStatus[$step]['isDitolak']) {
+                                $statusClass = 'ditolak';
+                            } elseif ($stepStatus[$step]['isRevisi']) {
+                                $statusClass = 'revisi';
+                            } else {
+                                $statusClass = 'active';
+                            }
                         }
-                    }
-                @endphp
-                <li class="tracking_status_item {{ $statusClass }}">
-                    <div class="tracking_status_date">
-                        @if($step === 'Pengajuan dibuat')
-                            {{ \Carbon\Carbon::parse($pengajuan->tanggal_pengajuan)->format('d-m-Y H:i:s') }}
-                        @elseif(isset($reviewDates[$step]))
-                            {{ \Carbon\Carbon::parse($reviewDates[$step])->format('d-m-Y H:i:s') }}
-                        @else
-                            Menunggu review
-                        @endif
-                    </div>
-                    <div class="tracking_status_content">
-                        <div class="tracking_status_dot"></div>
-                        <div class="tracking_status_icon">
-                            <i class="fa-solid fa-{{ $icon }}"></i>
+                    @endphp
+                    <li class="tracking_status_item {{ $statusClass }}">
+                        <div class="tracking_status_date">
+                            @if($step === 'Pengajuan dibuat')
+                                {{ \Carbon\Carbon::parse($pengajuan->tanggal_pengajuan)->format('d-m-Y H:i:s') }}
+                            @elseif(isset($reviewDates[$step]))
+                                {{ \Carbon\Carbon::parse($reviewDates[$step])->format('d-m-Y H:i:s') }}
+                            @else
+                                Menunggu review
+                            @endif
                         </div>
-                        <div class="tracking_status_text">
-                            <div class="tracking_status_title">{{ $step }}</div>
-                            <div class="tracking_status_desc">
-                                @if($step === 'Pengajuan dibuat')
-                                    Pengajuan telah dibuat dengan ID {{ $pengajuan->id_pengajuan }}
-                                @elseif($step === 'Diterima' && isset($reviewDates['Review Wadir 3']))
-                                    Pengajuan diterima pada tanggal {{ \Carbon\Carbon::parse($reviewDates['Review Wadir 3'])->format('d-m-Y H:i:s') }}
-                                @elseif($stepStatus[$step]['status'])
-                                    @if($stepStatus[$step]['isRevisi'])
-                                        Dalam proses revisi oleh {{ $roleMap[$step] ?? 'Reviewer' }}
-                                    @elseif($stepStatus[$step]['isDitolak'])
-                                        Ditolak oleh {{ $roleMap[$step] ?? 'Reviewer' }} dengan catatan: {{ $review->catatan ?? 'Tidak ada catatan' }}
+                        <div class="tracking_status_content">
+                            <div class="tracking_status_dot"></div>
+                            <div class="tracking_status_icon">
+                                <i class="fa-solid fa-{{ $icon }}"></i>
+                            </div>
+                            <div class="tracking_status_text">
+                                <div class="tracking_status_title">{{ $step }}</div>
+                                <div class="tracking_status_desc">
+                                    @if($step === 'Pengajuan dibuat')
+                                        Pengajuan telah dibuat dengan ID {{ $pengajuan->id_pengajuan }}
+                                    @elseif($step === 'Diterima' && isset($reviewDates['Review Wadir 3']))
+                                        Pengajuan diterima pada tanggal {{ \Carbon\Carbon::parse($reviewDates['Review Wadir 3'])->format('d-m-Y H:i:s') }}
+                                    @elseif($stepStatus[$step]['status'])
+                                        @if($stepStatus[$step]['isRevisi'])
+                                            Pengajuan perlu direvisi dengan catatan: {{ $review->catatan ?? 'Tidak ada catatan' }}
+                                        @elseif($stepStatus[$step]['isDitolak'])
+                                            Ditolak oleh {{ $roleMap[$step] ?? 'Reviewer' }} dengan catatan: {{ $review->catatan ?? 'Tidak ada catatan' }}
+                                        @else
+                                            Sudah direview oleh {{ $roleMap[$step] ?? 'Reviewer' }} dengan catatan: {{ $review->catatan ?? 'Tidak ada catatan' }}
+                                        @endif
                                     @else
-                                        Sudah direview oleh {{ $roleMap[$step] ?? 'Reviewer' }} dengan catatan: {{ $review->catatan ?? 'Tidak ada catatan' }}
+                                        Menunggu review dari {{ $roleMap[$step] ?? 'Reviewer' }}
                                     @endif
-                                @else
-                                    Menunggu review dari {{ $roleMap[$step] ?? 'Reviewer' }}
-                                @endif
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </li>
-            @endforeach
-        </ul>
+                    </li>
+                @endforeach
+            </ul>
+        </div>
     </div>
-</div>
 </div>
 @endsection

@@ -280,7 +280,7 @@ a {
 
 #progressbar li.active:after {
   background: #FF9800;
-  animation: progressLine 1s ease-in-out;
+  animation: fillProgressBar 1s ease-in-out forwards;
 }
 
 /* Revised Steps Styling with Animation */
@@ -297,7 +297,7 @@ a {
 
 #progressbar li.revisi:after {
   background: #2196F3;
-  animation: progressLine 1s ease-in-out;
+  animation: fillProgressBar 1s ease-in-out forwards;
 }
 
 /* Rejected Steps Styling */
@@ -314,7 +314,7 @@ a {
 
 #progressbar li.ditolak:after {
   background: #F44336;
-  animation: progressLine 1s ease-in-out;
+  animation: fillProgressBar 1s ease-in-out forwards;
 }
 
 /* Animation Keyframes */
@@ -330,6 +330,16 @@ a {
   100% {
     transform: scale(1);
     opacity: 1;
+  }
+}
+
+/* Fill Animation for Progress Bar */
+@keyframes fillProgressBar {
+  0% {
+      clip-path: inset(0 100% 0 0);
+  }
+  100% {
+      clip-path: inset(0 0 0 0);
   }
 }
 
@@ -361,6 +371,7 @@ a {
   border-radius: 8px;
   padding-left: 20px;
   padding-right: 20px;
+  padding-top: 10px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
@@ -413,15 +424,16 @@ a {
   box-shadow: 0 0 5px rgba(255, 152, 0, 0.5);
 }
 
-/* Revised Steps Styling */
+/* Revision status styling */
 .tracking_status_item.revisi .tracking_status_dot {
-  background-color: #2196F3; /* Blue color for revision */
+  background-color: #2196F3; /* Blue for revision */
+  border-color: #2196F3;
 }
 
-/* Rejected Steps Styling */
+/* Rejected status styling */
 .tracking_status_item.ditolak .tracking_status_dot {
-  background-color: #F44336; /* Red color for rejection */
-  border-color: #F44336; /* Ensure border matches background */
+  background-color: #F44336; /* Red for rejection */
+  border-color: #F44336;
 }
 
 /* Active Steps Styling */
@@ -454,14 +466,16 @@ a {
   position: relative;
 }
 
+/* Vertical line styling update */
 .tracking_status_list::before {
   content: '';
   position: absolute;
   top: 0;
-  left: 176px;          /* sebelumnya 106px */
+  left: 176px;
   width: 2px;
   height: 100%;
   background: #ddd;
+  z-index: 0;
 }
 
 .tracking_status_item {
@@ -490,6 +504,7 @@ a {
   padding-left: 30px;
 }
 
+/* Base status dot styling */
 .tracking_status_dot {
   position: absolute;
   left: -28px;
@@ -498,7 +513,9 @@ a {
   height: 16px;
   border-radius: 50%;
   background: #ddd;
+  border: 2px solid transparent;
   z-index: 1;
+  transition: all 0.3s ease;
 }
 
 .tracking_status_icon {
@@ -575,6 +592,18 @@ a {
 .tracking_status_item.revisi .tracking_status_dot {
   background-color: #2196F3; /* Change the dot color */
 }
+
+/* Active item text emphasis */
+.tracking_status_item.active .tracking_status_title,
+.tracking_status_item.revisi .tracking_status_title,
+.tracking_status_item.ditolak .tracking_status_title {
+  font-weight: 600;
+  color: #000;
+}
+
+/* Status icon colors */
+.tracking_status_item.revisi .tracking_status_icon { color: #2196F3; }
+.tracking_status_item.ditolak .tracking_status_icon { color: #F44336; }
 
 
 /* riwayat dokumen */
