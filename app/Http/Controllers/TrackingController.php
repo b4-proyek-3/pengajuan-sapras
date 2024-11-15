@@ -51,11 +51,11 @@ class TrackingController extends Controller
     private function getStepStatus($reviews)
     {
         $stepStatus = [
-            'Pengajuan dibuat' => ['status' => true, 'isRevisi' => false],
-            'Review Sekretaris BEM' => ['status' => false, 'isRevisi' => false],
-            'Review KLI' => ['status' => false, 'isRevisi' => false],
-            'Review Wadir 3' => ['status' => false, 'isRevisi' => false],
-            'Diterima' => ['status' => false, 'isRevisi' => false]
+            'Pengajuan dibuat' => ['status' => true, 'isRevisi' => false, 'isDitolak' => false],
+            'Review Sekretaris BEM' => ['status' => false, 'isRevisi' => false, 'isDitolak' => false],
+            'Review KLI' => ['status' => false, 'isRevisi' => false, 'isDitolak' => false],
+            'Review Wadir 3' => ['status' => false, 'isRevisi' => false, 'isDitolak' => false],
+            'Diterima' => ['status' => false, 'isRevisi' => false, 'isDitolak' => false]
         ];
 
         foreach ($reviews as $review) {
@@ -63,14 +63,17 @@ class TrackingController extends Controller
                 case 'sekum-bem':
                     $stepStatus['Review Sekretaris BEM']['status'] = true;
                     $stepStatus['Review Sekretaris BEM']['isRevisi'] = ($review->status === 'direvisi');
+                    $stepStatus['Review Sekretaris BEM']['isDitolak'] = ($review->status === 'ditolak');
                     break;
                 case 'kli':
                     $stepStatus['Review KLI']['status'] = true;
                     $stepStatus['Review KLI']['isRevisi'] = ($review->status === 'direvisi');
+                    $stepStatus['Review KLI']['isDitolak'] = ($review->status === 'ditolak');
                     break;
                 case 'wd-3':
                     $stepStatus['Review Wadir 3']['status'] = true;
                     $stepStatus['Review Wadir 3']['isRevisi'] = ($review->status === 'direvisi');
+                    $stepStatus['Review Wadir 3']['isDitolak'] = ($review->status === 'ditolak');
                     if ($review->status === 'diterima') {
                         $stepStatus['Diterima']['status'] = true;
                     }

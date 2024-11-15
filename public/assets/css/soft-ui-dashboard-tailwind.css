@@ -300,6 +300,23 @@ a {
   animation: progressLine 1s ease-in-out;
 }
 
+/* Rejected Steps Styling */
+#progressbar li.ditolak .circle {
+  border-color: #F44336;
+  background-color: #ffffff;
+  animation: pulseCircle 1s ease-in-out;
+}
+
+#progressbar li.ditolak i {
+  color: #F44336;
+  animation: fadeIcon 1s ease-in-out;
+}
+
+#progressbar li.ditolak:after {
+  background: #F44336;
+  animation: progressLine 1s ease-in-out;
+}
+
 /* Animation Keyframes */
 @keyframes pulseCircle {
   0% {
@@ -335,15 +352,6 @@ a {
     background-position: left center;
     background: #FF9800;
   }
-}
-
-#progressbar li.revisi:after {
-  background: #2196F3; /* Blue color for revision */
-}
-
-/* Status Tracker Dots */
-.tracking_status_item.revisi .tracking_status_dot {
-    background-color: #2196F3; /* Change the dot color to blue */
 }
 
 
@@ -405,7 +413,21 @@ a {
   box-shadow: 0 0 5px rgba(255, 152, 0, 0.5);
 }
 
+/* Revised Steps Styling */
+.tracking_status_item.revisi .tracking_status_dot {
+  background-color: #2196F3; /* Blue color for revision */
+}
 
+/* Rejected Steps Styling */
+.tracking_status_item.ditolak .tracking_status_dot {
+  background-color: #F44336; /* Red color for rejection */
+  border-color: #F44336; /* Ensure border matches background */
+}
+
+/* Active Steps Styling */
+.tracking_status_item.active .tracking_status_dot {
+  background-color: #FF9800; /* Orange color for active steps */
+}
 
 /* Tracking status */
 .tracking_status_container {
