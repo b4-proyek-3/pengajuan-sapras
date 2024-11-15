@@ -119,7 +119,7 @@
                                     @csrf <!-- CSRF token for security -->
                                     
                                     <!-- Form fields -->
-                                    <div class="mb-3">
+                                    <!-- <div class="mb-3">
                                         <label for="ormawa">Ormawa</label>
                                         <select name="ormawa" id="ormawa" class="form-control" required>
                                             <option value=""> Pilih Ormawa </option>
@@ -127,7 +127,7 @@
                                                 <option value="{{ $ormawa->id_ormawa }}">{{ $ormawa->nama_ormawa }}</option>
                                             @endforeach
                                         </select>
-                                    </div>
+                                    </div> -->
 
                                     <div class="mb-3">
                                         <label for="tanggal_peminjaman" class="form-label">Tanggal Peminjaman</label>

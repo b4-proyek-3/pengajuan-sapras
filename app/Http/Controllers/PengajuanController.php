@@ -8,6 +8,7 @@ use App\Models\Ormawa;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PengajuanController extends Controller
 {
@@ -63,14 +64,12 @@ class PengajuanController extends Controller
     {
         $request->validate([
             'nim' => 'nullable|exists:pengaju,nim',
-            'ormawa' => 'required|exists:ormawa,id_ormawa',
             'tanggal_pinjam' => 'required|date',
             'tanggal_akhir' => 'required|date|after_or_equal:tanggal_pinjam',
-            'waktu_pengajuan' => 'required',
+            'waktu_pinjam' => 'required',
             'id_tempat' => 'required|exists:tempat,id_tempat',
             'nama_kegiatan' => 'required|string|max:100',
             'link_gdrive' => 'nullable|url',
-            'status' => 'diajukan',
             'dokumen1' => 'nullable|file|mimes:pdf|max:2048',
             'dokumen2' => 'nullable|file|mimes:pdf|max:2048',
             'dokumen3' => 'nullable|file|mimes:pdf|max:2048',
@@ -83,30 +82,38 @@ class PengajuanController extends Controller
         // Membuat ID pengajuan unik
         $id_pengajuan = Str::random(6);
 
-        // Menyimpan data pengajuan
-        $pengajuan = Pengajuan::create([
-            'id_pengajuan' => $id_pengajuan,
-            'id_ormawa' => $request->ormawa,
-            'nim' => $request->nim,
-            'tanggal_pengajuan' => now(),
-            'id_tempat' => $request->id_tempat,
-            'tanggal_pinjam' => $request->tanggal_pinjam,
-            'tanggal_akhir' => $request->tanggal_akhir,
-            'waktu_pengajuan' => $request->waktu_pengajuan,
-            'nama_kegiatan' => $request->nama_kegiatan,
-            'link_gdrive' => $request->link_gdrive,
-         ]);
-
-        // Simpan setiap dokumen yang diunggah
-        $this->simpanDokumen($request, $id_pengajuan);
-
-        return redirect()->route('pengajuan.index')->with('success', 'Pengajuan berhasil ditambahkan!');
+        try {
+            // Menyimpan data pengajuan
+            DB::transaction(function () use ($request, $id_pengajuan) {
+                
+                Pengajuan::create([
+                    'id_pengajuan' => $id_pengajuan,
+                    'nim' => $request->nim,
+                    'tanggal_pengajuan' => now(),
+                    'id_tempat' => $request->id_tempat,
+                    'tanggal_pinjam' => $request->tanggal_pinjam,
+                    'tanggal_akhir' => $request->tanggal_akhir,
+                    'waktu_pinjam' => $request->waktu_pinjam,
+                    'nama_kegiatan' => $request->nama_kegiatan,
+                    'link_gdrive' => $request->link_gdrive,
+                ]);
+    
+                // Simpan setiap dokumen yang diunggah
+                $this->simpanDokumen($request, $id_pengajuan);
+            });
+    
+            return redirect()->route('pengajuan.index')->with('success', 'Pengajuan berhasil ditambahkan!');
+    
+        } catch (\Exception $e) {
+            // Mencatat log error
+            dd('Gagal menyimpan pengajuan: ' . $e->getMessage());
+        }
     }
 
     private function simpanDokumen(Request $request, $id_pengajuan)
     {
         \Log::info('Memulai proses penyimpanan dokumen.', ['request' => $request->all(), 'id_pengajuan' => $id_pengajuan]);
-
+    
         $dokumen_fields = [
             'dokumen1' => 'Proposal',
             'dokumen2' => 'Term of Reference',
@@ -116,28 +123,31 @@ class PengajuanController extends Controller
             'dokumen6' => 'Surat Pendampingan Pembina',
             'dokumen7' => 'Lampiran Daftar Peserta',
         ];
-
+    
         foreach ($dokumen_fields as $field => $nama_dokumen) {
-            if ($request->hasFile($field)) {
-                $file = $request->file($field);
-                $filename = time() . '_' . $file->getClientOriginalName();
-                $path = $file->storeAs('dokumen_pengajuan', $filename, 'public');
-
-                Dokumen::create([
-                    'id_pengajuan' => $id_pengajuan,
-                    'nama_dokumen' => $nama_dokumen,
-                    'path' => $path,
-                ]);
-
-                \Log::info("Dokumen $nama_dokumen berhasil disimpan.", ['id_pengajuan' => $id_pengajuan, 'nama_dokumen' => $nama_dokumen, 'path' => $path]);
-
-            } else {
-                \Log::warning("Dokumen $field tidak ada dalam permintaan.");
-                
+            try {
+                if ($request->hasFile($field)) {
+                    $file = $request->file($field);
+                    $filename = time() . '_' . $file->getClientOriginalName();
+                    $path = $file->storeAs('dokumen_pengajuan', $filename, 'public');
+    
+                    Dokumen::create([
+                        'id_pengajuan' => $id_pengajuan,
+                        'nama_dokumen' => $nama_dokumen,
+                        'path' => $path,
+                    ]);
+    
+                    \Log::info("Dokumen $nama_dokumen berhasil disimpan.", ['id_pengajuan' => $id_pengajuan, 'nama_dokumen' => $nama_dokumen, 'path' => $path]);
+    
+                } else {
+                    \Log::warning("Dokumen $field tidak ada dalam permintaan.");
+                }
+            } catch (\Exception $e) {
+                dd("Gagal menyimpan dokumen $nama_dokumen: " . $e->getMessage());
             }
         }
     }
-
+    
     public function update(Request $request, string $id_pengajuan)
     {
         try {

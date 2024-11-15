@@ -12,7 +12,9 @@ class Pengajuan extends Model
     protected $table = 'pengajuan'; 
     protected $primaryKey = 'id_pengajuan';
     public $keyType = 'string';
+    
     protected $fillable = [
+        'id_pengajuan',
         'nim',
         'tanggal_pengajuan',
         'tanggal_pinjam',
@@ -21,8 +23,6 @@ class Pengajuan extends Model
         'nama_kegiatan',
         'jenis_kegiatan',
         'link_drive',
-        'status', // Menambahkan status
-        'edited', // Menambahkan edited
     ];
     
     public $incrementing = false;

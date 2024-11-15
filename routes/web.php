@@ -5,10 +5,6 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PengajuanController;
 use App\Http\Controllers\ReviewController;
 
-Route::get('/', function () {
-    return view('pages.test');
-});
-
 // ========================================================================================
 // AUTHENTICATION ROUTES ==================================================================
 Route::controller(AuthController::class)->group(function () {
@@ -25,12 +21,6 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('/logout', 'logout')->name('logout');
 });
 
-// Route untuk menampilkan page pengajuan
-Route::get('/pengajuan', [PengajuanController::class, 'index'])->name('pengajuan.index');
-
-// Route untuk menyimpan data pengajuan baru
-Route::post('/pengajuan', [PengajuanController::class, 'store'])->name('pengajuan.form');
-
 // === Detail Pengajuan Route ==== //
 Route::get('/pengajuan/detail/{id_pengajuan}', [PengajuanController::class, 'show'])->name('pengajuan.show');
 Route::put('/pengajuan/detail/{id_pengajuan}', [PengajuanController::class, 'update'])->name('pengajuan.update');
@@ -45,4 +35,3 @@ Route::post('/pengajuan', [PengajuanController::class, 'store'])->name('pengajua
 Route::get('/reviewer', [ReviewController::class, 'index'])->name('reviewer.index');
 Route::get('/reviewer/{id_pengajuan}/{id_reviewer}', [ReviewController::class, 'detailReviewer'])->name('reviewer.detail_reviewer');
 Route::post('/reviewer/{id_pengajuan}/{id_reviewer}', [ReviewController::class, 'storeReview'])->name('store_review');
-

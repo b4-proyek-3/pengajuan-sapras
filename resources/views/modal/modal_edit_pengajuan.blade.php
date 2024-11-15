@@ -1,6 +1,6 @@
-<div id="editPengajuanModal" tabindex="-1" aria-hidden="true" class=" fade hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-100 flex justify-center items-center w-full h-full">
+<div id="editPengajuanModal" tabindex="-1" class="fade hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-100 justify-center items-center w-full h-full">
     <div class="fixed inset-0 bg-gray-800 opacity-50"></div>
-    <div class="fixed p-2 w-full w-2/5 mx-auto">
+    <div class="fixed p-2 w-2/5 mx-auto">
         <!-- Modal content -->
         <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
             <!-- Modal header -->
