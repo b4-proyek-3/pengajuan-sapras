@@ -117,16 +117,10 @@
                             <div class="modal-body">
                                 <form action="{{ route('pengajuan.store') }}" method="POST" enctype="multipart/form-data">
                                     @csrf <!-- CSRF token for security -->
-                                    
-                                    <!-- Form fields -->
+
                                     <div class="mb-3">
-                                        <label for="ormawa">Ormawa</label>
-                                        <select name="ormawa" id="ormawa" class="form-control" required>
-                                            <option value=""> Pilih Ormawa </option>
-                                            @foreach ($ormawaList as $ormawa)
-                                                <option value="{{ $ormawa->id_ormawa }}">{{ $ormawa->nama_ormawa }}</option>
-                                            @endforeach
-                                        </select>
+                                        <label for="nama_kegiatan" class="form-label">Nama Kegiatan</label>
+                                        <input type="text" name="nama_kegiatan" id="nama_kegiatan" class="form-control" required>
                                     </div>
 
                                     <div class="mb-3">
@@ -141,12 +135,7 @@
 
                                     <div class="mb-3">
                                         <label for="waktu" class="form-label">Waktu Kegiatan</label>
-                                        <input type="time" name="waktu_pengajuan" id="waktu_pengajuan" class="form-control" required>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="nama_kegiatan" class="form-label">Nama Kegiatan</label>
-                                        <input type="text" name="nama_kegiatan" id="nama_kegiatan" class="form-control" required>
+                                        <input type="time" name="waktu_pinjam" id="waktu_pinjam" class="form-control" required>
                                     </div>
 
                                     <div class="mb-3">
@@ -163,7 +152,7 @@
                                         <label for="activity_type" class="form-label">Jenis Kegiatan</label>
                                         <select name="activity_type" id="activity_type" class="form-control" required onchange="showFileInputs()">
                                             <option value="" disabled selected>Pilih Jenis Kegiatan</option>
-                                            <option value="program_kerja">Program Kerja</option>
+                                            <option value="proker">Program Kerja</option>
                                             <option value="pergerakan">Pergerakan</option>
                                         </select>
                                         <p class="text-gray-500 text-sm mt-1">File maksimal 2 MB</p>

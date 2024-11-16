@@ -5,9 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Pengajuan;
 use App\Models\Tempat;
 use App\Models\Ormawa;
+use App\Models\Dokumen;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+
+
 
 class PengajuanController extends Controller
 {
@@ -53,21 +58,23 @@ class PengajuanController extends Controller
         $tempatList = Tempat::all(); 
 
         return view('pengajuan.index', compact('ormawaList', 'tempatList'));
-        $ormawaList = Ormawa::all(); 
-        $tempatList = Tempat::all(); 
-
-        return view('pengajuan.index', compact('ormawaList', 'tempatList'));
     }
 
     public function store(Request $request)
     {
+        $user = Auth::user(); 
+        $pengaju = $user->pengaju;
+
+        $existingCount = Pengajuan::count();
+
         $request->validate([
             'tanggal_pinjam' => 'required|date',
             'tanggal_akhir' => 'required|date|after_or_equal:tanggal_pinjam',
-            'waktu_pengajuan' => 'required',
+            'waktu_pinjam' => 'required',
             'id_tempat' => 'required|exists:tempat,id_tempat',
             'nama_kegiatan' => 'required|string|max:100',
             'link_gdrive' => 'nullable|url',
+            'activity_type' => 'required|string|in:proker,pergerakan',
             
             'dokumen1' => 'nullable|file|mimes:pdf|max:2048',
             'dokumen2' => 'nullable|file|mimes:pdf|max:2048',
@@ -79,20 +86,20 @@ class PengajuanController extends Controller
         ]);
 
         // Membuat ID pengajuan unik
-        $id_pengajuan = Str::random(6);
+        $id_pengajuan = 'P' . str_pad($existingCount + 1, 5, '0', STR_PAD_LEFT);
 
         // Menyimpan data pengajuan
         $pengajuan = Pengajuan::create([
             'id_pengajuan' => $id_pengajuan,
-            'id_ormawa' => $request->ormawa,
-            'nim' => $request->nim,
+            'nim' => $pengaju->nim,
             'tanggal_pengajuan' => now(),
             'id_tempat' => $request->id_tempat,
             'tanggal_pinjam' => $request->tanggal_pinjam,
             'tanggal_akhir' => $request->tanggal_akhir,
-            'waktu_pengajuan' => $request->waktu_pengajuan,
+            'waktu_pinjam' => $request->waktu_pinjam,
             'nama_kegiatan' => $request->nama_kegiatan,
-            'link_gdrive' => $request->link_gdrive,
+            'jenis_kegiatan' => $request->activity_type,
+            'link_drive' => $request->link_gdrive,
          ]);
 
         // Simpan setiap dokumen yang diunggah
@@ -119,7 +126,7 @@ class PengajuanController extends Controller
             if ($request->hasFile($field)) {
                 $file = $request->file($field);
                 $filename = time() . '_' . $file->getClientOriginalName();
-                $path = $file->storeAs('dokumen_pengajuan', $filename, 'public');
+                $path = $file->storeAs('dokumen/' . $id_pengajuan, $filename, 'public');
 
                 Dokumen::create([
                     'id_pengajuan' => $id_pengajuan,

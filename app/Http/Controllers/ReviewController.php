@@ -76,6 +76,74 @@ class ReviewController extends Controller
         return view('reviewer.detail_reviewer', compact('pengajuan', 'review', 'hasReviewed', 'id_reviewer'));
     }
 
+    // Menyimpan review yang dilakukan oleh reviewer tertentu
+    public function storeReview(Request $request, string $id_pengajuan, string $id_reviewer)
+    {
+        // Validasi input dari form
+        $request->validate([
+            'review' => 'string',
+            'status' => 'required|in:diterima,direvisi,ditolak,selesai',
+        ]);
+
+        // Mendapatkan pengajuan
+        $pengajuan = Pengajuan::findOrFail($id_pengajuan);
+
+        // Mendapatkan waktu saat ini
+        $currentDateTime = now();
+
+        // Simpan atau update review
+        $review = Review::updateOrCreate(
+            ['id_pengajuan' => $id_pengajuan, 'id_reviewer' => $id_reviewer],
+            [
+                'review' => $request->input('review'),
+                'tanggal_review' => $currentDateTime,
+            ]
+        );
+
+        // Update status pengajuan berdasarkan hasil review
+        if ($request->input('status') == 'ditolak') {
+            $pengajuan->status = 'ditolak';
+        } elseif ($request->input('status') == 'direvisi') {
+            $pengajuan->status = 'direvisi';
+        } elseif ($request->input('status') == 'diterima') {
+            if ($this->isLastReviewer($pengajuan, $id_reviewer)) {
+                $pengajuan->status = 'selesai';
+            } else {
+                $pengajuan->status = 'diterima';
+                
+                // Debugging next reviewer
+                $nextReviewer = $this->getNextReviewer($pengajuan, $id_reviewer);
+                //dd(['Next reviewer' => $nextReviewer]);
+
+                if ($nextReviewer) {
+                    Review::create([
+                        'id_pengajuan' => $id_pengajuan,
+                        'id_reviewer' => $nextReviewer->id_reviewer,
+                        'status' => 'diajukan',
+                        'tanggal_review' => $currentDateTime,
+                    ]);
+                }
+            }
+        }
+
+        // Simpan status pengajuan
+        $pengajuan->save();
+        //dd(['Pengajuan status' => $pengajuan->status]);
+
+        // Debugging hasil akhir
+        /*dd([
+            'Redirecting to detail reviewer with' => [
+                'id_pengajuan' => $id_pengajuan,
+                'id_reviewer' => $id_reviewer,
+                'success_message' => 'Review berhasil disimpan'
+            ]
+        ]);*/
+
+        // Redirect kembali ke halaman detail reviewer
+        return redirect()->route('reviewer.detail_reviewer', ['id_pengajuan' => $id_pengajuan, 'id_reviewer' => $id_reviewer])
+                         ->with('success', 'Review berhasil disimpan');
+    }
+
     public function updateReview(Request $request, Pengajuan $pengajuan)
     {
         $request->validate([

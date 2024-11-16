@@ -12,31 +12,6 @@
 
         <!-- Card Diajukan -->
         <div id="diajukanCard" class="bg-white shadow-md rounded-lg p-6 -mt-1 relative">
-            <!-- Tombol Pengajuan -->
-            <div class="flex flex-col items-start">
-                <button data-bs-toggle="modal" data-bs-target="#pengajuanModal" class="flex items-center bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg transition duration-200 ease-in-out">
-                    <span class="mr-2 text-lg font-bold">+</span>Tambah Pengajuan
-                </button>
-                @if (session('success'))
-                    <div x-data="{ show: true }" 
-                        x-show="show" 
-                        x-init="setTimeout(() => show = false, 5000)" 
-                        class="text-green-400 px-4 py-4 z-10"
-                        role="alert">
-                        <span class="block sm:inline">{{ session('success') }}</span>
-                    </div>
-                @endif
-
-                @if (session('failed'))
-                    <div x-data="{ show: true }" 
-                        x-show="show" 
-                        x-init="setTimeout(() => show = false, 5000)" 
-                        class="text-red-400 px-4 py-4 z-10"
-                        role="alert">
-                        <span class="block sm:inline">{{ session('failed') }}</span>
-                    </div>
-                @endif
-            </div>
 
             <!-- Sorting dan Pencarian -->
             <div class="bg-orange-500 p-4 border-b border-orange-500 mt-4"></div>

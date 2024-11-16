@@ -13,8 +13,10 @@ class Pengajuan extends Model
     protected $primaryKey = 'id_pengajuan';
     public $keyType = 'string';
     protected $fillable = [
+        'id_pengajuan',
         'nim',
         'tanggal_pengajuan',
+        'id_tempat',
         'tanggal_pinjam',
         'tanggal_akhir',
         'waktu_pinjam',
