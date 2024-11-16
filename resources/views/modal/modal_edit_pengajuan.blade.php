@@ -16,7 +16,7 @@
                     @method('PUT')
                     <div class="flex flex-col">
                         <label for="nama-pengaju" class="block mt-2 mb-2 text-sm font-medium text-gray-900 dark:text-white">Nama Pengaju</label>
-                        <input id="nama-pengaju" value="{{ $pengajuans->pengaju->nama }}" class="bg-gray-50 px-3 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" readonly/>
+                        <input id="nama-pengaju" value="{{ $pengajuans->pengaju->users->name ?? '-' }}" class="bg-gray-50 px-3 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" readonly/>
                     </div>
                     <div class="flex flex-col">
                         <label for="ormawa" class="block mt-2 mb-2 text-sm font-medium text-gray-900 dark:text-white">Ormawa</label>

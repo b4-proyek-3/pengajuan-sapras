@@ -13,6 +13,7 @@ class Ormawa extends Model
     protected $table = 'ormawa';
     protected $fillable = ['nama_ormawa'];
 
+
     public function pengaju() {
         return $this->hasMany(Pengaju::class, 'id_ormawa');
     }

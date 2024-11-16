@@ -6,6 +6,7 @@ use App\Models\Pengajuan;
 use App\Models\Tempat;
 use App\Models\Ormawa;
 use App\Models\Dokumen;
+use App\Models\Pengaju;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -37,10 +38,10 @@ class PengajuanController extends Controller
         }
 
         $pengajuanList = $query->get();
-        $ormawaList = Ormawa::all(); 
+        dd($pengajuanList->first()->pengaju);
         $tempatList = Tempat::all(); 
 
-        return view('pengajuan.index', compact('pengajuanList', 'ormawaList', 'tempatList'));
+        return view('pengajuan.index', compact('pengajuanList', 'tempatList'));
     }
 
     public function show(string $id_pengajuan)
