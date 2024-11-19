@@ -23,6 +23,7 @@ class ReviewerSeeder extends Seeder
             $this->command->error('Tidak ada data pengguna di tabel users!');
             return;
         }
+
         // Role yang akan digunakan untuk reviewer
         $roles = ['sekum-bem', 'kli', 'ketua_jurusan', 'wd-3'];
 

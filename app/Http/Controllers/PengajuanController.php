@@ -13,8 +13,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 
-
-
 class PengajuanController extends Controller
 {
     public function index(Request $request)
@@ -38,7 +36,6 @@ class PengajuanController extends Controller
         }
 
         $pengajuanList = $query->get();
-        dd($pengajuanList->first()->pengaju);
         $tempatList = Tempat::all(); 
 
         return view('pengajuan.index', compact('pengajuanList', 'tempatList'));
@@ -101,6 +98,7 @@ class PengajuanController extends Controller
             'nama_kegiatan' => $request->nama_kegiatan,
             'jenis_kegiatan' => $request->activity_type,
             'link_drive' => $request->link_gdrive,
+            'updated_at' => now(),
          ]);
 
         // Simpan setiap dokumen yang diunggah
@@ -153,7 +151,7 @@ class PengajuanController extends Controller
                 'id_tempat' => 'nullable|exists:tempat,id_tempat',
                 'nama_kegiatan' => 'nullable|string',
                 'nama_tempat' => 'nullable|string',
-                'waktu_pengajuan' => 'nullable|date_format:H:i'
+                'waktu_pengajuan' => 'nullable|date_format:H:i',
             ]);
     
             $pengajuan = Pengajuan::findOrFail($id_pengajuan);
@@ -163,7 +161,7 @@ class PengajuanController extends Controller
                 'tanggal_akhir' => $request->tanggal_akhir,
                 'id_tempat' => $request->filled('id_tempat') ? $request->id_tempat : $pengajuan->id_tempat,
                 'nama_kegiatan' => $request->nama_kegiatan,
-                'waktu_pengajuan' => $request->waktu_pengajuan
+                'waktu_pinjam' => $request->waktu_pengajuan,
             ], function ($value) {
                 return $value !== null;
             });

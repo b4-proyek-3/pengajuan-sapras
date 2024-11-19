@@ -25,6 +25,7 @@ class Pengajuan extends Model
         'link_drive',
         'status', // Menambahkan status
         'edited', // Menambahkan edited
+        'updated_at',
     ];
     
     public $incrementing = false;
@@ -38,7 +39,7 @@ class Pengajuan extends Model
     public function reviewers()
     {
         return $this->belongsToMany(Reviewer::class, 'reviews', 'id_pengajuan', 'id_reviewer')
-                    ->withPivot('catatan', 'tanggal_review');
+                    ->withPivot('status', 'catatan', 'tanggal_review');
     }
 
     public function latestReview()

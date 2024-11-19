@@ -94,7 +94,7 @@
                                     <td class="py-3 px-4 border">{{ $loop->iteration }}</td>
                                     <td class="py-3 px-4 border">{{ $pengajuan->tanggal_pengajuan }}</td>
                                     <td class="py-3 px-4 border">{{ $pengajuan->nama_kegiatan }}</td>
-                                    <td class="py-3 px-4 border">{{ $pengajuan->pengajuormawa->nama_ormawa ?? '-' }}</td>
+                                    <td class="py-3 px-4 border">{{ $pengajuan->pengaju->ormawa->nama_ormawa ?? '-' }}</td>
                                     <td class="py-3 px-4 border">{{ $pengajuan->status }}</td>
                                     <td class="py-3 px-4 border">{{ $pengajuan->keterangan }}</td>
                                     <td class="py-3 px-4 border">

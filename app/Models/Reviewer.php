@@ -41,4 +41,9 @@ class Reviewer extends Authenticatable
             ELSE 4 
         END");
     }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'id_role', 'id_role');
+    }
 }

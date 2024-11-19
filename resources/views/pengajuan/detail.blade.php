@@ -191,7 +191,7 @@
                   </div>
               </div>
               <div class="flex-none w-1/2 max-w-full px-3 text-right">
-                    <button class="inline-block w-full px-8 py-2 mb-0 font-bold text-center uppercase align-middle transition-all bg-transparent border border-solid rounded-lg shadow-none cursor-pointer leading-pro ease-soft-in text-xs bg-150 active:opacity-85 hover:scale-102 tracking-tight-soft bg-x-25 border-fuchsia-500 text-fuchsia-500 hover:opacity-75">View All</button>
+                    <button onclick="window.location='{{ route('tracking.show', ['id_pengajuan' => $pengajuans->id_pengajuan]) }}'" class="inline-block w-full px-8 py-2 mb-0 font-bold text-center uppercase align-middle transition-all bg-transparent border border-solid rounded-lg shadow-none cursor-pointer leading-pro ease-soft-in text-xs bg-150 active:opacity-85 hover:scale-102 tracking-tight-soft bg-x-25 border-fuchsia-500 text-fuchsia-500 hover:opacity-75">View All</button>
               </div>
             </div>
           </div>
@@ -212,11 +212,11 @@
                   </div>
                   <div class="flex-none w-5/12 max-w-full px-3 my-auto text-right lg:w-1/2 lg:flex-none">
                     <div class="relative pr-6 lg:float-right">
-                      @if ($pengajuans->status == 'direvisi')
+                      <!-- @if ($pengajuans->status == 'direvisi')
                         <a dropdown-trigger class="cursor-pointer" aria-expanded="false" onclick="openModal('upload-Modal')">
                           <i class="fa fa-ellipsis-v"></i>
                         </a>
-                      @endif
+                      @endif -->
                     </div>
                   </div>
                 </div>
@@ -281,14 +281,12 @@
             </div>
           </div>
         </footer>
-
-
 </div>
 @include('modal.modal_edit_pengajuan')
-@include('modal.modal_edit_dokumen')
 <script>
     function openModal(modalId) {
         document.getElementById(modalId).classList.remove('hidden');
+        document.getElementById(modalId).focus();
     }
 
     function closeModal(modalId) {

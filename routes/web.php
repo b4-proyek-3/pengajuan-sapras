@@ -4,6 +4,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PengajuanController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\TrackingController;
+
+Route::get('/', function () {
+    return view('progress2');
+});
 
 // ========================================================================================
 // AUTHENTICATION ROUTES ==================================================================
@@ -40,5 +45,7 @@ Route::post('/pengajuan', [PengajuanController::class, 'store'])->name('pengajua
 // Route untuk reviewer
 Route::get('/reviewer', [ReviewController::class, 'index'])->name('reviewer.index');
 Route::get('/reviewer/{id_pengajuan}/{id_reviewer}', [ReviewController::class, 'detailReviewer'])->name('reviewer.detail_reviewer');
-Route::post('/reviewer/{id_pengajuan}/{id_reviewer}', [ReviewController::class, 'storeReview'])->name('store_review');
+Route::post('/reviewer/{id_pengajuan}/{id_reviewer}', [ReviewController::class, 'updateReview'])->name('update.review');
 
+// Routes untuk Status Tracker
+Route::get('/tracking/{id_pengajuan}', [TrackingController::class, 'show'])->name('tracking.show');

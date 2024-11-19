@@ -16,14 +16,38 @@ class ReviewController extends Controller
     {
         $sortStatus = $request->input('sort_status');
         $search = $request->input('search');
+        $reviewer = auth()->user()->reviewer;
+        $id_reviewer = $reviewer->id_reviewer;
+        $role = $reviewer->role;
 
-        // Query untuk pengajuan selain yang statusnya "diajukan"
-        $queryRiwayat = Pengajuan::with(['pengaju.ormawa'])
-            ->where('status', '!=', 'diajukan');
+        $queryDiajukan = Pengajuan::with(['pengaju.ormawa', 'reviewers'])
+            ->where(function ($query) use ($role) {
+                if ($role == 'sekum-bem') {
+                    // Sekum BEM hanya melihat pengajuan dengan status 'diajukan'
+                    $query->where('status', 'diajukan');
+                } else {
+                    $query->where('status', 'direview')
+                        ->whereHas('reviewers', function ($query) use ($role) {
+                            if ($role == 'kli') {
+                                $query->where('role', 'sekum-bem')->where('reviews.status', 'diterima');
+                            } elseif ($role == 'wd-3') {
+                                $query->where('role', 'kli')->where('reviews.status', 'diterima');
+                            }
+                        });
+                    }
+            })
+            ->whereDoesntHave('reviewers', function ($query) use ($id_reviewer) {
+                $query->where('reviewers.id_reviewer', $id_reviewer); // Belum direview oleh reviewer ini
+            })
+            ->get();
 
-        // Query untuk pengajuan dengan status "diajukan"
-        $queryDiajukan = Pengajuan::with(['pengaju.ormawa'])
-            ->where('status', 'diajukan');
+        $queryRiwayat = Pengajuan::with(['pengaju.ormawa', 'reviewers' => function ($query) use ($id_reviewer) {
+                $query->where('reviewers.id_reviewer', $id_reviewer); // Sudah direview oleh reviewer ini
+            }])
+            ->whereHas('reviewers', function ($query) use ($id_reviewer) {
+                $query->where('reviewers.id_reviewer', $id_reviewer); // Sudah direview oleh reviewer ini
+            })
+            ->get();
 
         if ($sortStatus) {
             $query->where('status', $sortStatus);
@@ -45,182 +69,102 @@ class ReviewController extends Controller
             });
         }
 
-        $pengajuanRiwayat = $queryRiwayat->get();
-        $pengajuanDiajukan = $queryDiajukan->get();
-        $ormawaList = Ormawa::all(); 
+        $pengajuanRiwayat = $queryRiwayat;
+        $pengajuanDiajukan = $queryDiajukan;
         $tempatList = Tempat::all();
-        $reviewer = auth()->user()->reviewer;
 
-        return view('reviewer.index', compact('ormawaList', 'tempatList', 'reviewer', 'pengajuanRiwayat', 'pengajuanDiajukan'));
+        return view('reviewer.index', compact('tempatList', 'reviewer', 'pengajuanRiwayat', 'pengajuanDiajukan'));
     }
 
     public function detailReviewer($id_pengajuan, $id_reviewer)
     {
-        // Mendapatkan detail pengajuan
         $pengajuan = Pengajuan::with('reviewers', 'latestReview')->findOrFail($id_pengajuan);
-
-        // Mendapatkan detail review berdasarkan reviewer
         $review = Review::where('id_pengajuan', $id_pengajuan)
                         ->where('id_reviewer', $id_reviewer)
                         ->first();
 
-        // Mengecek apakah reviewer sebelumnya sudah memberikan review
         if (!$this->canReview($id_pengajuan, $id_reviewer)) {
-            // Jika reviewer sebelumnya belum mereview, kembalikan error atau redirect
             return redirect()->route('reviewer.index')->with('error', 'Anda belum bisa mereview pengajuan ini.');
         }
 
-        // Mengecek apakah reviewer sudah memberikan review
         $hasReviewed = $review ? $review->status != 'diajukan' : false;
 
         return view('reviewer.detail_reviewer', compact('pengajuan', 'review', 'hasReviewed', 'id_reviewer'));
     }
 
-    // Menyimpan review yang dilakukan oleh reviewer tertentu
-    public function storeReview(Request $request, string $id_pengajuan, string $id_reviewer)
+
+    public function updateReview(Request $request, string $id_pengajuan, string $id_reviewer)
     {
-        // Validasi input dari form
         $request->validate([
-            'review' => 'string',
-            'status' => 'required|in:diterima,direvisi,ditolak,selesai',
+            'catatan' => 'string|nullable',
+            'status' => 'required|in:diterima,direvisi,ditolak',
         ]);
 
-        // Mendapatkan pengajuan
         $pengajuan = Pengajuan::findOrFail($id_pengajuan);
+        $reviewer = Reviewer::findOrFail($id_reviewer);
 
-        // Mendapatkan waktu saat ini
-        $currentDateTime = now();
+        try {
+            $existingReview = $pengajuan->reviewers()->wherePivot('id_reviewer', $id_reviewer)->first();
 
-        // Simpan atau update review
-        $review = Review::updateOrCreate(
-            ['id_pengajuan' => $id_pengajuan, 'id_reviewer' => $id_reviewer],
-            [
-                'review' => $request->input('review'),
-                'tanggal_review' => $currentDateTime,
-            ]
-        );
-
-        // Update status pengajuan berdasarkan hasil review
-        if ($request->input('status') == 'ditolak') {
-            $pengajuan->status = 'ditolak';
-        } elseif ($request->input('status') == 'direvisi') {
-            $pengajuan->status = 'direvisi';
-        } elseif ($request->input('status') == 'diterima') {
-            if ($this->isLastReviewer($pengajuan, $id_reviewer)) {
-                $pengajuan->status = 'selesai';
+            if (!$existingReview) {
+                $pengajuan->reviewers()->attach($id_reviewer, [
+                    'status' => $request->input('status'),
+                    'catatan' => $request->input('catatan'),
+                    'tanggal_review' => now(),
+                ]);
             } else {
-                $pengajuan->status = 'diterima';
-                
-                // Debugging next reviewer
-                $nextReviewer = $this->getNextReviewer($pengajuan, $id_reviewer);
-                //dd(['Next reviewer' => $nextReviewer]);
-
-                if ($nextReviewer) {
-                    Review::create([
-                        'id_pengajuan' => $id_pengajuan,
-                        'id_reviewer' => $nextReviewer->id_reviewer,
-                        'status' => 'diajukan',
-                        'tanggal_review' => $currentDateTime,
-                    ]);
-                }
+                $pengajuan->reviewers()->updateExistingPivot($id_reviewer, [
+                    'status' => $request->input('status'),
+                    'catatan' => $request->input('catatan'),
+                    'tanggal_review' => now(),
+                ]);
             }
+
+            return redirect()->route('reviewer.detail_reviewer', ['id_pengajuan' => $id_pengajuan, 'id_reviewer' => $id_reviewer])
+                            ->with('success', 'Review berhasil disimpan');
+
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to update review: ' . $e->getMessage()], 500);
         }
-
-        // Simpan status pengajuan
-        $pengajuan->save();
-        //dd(['Pengajuan status' => $pengajuan->status]);
-
-        // Debugging hasil akhir
-        /*dd([
-            'Redirecting to detail reviewer with' => [
-                'id_pengajuan' => $id_pengajuan,
-                'id_reviewer' => $id_reviewer,
-                'success_message' => 'Review berhasil disimpan'
-            ]
-        ]);*/
-
-        // Redirect kembali ke halaman detail reviewer
-        return redirect()->route('reviewer.detail_reviewer', ['id_pengajuan' => $id_pengajuan, 'id_reviewer' => $id_reviewer])
-                         ->with('success', 'Review berhasil disimpan');
     }
 
-    public function updateReview(Request $request, Pengajuan $pengajuan)
-    {
-        $request->validate([
-            'catatan' => 'string',
-        ]);
-        // Masukkan hasil review ke tabel hasil_review
-        HasilReview::create([
-            'id_pengajuan' => $pengajuan->id,
-            'id_reviewer' => auth()->user()->id,
-            'catatan' => $request->catatan,
-            'tanggal_review' => now(),
-        ]);
-
-        // Status dan histori akan otomatis terupdate melalui trigger
-        return response()->json(['message' => 'Review updated, next reviewer assigned automatically.']);
-    }
-
-    // Mengecek apakah reviewer sebelumnya sudah mereview sebelum reviewer saat ini
     private function canReview($id_pengajuan, $id_reviewer)
     {
-        // Mendapatkan daftar reviewer dalam urutan
-        $allReviewers = Reviewer::orderedByRole()->get();
+        $pengajuan = Pengajuan::find($id_pengajuan);
         $currentReviewer = Reviewer::find($id_reviewer);
-    
-        // Mendapatkan reviewer sebelumnya
-        foreach ($allReviewers as $reviewer) {
-            if ($reviewer->role < $currentReviewer->role) {
-                $previousReviewer = $reviewer;
-            } else {
-                break;
+        
+        if ($pengajuan->status == 'diajukan') {
+            return $currentReviewer->role == 'sekum-bem';
+        }
+
+        if ($pengajuan->status == 'direview' || $pengajuan->status == 'direvisi') {
+            $previousReview = Review::where('id_pengajuan', $id_pengajuan)
+                                    ->where('id_reviewer', $this->getPreviousReviewerId($currentReviewer->role))
+                                    ->first();
+            if (!$previousReview || $previousReview->status != 'diterima') {
+                return false; 
             }
         }
-    
-        // Jika tidak ada reviewer sebelumnya (artinya reviewer pertama)
-        if (!isset($previousReviewer)) {
-            return true;
+
+        $review = Review::where('id_pengajuan', $id_pengajuan)
+                        ->where('id_reviewer', $id_reviewer)
+                        ->first();
+        
+        if ($review && $review->status != 'diajukan') {
+            return false; 
         }
-    
-        // Mengecek apakah reviewer sebelumnya sudah menyelesaikan review
-        $previousReview = Review::where('id_pengajuan', $id_pengajuan)
-                                ->where('id_reviewer', $previousReviewer->id_reviewer)
-                                ->first();
-    
-        // Reviewer saat ini hanya bisa mereview jika reviewer sebelumnya sudah menyelesaikan
-        return $previousReview && $previousReview->status == 'diterima';
-    }
-    
 
-    // Mengecek apakah reviewer ini adalah reviewer terakhir
-    private function isLastReviewer($pengajuan, $id_reviewer)
-    {
-        // Mendapatkan semua reviewer berdasarkan urutan role
-        $allReviewers = Reviewer::orderedByRole()->get();
-        $currentReviewer = Reviewer::find($id_reviewer);
-
-        // Mengecek apakah ada reviewer berikutnya
-        $nextReviewer = $allReviewers->first(function ($reviewer) use ($currentReviewer) {
-            return $reviewer->role > $currentReviewer->role;
-        });
-
-        return !$nextReviewer;
+        return true; 
     }
 
-    // Mendapatkan reviewer berikutnya setelah reviewer saat ini
-    private function getNextReviewer($pengajuan, $id_reviewer)
+    private function getPreviousReviewerId($currentRole)
     {
-        // Mendapatkan semua reviewer berdasarkan urutan role
-        $allReviewers = Reviewer::orderedByRole()->get();
-        $currentReviewer = Reviewer::find($id_reviewer);
-    
-        // Mendapatkan reviewer berikutnya
-        foreach ($allReviewers as $reviewer) {
-            if ($reviewer->role > $currentReviewer->role) {
-                return $reviewer;
-            }
+        if ($currentRole == 'kli') {
+            return Reviewer::where('role', 'sekum-bem')->first()->id_reviewer;
+        } elseif ($currentRole == 'wd-3') {
+            return Reviewer::where('role', 'kli')->first()->id_reviewer;
         }
-    
         return null;
-    }    
+    }
+
 }
