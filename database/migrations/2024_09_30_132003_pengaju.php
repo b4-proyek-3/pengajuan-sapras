@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pengaju', function (Blueprint $table) {
-            $table->char('nim', length: 8)->primary();
+            $table->char('nim', length: 9)->primary();
             $table->id('id_user');
             $table->foreign('id_user')->references('id_user')->on('users')->onDelete('cascade');
             $table->unsignedBigInteger('id_ormawa'); // Foreign key ke tabel ormawa

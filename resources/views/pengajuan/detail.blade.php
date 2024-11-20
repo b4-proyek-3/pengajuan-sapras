@@ -22,7 +22,7 @@
                   <div class="flex-none w-1/12 max-w-full px-3 my-auto text-right lg:w-1/2 lg:flex-none">
                     <div class="relative pr-6 lg:float-right">
                     @if ($pengajuans->status == 'direvisi')
-                      <a dropdown-trigger class="cursor-pointer" aria-expanded="false" onclick="openModal('editPengajuanModal')">
+                      <a dropdown-trigger class="cursor-pointer" aria-expanded="false" onclick="openPengajuanModal()">
                         <i class="fa fa-ellipsis-v"></i>
                       </a>
                     @endif
@@ -172,7 +172,7 @@
                               leading-pro bg-clip-text fill-transparent"></i>
                         </span>
                         <div class="ml-11.252 pt-1.4 lg:max-w-120 relative -top-1.5 w-auto">
-                            <h6 class="mb-0 text-sm font-semibold leading-normal text-slate-700">{{ $review->reviewer->roles->nama_role ?? 'N/A' }}</h6>
+                            <h6 class="mb-0 text-sm font-semibold leading-normal text-slate-700">{{ $review->reviewer->role_name ?? 'N/A' }}</h6>
                             <p class="mt-1 mb-0 text-xs font-semibold leading-tight text-slate-400">{{ $review->status ?? 'N/A' }}</p>
                             <p class="mt-1 mb-0 text-xs font-semibold leading-tight text-slate-400">{{ $review->tanggal_review ?? 'N/A' }}</p>
                         </div>
@@ -191,7 +191,7 @@
                   </div>
               </div>
               <div class="flex-none w-1/2 max-w-full px-3 text-right">
-                    <button class="inline-block w-full px-8 py-2 mb-0 font-bold text-center uppercase align-middle transition-all bg-transparent border border-solid rounded-lg shadow-none cursor-pointer leading-pro ease-soft-in text-xs bg-150 active:opacity-85 hover:scale-102 tracking-tight-soft bg-x-25 border-fuchsia-500 text-fuchsia-500 hover:opacity-75">View All</button>
+                    <button onclick="window.location='{{ route('tracking.show', ['id_pengajuan' => $pengajuans->id_pengajuan]) }}'" class="inline-block w-full px-8 py-2 mb-0 font-bold text-center uppercase align-middle transition-all bg-transparent border border-solid rounded-lg shadow-none cursor-pointer leading-pro ease-soft-in text-xs bg-150 active:opacity-85 hover:scale-102 tracking-tight-soft bg-x-25 border-fuchsia-500 text-fuchsia-500 hover:opacity-75">View All</button>
               </div>
             </div>
           </div>
@@ -212,11 +212,11 @@
                   </div>
                   <div class="flex-none w-5/12 max-w-full px-3 my-auto text-right lg:w-1/2 lg:flex-none">
                     <div class="relative pr-6 lg:float-right">
-                      @if ($pengajuans->status == 'direvisi')
-                        <a dropdown-trigger class="cursor-pointer" aria-expanded="false" onclick="openModal('upload-Modal')">
+                      <!-- @if ($pengajuans->status == 'direvisi')
+                        <a dropdown-trigger class="cursor-pointer" aria-expanded="false" onclick="openDokumenModal()">
                           <i class="fa fa-ellipsis-v"></i>
                         </a>
-                      @endif
+                      @endif -->
                     </div>
                   </div>
                 </div>
@@ -231,7 +231,7 @@
                             <div class="flex flex-col justify-center">
                               <!-- Link dokumen untuk Card 1 -->
                               <h6 class="mb-0 text-sm leading-normal">
-                                <a href="javascript:void(0);" class="dokumen-link" data-file="{{ asset(str_replace('public/', '', $dokumen->path ?? 'N/A')) }}">
+                                <a href="javascript:void(0);" class="dokumen-link" data-file="{{ asset('storage/' . $dokumen->path ?? 'N/A') }}">
                                   {{ $dokumen->nama_dokumen }}
                                 </a>
                               </h6>
@@ -251,7 +251,7 @@
             <div class="border-black/12.5 shadow-soft-xl relative flex h-full min-w-0 flex-col break-words rounded-2xl border-0 border-solid bg-white bg-clip-border">
               <div class="flex-auto p-2">
                 <div class="before:border-r-solid relative before:absolute before:top-0 before:left-4 before:h-full before:border-r-2 before:border-r-slate-100 before:content-[''] before:lg:-ml-px">
-                  <iframe id="dokumen-frame" src="{{ asset(str_replace('public/', '', $pengajuans->dokumen->first()->path  ?? 'N/A' )) }}" style="width:100%; height:500px;" frameborder="0"></iframe>
+                  <iframe id="dokumen-frame" src="{{ asset('storage/' . $pengajuans->dokumen->first()->path  ?? 'N/A' ) }}" style="width:100%; height:500px;" frameborder="0"></iframe>
                 </div>
               </div>
             </div>
@@ -269,7 +269,7 @@
           </form>
         </div>
 
-        <footer class="pt-4 w-full bg-gray-100">
+        <footer class="pt-4 w-full bg-transparent">
           <div class="container mx-auto px-6">
             <div class="flex flex-wrap items-center justify-center">
               <div class="w-full max-w-full px-3 mt-0 mb-6 lg:mb-0 lg:w-1/2 text-center">
@@ -281,20 +281,8 @@
             </div>
           </div>
         </footer>
-
-
 </div>
 @include('modal.modal_edit_pengajuan')
-@include('modal.modal_edit_dokumen')
-<script>
-    function openModal(modalId) {
-        document.getElementById(modalId).classList.remove('hidden');
-    }
-
-    function closeModal(modalId) {
-        document.getElementById(modalId).classList.add('hidden');
-    }
-</script>
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     // Ambil semua elemen dengan class 'dokumen-link'
@@ -313,6 +301,83 @@
       });
     });
   });
+</script>
+<script>
+    let selectedFiles = [];
+    let removedFiles = [];
+
+    document.getElementById('fileInput').addEventListener('change', function(event) {
+        handleFiles(event.target.files);
+        this.value = ''; // Reset input file
+    });
+
+    function removeFile(button, fileId = null) {
+        const listItem = button.closest('li');
+        listItem.remove();
+
+        // Tambahkan ID file yang akan dihapus ke array removedFiles
+        if (fileId) {
+        if (!removedFiles.includes(fileId)) {
+                removedFiles.push(fileId);
+                document.getElementById('removedFiles').value = JSON.stringify(removedFiles);
+            }
+        } else {
+            // Hapus file baru dari selectedFiles jika bukan dari database
+            const fileName = listItem.querySelector('span').textContent;
+            selectedFiles = selectedFiles.filter(file => file.name !== fileName);
+        }
+    }
+
+    function handleFiles(files) {
+        const fileListElement = document.getElementById('fileList');
+        Array.from(files).forEach(file => {
+            if (file.type === 'application/pdf') {
+              if (!selectedFiles.some(f => f.name === file.name)) {
+                  selectedFiles.push(file);
+
+                    const li = document.createElement('li');
+                    li.classList.add('flex', 'justify-between', 'items-center', 'p-2');
+
+                    const img = document.createElement('img');
+                    img.src = '/assets/img/pdf.png';
+                    img.alt = 'PDF Icon';
+                    img.classList.add('w-6', 'h-6', 'mr-2');
+
+                    const fileName = document.createElement('span');
+                    fileName.textContent = file.name;
+                    fileName.classList.add('text-xs', 'mr-2', 'flex-shrink-0');
+
+                    const deleteButton = document.createElement('button');
+                    deleteButton.classList.add('text-red-500');
+                    deleteButton.innerHTML = '&times;';
+                    deleteButton.onclick = () => {
+                        li.remove();
+                        selectedFiles = selectedFiles.filter(f => f.name !== file.name);
+                    };
+
+                    li.appendChild(img);
+                    li.appendChild(fileName);
+                    li.appendChild(deleteButton);
+                    fileListElement.appendChild(li);
+                }
+            } else {
+                alert("Hanya file PDF yang diperbolehkan");
+            }
+        });
+    }
+
+    function resetFiles() {
+        selectedFiles = [];
+        removedFiles = [];
+        document.getElementById('fileList').innerHTML = '';
+        document.getElementById('removedFiles').value = '[]';
+    }
+
+    document.getElementById('uploadForm').onsubmit = function() {
+        // Tambahkan selectedFiles ke FormData sebelum mengirim form
+        const formData = new FormData(this);
+        selectedFiles.forEach(file => formData.append('files[]', file));
+    };
 </script>
 
 @endsection
