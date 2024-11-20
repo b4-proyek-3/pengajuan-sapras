@@ -15,8 +15,14 @@ use Illuminate\Support\Facades\File;
 
 class PengajuanController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index(Request $request)
     {
+        $pengaju = auth()->user()->pengaju;
         $sortStatus = $request->input('sort_status');
         $search = $request->input('search');
 
@@ -43,7 +49,7 @@ class PengajuanController extends Controller
 
     public function show(string $id_pengajuan)
     {
-        $pengajuans = Pengajuan::with(['pengaju', 'reviewers', 'latestReview'])
+        $pengajuans = Pengajuan::with(['pengaju', 'reviewers', 'latestReview', 'dokumen'])
                             ->findOrFail($id_pengajuan);
         $tempatList = Tempat::all();
         $pengajuans->waktu_pinjam = Carbon::createFromFormat('H:i:s', $pengajuans->waktu_pinjam)->format('H:i');
@@ -174,7 +180,7 @@ class PengajuanController extends Controller
                 $tempat = $pengajuan->tempat;
     
                 if ($tempat) {
-                    $tempat->nama_tempat = $validatedData['nama_tempat'];
+                    $tempat->nama_gedung = $validatedData['nama_tempat'];
                     $tempat->save();
                 }
             }

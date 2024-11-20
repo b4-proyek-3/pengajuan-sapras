@@ -26,26 +26,27 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('/logout', 'logout')->name('logout');
 });
 
-// Route untuk menampilkan page pengajuan
-Route::get('/pengajuan', [PengajuanController::class, 'index'])->name('pengajuan.index');
+// PROTECTED ROUTES (Require Authentication)
+Route::middleware(['auth'])->group(function () {
+    Route::get('/pengajuan', [PengajuanController::class, 'index'])->name('pengajuan.index');
+    // Route untuk menyimpan data pengajuan baru
+    Route::post('/pengajuan', [PengajuanController::class, 'store'])->name('pengajuan.form');
 
-// Route untuk menyimpan data pengajuan baru
-Route::post('/pengajuan', [PengajuanController::class, 'store'])->name('pengajuan.form');
+    // === Detail Pengajuan Route ==== //
+    Route::get('/pengajuan/detail/{id_pengajuan}', [PengajuanController::class, 'show'])->name('pengajuan.show');
+    Route::put('/pengajuan/detail/{id_pengajuan}', [PengajuanController::class, 'update'])->name('pengajuan.update');
 
-// === Detail Pengajuan Route ==== //
-Route::get('/pengajuan/detail/{id_pengajuan}', [PengajuanController::class, 'show'])->name('pengajuan.show');
-Route::put('/pengajuan/detail/{id_pengajuan}', [PengajuanController::class, 'update'])->name('pengajuan.update');
+    // Route untuk menampilkan page pengajuan
+    Route::get('/pengajuan', [PengajuanController::class, 'index'])->name('pengajuan.index');
 
-// Route untuk menampilkan page pengajuan
-Route::get('/pengajuan', [PengajuanController::class, 'index'])->name('pengajuan.index');
+    // Route untuk menyimpan data pengajuan baru
+    Route::post('/pengajuan', [PengajuanController::class, 'store'])->name('pengajuan.store');
 
-// Route untuk menyimpan data pengajuan baru
-Route::post('/pengajuan', [PengajuanController::class, 'store'])->name('pengajuan.store');
+    // Route untuk reviewer
+    Route::get('/reviewer', [ReviewController::class, 'index'])->name('reviewer.index');
+    Route::get('/reviewer/{id_pengajuan}/{id_reviewer}', [ReviewController::class, 'detailReviewer'])->name('reviewer.detail_reviewer');
+    Route::post('/reviewer/{id_pengajuan}/{id_reviewer}', [ReviewController::class, 'updateReview'])->name('update.review');
 
-// Route untuk reviewer
-Route::get('/reviewer', [ReviewController::class, 'index'])->name('reviewer.index');
-Route::get('/reviewer/{id_pengajuan}/{id_reviewer}', [ReviewController::class, 'detailReviewer'])->name('reviewer.detail_reviewer');
-Route::post('/reviewer/{id_pengajuan}/{id_reviewer}', [ReviewController::class, 'updateReview'])->name('update.review');
-
-// Routes untuk Status Tracker
-Route::get('/tracking/{id_pengajuan}', [TrackingController::class, 'show'])->name('tracking.show');
+    // Routes untuk Status Tracker
+    Route::get('/tracking/{id_pengajuan}', [TrackingController::class, 'show'])->name('tracking.show');
+});

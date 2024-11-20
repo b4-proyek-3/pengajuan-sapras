@@ -167,8 +167,8 @@
                               leading-pro bg-clip-text fill-transparent"></i>
                         </span>
                         <div class="ml-11.252 pt-1.4 lg:max-w-120 relative -top-1.5 w-auto">
-                            <h6 class="mb-0 text-sm font-semibold leading-normal text-slate-700">{{ $review->reviewer->role ?? 'N/A' }}</h6>
-                            <p class="mt-1 mb-0 text-xs font-semibold leading-tight text-slate-400">{{ $pengajuan->status ?? 'N/A' }}</p>
+                            <h6 class="mb-0 text-sm font-semibold leading-normal text-slate-700">{{ $review->reviewer->role_name ?? 'N/A' }}</h6>
+                            <p class="mt-1 mb-0 text-xs font-semibold leading-tight text-slate-400">{{ $review->status ?? 'N/A' }}</p>
                             <p class="mt-1 mb-0 text-xs font-semibold leading-tight text-slate-400">{{ $review->tanggal_review ?? 'N/A' }}</p>
                         </div>
                     @endforeach
@@ -176,7 +176,7 @@
                   </div>
                   <div class="relative mb-4 mt-0 after:clear-both after:table after:content-['']">
                       <span class="w-6.5 h-6.5 text-base absolute left-4 z-10 inline-flex -translate-x-1/2 items-center justify-center rounded-full bg-white text-center font-semibold">
-                          <i class="relative z-10 leading-none text-transparent ni ni-time-alarm bg-gradient-to-tl from-blue-600 to-indigo-400 
+                          <i class="relative z-10 leading-none text-transparent ni ni-bell-55 bg-gradient-to-tl from-green-600 to-lime-400
                             leading-pro bg-clip-text fill-transparent"></i>
                       </span>
                       <div class="ml-11.252 pt-1.4 lg:max-w-120 relative -top-1.5 w-auto">
@@ -186,7 +186,7 @@
                   </div>
               </div>
               <div class="flex-none w-1/2 max-w-full px-3 text-right">
-                    <button class="inline-block w-full px-8 py-2 mb-0 font-bold text-center uppercase align-middle transition-all bg-transparent border border-solid rounded-lg shadow-none cursor-pointer leading-pro ease-soft-in text-xs bg-150 active:opacity-85 hover:scale-102 tracking-tight-soft bg-x-25 border-fuchsia-500 text-fuchsia-500 hover:opacity-75">View All</button>
+                    <button onclick="window.location='{{ route('tracking.show', ['id_pengajuan' => $pengajuan->id_pengajuan]) }}'" class="inline-block w-full px-8 py-2 mb-0 font-bold text-center uppercase align-middle transition-all bg-transparent border border-solid rounded-lg shadow-none cursor-pointer leading-pro ease-soft-in text-xs bg-150 active:opacity-85 hover:scale-102 tracking-tight-soft bg-x-25 border-fuchsia-500 text-fuchsia-500 hover:opacity-75">View All</button>
               </div>
             </div>
           </div>
@@ -276,7 +276,7 @@
           </form>
         </div>
         
-        <footer class="pt-4 w-full bg-gray-100">
+        <footer class="pt-4 w-full bg-transparent">
           <div class="container mx-auto px-6">
             <div class="flex flex-wrap items-center justify-center">
               <div class="w-full max-w-full px-3 mt-0 mb-6 lg:mb-0 lg:w-1/2 text-center">
