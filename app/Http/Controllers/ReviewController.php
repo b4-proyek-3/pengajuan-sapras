@@ -12,6 +12,11 @@ use Illuminate\Support\Facades\Log;
 
 class ReviewController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index(Request $request)
     {
         $sortStatus = $request->input('sort_status');
@@ -42,7 +47,8 @@ class ReviewController extends Controller
             ->get();
 
         $queryRiwayat = Pengajuan::with(['pengaju.ormawa', 'reviewers' => function ($query) use ($id_reviewer) {
-                $query->where('reviewers.id_reviewer', $id_reviewer); // Sudah direview oleh reviewer ini
+                $query->where('reviewers.id_reviewer', $id_reviewer) // Sudah direview oleh reviewer ini
+                      ->withPivot('status');
             }])
             ->whereHas('reviewers', function ($query) use ($id_reviewer) {
                 $query->where('reviewers.id_reviewer', $id_reviewer); // Sudah direview oleh reviewer ini

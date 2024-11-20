@@ -70,7 +70,7 @@
                                     <td class="py-3 px-4 border">{{ $pengajuan->tanggal_pengajuan }}</td>
                                     <td class="py-3 px-4 border">{{ $pengajuan->nama_kegiatan }}</td>
                                     <td class="py-3 px-4 border">{{ $pengajuan->pengaju->ormawa->nama_ormawa }}</td>
-                                    <td class="py-3 px-4 border">{{ $pengajuan->status }}</td>
+                                    <td class="py-3 px-4 border">{{ ucfirst($pengajuan->status) }}</td>
                                     <td class="py-3 px-4 border">{{ $pengajuan->keterangan }}</td>
                                     <td class="py-3 px-4 border">
                                     <button onclick="window.location='{{ route('reviewer.detail_reviewer', ['id_pengajuan' => $pengajuan->id_pengajuan, 'id_reviewer' => auth()->user()->reviewer->id_reviewer]) }}'" class="bg-blue-600 text-white px-4 py-2 rounded-lg">Detail</button>
@@ -147,7 +147,7 @@
                                         <td class="py-3 px-4 border">{{ $pengajuan->tanggal_pengajuan }}</td>
                                         <td class="py-3 px-4 border">{{ $pengajuan->nama_kegiatan }}</td>
                                         <td class="py-3 px-4 border">{{ $pengajuan->pengaju->ormawa->nama_ormawa }}</td>
-                                        <td class="py-3 px-4 border">{{ $pengajuan->status }}</td>
+                                        <td class="py-3 px-4 border">{{ ucfirst($pengajuan->reviewers->first()->pivot->status) }}</td>
                                         <td class="py-3 px-4 border">{{ $pengajuan->keterangan }}</td>
                                         <td class="py-3 px-4 border">
                                         <button onclick="window.location='{{ route('reviewer.detail_reviewer', ['id_pengajuan' => $pengajuan->id_pengajuan, 'id_reviewer' => auth()->user()->reviewer->id_reviewer]) }}'" class="bg-blue-600 text-white px-4 py-2 rounded-lg">Detail</button>
@@ -167,7 +167,7 @@
             </div>
         </div>
 
-        <footer class="pt-4 w-full bg-gray-100">
+        <footer class="pt-4 w-full bg-transparent">
           <div class="container mx-auto px-6">
             <div class="flex flex-wrap items-center justify-center">
               <div class="w-full max-w-full px-3 mt-0 mb-6 lg:mb-0 lg:w-1/2 text-center">
