@@ -1,52 +1,38 @@
-@extends('layout.main')
+@extends('layouts.app')
+
 @section('content')
-<!-- cards -->
-    <!-- cards row 2 -->
-    <div class="flex justify-center items-center min-h-screen w-full lg:w-1/2 px-6 py-6 mx-auto">
+<div class="container mx-auto px-4 py-8">
+    <h2 class="text-2xl font-bold mb-4">Status Dokumen: 
+        <span class="{{ $status_dokumen === 'Aktif' ? 'text-green-500' : 'text-red-500' }}">
+            {{ $status_dokumen }}
+        </span>
+    </h2>
 
-    <div class="w-full max-w-lg px-3 mb-6 lg:mb-0 lg:flex-none">
-      <div class="relative flex flex-col min-w-0 break-words bg-white shadow-soft-xl rounded-2xl bg-clip-border">
-          <div class="flex-auto p-4">
-              <div class="flex flex-col items-center mb-7 mt-6">
-                <div class="bg-green-500 w-24 h-24 rounded-full p-6 mb-3">
-                    <i class="fa-sharp fa-solid fa-badge-check fa-7x text-lime-500"></i>
-                </div>
-              </div>
-              <div class="flex flex-col mx-4">
-                  <h5 class="font-bold">Informasi Dokumen</h5>
-              </div>
-              
-              <!-- Kotak Abu-abu -->
-              <div class="bg-gray-200 rounded-xl p-5 shadow-soft-xl mx-4 mb-4">
-                  <div class="p-4 mx-4 pt-6">
-                      <p class="text-sm text-gray-700">Status Dokumen</p>
-                      <p class="text-sm text-gray-700">Nomor Surat</p>
-                      
-                      <!-- Garis pembatas setelah Nomor Surat -->
-                      <hr class="border-t-2 border-gray-700 my-2">
-                      
-                      <!-- Info Pengajuan dengan teks tebal -->
-                      <p class="text-sm font-bold text-gray-700 mt-2">Info Pengajuan</p>
-                      <p class="text-sm text-gray-700">Nama Kegiatan</p>
-                      <p class="text-sm text-gray-700">Tempat</p>
-                      <p class="text-sm text-gray-700">Tanggal Mulai</p>
-                      <p class="text-sm text-gray-700">Tanggal Akhir</p>
-                      
-                      <!-- Garis pembatas antara Tanggal Akhir dan Info Penandatanganan -->
-                      <hr class="border-t-2 border-gray-700 my-2">
+    <div class="bg-gray-100 p-6 rounded-lg shadow-lg mb-6">
+        <h3 class="text-xl font-semibold">Informasi Pengajuan</h3>
+        <p><strong>Nama Kegiatan:</strong> {{ $pengajuan->nama_kegiatan }}</p>
+        <p><strong>Tempat:</strong> {{ $pengajuan->tempat->nama_tempat }}</p>
+        <p><strong>Tanggal Mulai:</strong> {{ $pengajuan->tanggal_pinjam }}</p>
+        <p><strong>Tanggal Akhir:</strong> {{ $pengajuan->tanggal_akhir }}</p>
+        <p><strong>Waktu:</strong> {{ $pengajuan->waktu_pengajuan }}</p>
+    </div>
 
-                      <!-- Info Penandatanganan dengan teks tebal -->
-                      <p class="text-sm font-bold text-gray-700 mt-2">Info Penandatanganan</p>
-                      <p class="text-sm text-gray-700">Sekretaris BEM</p>
-                      <p class="text-sm text-gray-700">KLI</p>
-                      <p class="text-sm text-gray-700">WD-3</p>
-                  </div>
-              </div>
-              
-              <a class="mt-auto mb-0 text-sm font-semibold leading-normal group text-slate-500" href="javascript:;">
-              </a>
-          </div>
-      </div>
-  </div>
+    <div class="bg-gray-100 p-6 rounded-lg shadow-lg mb-6">
+        <h3 class="text-xl font-semibold">Info Penandatangan</h3>
+        <p><strong>Sekretaris Umum:</strong> {{ $sekum->nama ?? 'Belum Ada' }}</p>
+        <p><strong>KLI:</strong> {{ $kli->nama ?? 'Belum Ada' }}</p>
+        <p><strong>WD-3:</strong> {{ $wd3->nama ?? 'Belum Ada' }}</p>
+    </div>
+
+    <div class="bg-gray-100 p-6 rounded-lg shadow-lg">
+        <h3 class="text-xl font-semibold">Review Dokumen</h3>
+        @foreach($reviews as $review)
+            <div class="border-b border-gray-300 py-2">
+                <p><strong>Reviewer:</strong> {{ $review->reviewer->nama }}</p>
+                <p><strong>Status:</strong> {{ ucfirst($review->status) }}</p>
+                <p><strong>Review:</strong> {{ $review->review ?? 'Tidak ada review' }}</p>
+            </div>
+        @endforeach
+    </div>
 </div>
 @endsection
