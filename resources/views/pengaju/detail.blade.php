@@ -164,23 +164,23 @@
               <div class="flex-auto p-4">
                 <div class="before:border-r-solid relative before:absolute before:top-0 before:left-4 before:h-full before:border-r-2 before:border-r-slate-100 before:content-[''] before:lg:-ml-px">
                   <div class="relative mb-4 mt-0 after:clear-both after:table after:content-['']">
-                  @foreach ($pengajuans->latestReview as $index => $review)
-                      <span class="w-6.5 h-6.5 text-base absolute left-4 z-10 inline-flex -translate-x-1/2 items-center justify-center rounded-full bg-white text-center font-semibold">
-                          <i class="relative z-10 leading-none text-transparent 
-                            {{ $index === 0 ? 'ni ni-bell-55 bg-gradient-to-tl from-green-600 to-lime-400' : 'ni ni-time-alarm bg-gradient-to-tl from-blue-600 to-indigo-400' }} 
-                            leading-pro bg-clip-text fill-transparent"></i>
-                      </span>
-                      <div class="ml-11.252 pt-1.4 lg:max-w-120 relative -top-1.5 w-auto">
-                          <h6 class="mb-0 text-sm font-semibold leading-normal text-slate-700">{{ $review->reviewer->roles->nama_role ?? 'N/A' }}</h6>
-                          <p class="mt-1 mb-0 text-xs font-semibold leading-tight text-slate-400">{{ $review->status ?? 'N/A' }}</p>
-                          <p class="mt-1 mb-0 text-xs font-semibold leading-tight text-slate-400">{{ $review->tanggal_review ?? 'N/A' }}</p>
-                      </div>
-                  @endforeach
+                  @if($pengajuans->latestReview->isNotEmpty())
+                      @foreach ($pengajuans->latestReview as $index => $review)
+                          <span class="w-6.5 h-6.5 text-base absolute left-4 z-10 inline-flex -translate-x-1/2 items-center justify-center rounded-full bg-white text-center font-semibold">
+                              <i class="relative z-10 leading-none text-transparent ni ni-time-alarm bg-gradient-to-tl from-blue-600 to-indigo-400 
+                                leading-pro bg-clip-text fill-transparent"></i>
+                          </span>
+                          <div class="ml-11.252 pt-1.4 lg:max-w-120 relative -top-1.5 w-auto">
+                              <h6 class="mb-0 text-sm font-semibold leading-normal text-slate-700">{{ $review->reviewer->roles->nama_role ?? 'N/A' }}</h6>
+                              <p class="mt-1 mb-0 text-xs font-semibold leading-tight text-slate-400">{{ $review->status ?? 'N/A' }}</p>
+                              <p class="mt-1 mb-0 text-xs font-semibold leading-tight text-slate-400">{{ $review->tanggal_review ?? 'N/A' }}</p>
+                          </div>
+                      @endforeach
+                    @endif
                   </div>
                   <div class="relative mb-4 mt-0 after:clear-both after:table after:content-['']">
                       <span class="w-6.5 h-6.5 text-base absolute left-4 z-10 inline-flex -translate-x-1/2 items-center justify-center rounded-full bg-white text-center font-semibold">
-                          <i class="relative z-10 leading-none text-transparent 
-                            {{ $index === 0 ? 'ni ni-bell-55 bg-gradient-to-tl from-green-600 to-lime-400' : 'ni ni-time-alarm bg-gradient-to-tl from-blue-600 to-indigo-400' }} 
+                          <i class="relative z-10 leading-none text-transparent ni ni-bell-55 bg-gradient-to-tl from-green-600 to-lime-400
                             leading-pro bg-clip-text fill-transparent"></i>
                       </span>
                       <div class="ml-11.252 pt-1.4 lg:max-w-120 relative -top-1.5 w-auto">
