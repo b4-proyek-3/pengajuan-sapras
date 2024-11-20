@@ -5,17 +5,24 @@ namespace App\Http\Controllers;
 use App\Models\Pengajuan;
 use App\Models\Tempat;
 use App\Models\Ormawa;
-use App\Models\User;
+use App\Models\Dokumen;
+use App\Models\Pengaju;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 
 class PengajuanController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index(Request $request)
     {
+        $pengaju = auth()->user()->pengaju;
         $sortStatus = $request->input('sort_status');
         $search = $request->input('search');
 
@@ -35,15 +42,14 @@ class PengajuanController extends Controller
         }
 
         $pengajuanList = $query->get();
-        $ormawaList = Ormawa::all(); 
         $tempatList = Tempat::all(); 
 
-        return view('pengajuan.index', compact('pengajuanList', 'ormawaList', 'tempatList'));
+        return view('pengajuan.index', compact('pengajuanList', 'tempatList'));
     }
 
     public function show(string $id_pengajuan)
     {
-        $pengajuans = Pengajuan::with(['pengaju', 'reviewers', 'latestReview'])
+        $pengajuans = Pengajuan::with(['pengaju', 'reviewers', 'latestReview', 'dokumen'])
                             ->findOrFail($id_pengajuan);
         $tempatList = Tempat::all();
         $pengajuans->waktu_pinjam = Carbon::createFromFormat('H:i:s', $pengajuans->waktu_pinjam)->format('H:i');
@@ -56,15 +62,11 @@ class PengajuanController extends Controller
         $tempatList = Tempat::all(); 
 
         return view('pengajuan.index', compact('ormawaList', 'tempatList'));
-        $ormawaList = Ormawa::all(); 
-        $tempatList = Tempat::all(); 
-
-        return view('pengajuan.index', compact('ormawaList', 'tempatList'));
     }
 
     public function store(Request $request)
     {
-        $user = Auth::user();
+        $user = Auth::user(); 
         $pengaju = $user->pengaju;
 
         $existingCount = Pengajuan::count();
@@ -75,9 +77,9 @@ class PengajuanController extends Controller
             'waktu_pinjam' => 'required',
             'id_tempat' => 'required|exists:tempat,id_tempat',
             'nama_kegiatan' => 'required|string|max:100',
-            'jenis_kegiatan' => 'required|string|in:proker,pergerakan', 
-            'link_drive' => 'nullable|url',
-
+            'link_gdrive' => 'nullable|url',
+            'activity_type' => 'required|string|in:proker,pergerakan',
+            
             'dokumen1' => 'nullable|file|mimes:pdf|max:2048',
             'dokumen2' => 'nullable|file|mimes:pdf|max:2048',
             'dokumen3' => 'nullable|file|mimes:pdf|max:2048',
@@ -88,42 +90,33 @@ class PengajuanController extends Controller
         ]);
 
         // Membuat ID pengajuan unik
-        $idPengajuan = 'P' . str_pad($existingCount + $i, 5, '0', STR_PAD_LEFT);
+        $id_pengajuan = 'P' . str_pad($existingCount + 1, 5, '0', STR_PAD_LEFT);
 
-        try {
-            Pengajuan::create([
-                'id_pengajuan' => $id_pengajuan,
-                'nim' => $request->nim,
-                'tanggal_pengajuan' => now(),
-                'id_tempat' => $request->id_tempat,
-                'tanggal_pinjam' => $request->tanggal_pinjam,
-                'tanggal_akhir' => $request->tanggal_akhir,
-                'waktu_pinjam' => $request->waktu_pinjam,
-                'nama_kegiatan' => $request->nama_kegiatan,
-                'jenis_kegiatan' => $request->jenis_kegiatan,
-                'link_drive' => $request->link_drive,
-            ]);
-    
-            $this->simpanDokumen($request, $id_pengajuan);
-        
-            return redirect()->route('pengajuan.index')->with('success', 'Pengajuan berhasil ditambahkan!');
-        } catch (\Exception $e) {
-            dd([
-                'error' => 'Gagal menyimpan pengajuan',
-                'message' => $e->getMessage(),
-                'data' => $request->all(),
-                'trace' => $e->getTraceAsString()
-            ]);
-        }        
+        // Menyimpan data pengajuan
+        $pengajuan = Pengajuan::create([
+            'id_pengajuan' => $id_pengajuan,
+            'nim' => $pengaju->nim,
+            'tanggal_pengajuan' => now(),
+            'id_tempat' => $request->id_tempat,
+            'tanggal_pinjam' => $request->tanggal_pinjam,
+            'tanggal_akhir' => $request->tanggal_akhir,
+            'waktu_pinjam' => $request->waktu_pinjam,
+            'nama_kegiatan' => $request->nama_kegiatan,
+            'jenis_kegiatan' => $request->activity_type,
+            'link_drive' => $request->link_gdrive,
+            'updated_at' => now(),
+         ]);
+
+        // Simpan setiap dokumen yang diunggah
+        $this->simpanDokumen($request, $id_pengajuan);
+
+        return redirect()->route('pengajuan.index')->with('success', 'Pengajuan berhasil ditambahkan!');
     }
 
     private function simpanDokumen(Request $request, $id_pengajuan)
     {
         \Log::info('Memulai proses penyimpanan dokumen.', ['request' => $request->all(), 'id_pengajuan' => $id_pengajuan]);
 
-        $folderPath = storage_path('app/public/dokumen_pengajuan'); // Lokasi folder penyimpanan
-        \Log::info("Folder Path: $folderPath");
-    
         $dokumen_fields = [
             'dokumen1' => 'Proposal',
             'dokumen2' => 'Term of Reference',
@@ -135,34 +128,26 @@ class PengajuanController extends Controller
         ];
 
         foreach ($dokumen_fields as $field => $nama_dokumen) {
-            try {
-                if ($request->hasFile($field)) {
-                    $file = $request->file($field);
-                    $filename = time() . '_' . $file->getClientOriginalName();
-                    $path = $file->storeAs('dokumen_pengajuan', $filename, 'public');
-    
-                    \Log::info("Dokumen $nama_dokumen disimpan ke path: $folderPath/$filename");
-    
-                    Dokumen::create([
-                        'id_pengajuan' => $id_pengajuan,
-                        'nama_dokumen' => $nama_dokumen,
-                        'path' => $path,
-                    ]);
-                } else {
-                    \Log::warning("Dokumen $field tidak ditemukan di permintaan.");
-                }
-            } catch (\Exception $e) {
-                dd([
-                    'error' => "Gagal menyimpan dokumen $nama_dokumen",
-                    'message' => $e->getMessage(),
-                    'field' => $field,
-                    'trace' => $e->getTraceAsString(),
-                    'folderPath' => $folderPath
+            if ($request->hasFile($field)) {
+                $file = $request->file($field);
+                $filename = time() . '_' . $file->getClientOriginalName();
+                $path = $file->storeAs('dokumen/' . $id_pengajuan, $filename, 'public');
+
+                Dokumen::create([
+                    'id_pengajuan' => $id_pengajuan,
+                    'nama_dokumen' => $nama_dokumen,
+                    'path' => $path,
                 ]);
+
+                \Log::info("Dokumen $nama_dokumen berhasil disimpan.", ['id_pengajuan' => $id_pengajuan, 'nama_dokumen' => $nama_dokumen, 'path' => $path]);
+
+            } else {
+                \Log::warning("Dokumen $field tidak ada dalam permintaan.");
+                
             }
-        }   
+        }
     }
-    
+
     public function update(Request $request, string $id_pengajuan)
     {
         try {
@@ -172,7 +157,7 @@ class PengajuanController extends Controller
                 'id_tempat' => 'nullable|exists:tempat,id_tempat',
                 'nama_kegiatan' => 'nullable|string',
                 'nama_tempat' => 'nullable|string',
-                'waktu_pengajuan' => 'nullable|date_format:H:i'
+                'waktu_pengajuan' => 'nullable|date_format:H:i',
             ]);
     
             $pengajuan = Pengajuan::findOrFail($id_pengajuan);
@@ -182,7 +167,7 @@ class PengajuanController extends Controller
                 'tanggal_akhir' => $request->tanggal_akhir,
                 'id_tempat' => $request->filled('id_tempat') ? $request->id_tempat : $pengajuan->id_tempat,
                 'nama_kegiatan' => $request->nama_kegiatan,
-                'waktu_pengajuan' => $request->waktu_pengajuan
+                'waktu_pinjam' => $request->waktu_pengajuan,
             ], function ($value) {
                 return $value !== null;
             });
@@ -190,11 +175,12 @@ class PengajuanController extends Controller
             $pengajuan->edited = true;
             $pengajuan->update($updateData);
     
+            // Update tabel tempat jika nama_tempat disertakan dan id_tempat ada
             if (isset($validatedData['nama_tempat']) && $pengajuan->id_tempat) {
                 $tempat = $pengajuan->tempat;
     
                 if ($tempat) {
-                    $tempat->nama_tempat = $validatedData['nama_tempat'];
+                    $tempat->nama_gedung = $validatedData['nama_tempat'];
                     $tempat->save();
                 }
             }

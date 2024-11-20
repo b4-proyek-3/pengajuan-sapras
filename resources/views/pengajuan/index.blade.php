@@ -95,7 +95,7 @@
                                     <td class="py-3 px-4 border">{{ $pengajuan->tanggal_pengajuan }}</td>
                                     <td class="py-3 px-4 border">{{ $pengajuan->nama_kegiatan }}</td>
                                     <td class="py-3 px-4 border">{{ $pengajuan->pengaju->ormawa->nama_ormawa ?? '-' }}</td>
-                                    <td class="py-3 px-4 border">{{ $pengajuan->status }}</td>
+                                    <td class="py-3 px-4 border">{{ ucfirst($pengajuan->status) }}</td>
                                     <td class="py-3 px-4 border">{{ $pengajuan->keterangan }}</td>
                                     <td class="py-3 px-4 border">
                                     <button onclick="window.location='{{ route('pengajuan.show', ['id_pengajuan' => $pengajuan->id_pengajuan]) }}'" class="bg-blue-600 text-white px-4 py-2 rounded-lg">Detail</button>
@@ -117,17 +117,11 @@
                             <div class="modal-body">
                                 <form action="{{ route('pengajuan.store') }}" method="POST" enctype="multipart/form-data">
                                     @csrf <!-- CSRF token for security -->
-                                    
-                                    <!-- Form fields -->
-                                    <!-- <div class="mb-3">
-                                        <label for="ormawa">Ormawa</label>
-                                        <select name="ormawa" id="ormawa" class="form-control" required>
-                                            <option value=""> Pilih Ormawa </option>
-                                            @foreach ($ormawaList as $ormawa)
-                                                <option value="{{ $ormawa->id_ormawa }}">{{ $ormawa->nama_ormawa }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div> -->
+
+                                    <div class="mb-3">
+                                        <label for="nama_kegiatan" class="form-label">Nama Kegiatan</label>
+                                        <input type="text" name="nama_kegiatan" id="nama_kegiatan" class="form-control" required>
+                                    </div>
 
                                     <div class="mb-3">
                                         <label for="tanggal_peminjaman" class="form-label">Tanggal Peminjaman</label>
@@ -141,12 +135,7 @@
 
                                     <div class="mb-3">
                                         <label for="waktu" class="form-label">Waktu Kegiatan</label>
-                                        <input type="time" name="waktu_pengajuan" id="waktu_pengajuan" class="form-control" required>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="nama_kegiatan" class="form-label">Nama Kegiatan</label>
-                                        <input type="text" name="nama_kegiatan" id="nama_kegiatan" class="form-control" required>
+                                        <input type="time" name="waktu_pinjam" id="waktu_pinjam" class="form-control" required>
                                     </div>
 
                                     <div class="mb-3">
@@ -163,7 +152,7 @@
                                         <label for="jenis_kegiatan" class="form-label">Jenis Kegiatan</label>
                                         <select name="jenis_kegiatan" id="activity_type" class="form-control" required onchange="showFileInputs()">
                                             <option value="" disabled selected>Pilih Jenis Kegiatan</option>
-                                            <option value="program_kerja">Program Kerja</option>
+                                            <option value="proker">Program Kerja</option>
                                             <option value="pergerakan">Pergerakan</option>
                                         </select>
                                         <p class="text-gray-500 text-sm mt-1">File maksimal 2 MB</p>
@@ -295,7 +284,7 @@
                                         <td class="py-3 px-4 border">{{ $pengajuan->tanggal_pengajuan }}</td>
                                         <td class="py-3 px-4 border">{{ $pengajuan->nama_kegiatan }}</td>
                                         <td class="py-3 px-4 border">{{ $pengajuan->pengaju->ormawa->nama_ormawa ?? '-' }}</td>
-                                        <td class="py-3 px-4 border">{{ $pengajuan->status }}</td>
+                                        <td class="py-3 px-4 border">{{ ucfirst($pengajuan->status) }}</td>
                                         <td class="py-3 px-4 border">{{ $pengajuan->keterangan }}</td>
                                         <td class="py-3 px-4 border">
                                             <button onclick="window.location='{{ route('pengajuan.show', ['id_pengajuan' => $pengajuan->id_pengajuan]) }}'" class="bg-blue-600 text-white px-4 py-2 rounded-lg">Detail</button>
@@ -309,38 +298,17 @@
             </div>
         </div>
 
-        <footer class="pt-4">
-            <div class="w-full px-6 mx-auto">
-                <div class="flex flex-wrap items-center -mx-3 lg:justify-between">
-                    <div class="w-full max-w-full px-3 mt-0 mb-6 shrink-0 lg:mb-0 lg:w-1/2 lg:flex-none">
-                        <div class="text-sm leading-normal text-center text-slate-500 lg:text-left">
-                            ©
-                            <script>
-                                document.write(new Date().getFullYear() + ",");
-                            </script>
-                            made with <i class="fa fa-heart"></i> by
-                            <a href="https://www.creative-tim.com" class="font-semibold text-slate-700" target="_blank">Creative Tim</a>
-                            for a better web.
-                        </div>
-                    </div>
-                    <div class="w-full max-w-full px-3 mt-0 shrink-0 lg:w-1/2 lg:flex-none">
-                        <ul class="flex flex-wrap justify-center pl-0 mb-0 list-none lg:justify-end">
-                            <li class="nav-item">
-                                <a href="https://www.creative-tim.com" class="block px-4 pt-0 pb-1 text-sm font-normal transition-colors ease-soft-in-out text-slate-500" target="_blank">Creative Tim</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="https://www.creative-tim.com/presentation" class="block px-4 pt-0 pb-1 text-sm font-normal transition-colors ease-soft-in-out text-slate-500" target="_blank">About Us</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="https://creative-tim.com/blog" class="block px-4 pt-0 pb-1 text-sm font-normal transition-colors ease-soft-in-out text-slate-500" target="_blank">Blog</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="https://www.creative-tim.com/license" class="block px-4 pt-0 pb-1 pr-0 text-sm font-normal transition-colors ease-soft-in-out text-slate-500" target="_blank">License</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+        <footer class="pt-4 w-full bg-transparent">
+          <div class="container mx-auto px-6">
+            <div class="flex flex-wrap items-center justify-center">
+              <div class="w-full max-w-full px-3 mt-0 mb-6 lg:mb-0 lg:w-1/2 text-center">
+              <p class="text-center text-sm font-normal text-slate-500">
+                Pengajuan Sarana dan Prasarana<br>
+                Politeknik Negeri Bandung
+              </p>
+              </div>
             </div>
+          </div>
         </footer>
     </div>
 </div>

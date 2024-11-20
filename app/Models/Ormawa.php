@@ -11,9 +11,10 @@ class Ormawa extends Model
 
     protected $primaryKey = 'id_ormawa';
     protected $table = 'ormawa';
-    protected $fillable = ['nama_ormawa'];
+    protected $fillable = ['id_ormawa', 'nama_ormawa'];
+
 
     public function pengaju() {
-        return $this->hasMany(Pengaju::class, 'id_ormawa');
+        return $this->hasMany(Pengaju::class, 'id_ormawa', 'id_ormawa');
     }
 }

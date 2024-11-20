@@ -12,31 +12,6 @@
 
         <!-- Card Diajukan -->
         <div id="diajukanCard" class="bg-white shadow-md rounded-lg p-6 -mt-1 relative">
-            <!-- Tombol Pengajuan -->
-            <div class="flex flex-col items-start">
-                <button data-bs-toggle="modal" data-bs-target="#pengajuanModal" class="flex items-center bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg transition duration-200 ease-in-out">
-                    <span class="mr-2 text-lg font-bold">+</span>Tambah Pengajuan
-                </button>
-                @if (session('success'))
-                    <div x-data="{ show: true }" 
-                        x-show="show" 
-                        x-init="setTimeout(() => show = false, 5000)" 
-                        class="text-green-400 px-4 py-4 z-10"
-                        role="alert">
-                        <span class="block sm:inline">{{ session('success') }}</span>
-                    </div>
-                @endif
-
-                @if (session('failed'))
-                    <div x-data="{ show: true }" 
-                        x-show="show" 
-                        x-init="setTimeout(() => show = false, 5000)" 
-                        class="text-red-400 px-4 py-4 z-10"
-                        role="alert">
-                        <span class="block sm:inline">{{ session('failed') }}</span>
-                    </div>
-                @endif
-            </div>
 
             <!-- Sorting dan Pencarian -->
             <div class="bg-orange-500 p-4 border-b border-orange-500 mt-4"></div>
@@ -95,7 +70,7 @@
                                     <td class="py-3 px-4 border">{{ $pengajuan->tanggal_pengajuan }}</td>
                                     <td class="py-3 px-4 border">{{ $pengajuan->nama_kegiatan }}</td>
                                     <td class="py-3 px-4 border">{{ $pengajuan->pengaju->ormawa->nama_ormawa }}</td>
-                                    <td class="py-3 px-4 border">{{ $pengajuan->status }}</td>
+                                    <td class="py-3 px-4 border">{{ ucfirst($pengajuan->status) }}</td>
                                     <td class="py-3 px-4 border">{{ $pengajuan->keterangan }}</td>
                                     <td class="py-3 px-4 border">
                                     <button onclick="window.location='{{ route('reviewer.detail_reviewer', ['id_pengajuan' => $pengajuan->id_pengajuan, 'id_reviewer' => auth()->user()->reviewer->id_reviewer]) }}'" class="bg-blue-600 text-white px-4 py-2 rounded-lg">Detail</button>
@@ -172,7 +147,7 @@
                                         <td class="py-3 px-4 border">{{ $pengajuan->tanggal_pengajuan }}</td>
                                         <td class="py-3 px-4 border">{{ $pengajuan->nama_kegiatan }}</td>
                                         <td class="py-3 px-4 border">{{ $pengajuan->pengaju->ormawa->nama_ormawa }}</td>
-                                        <td class="py-3 px-4 border">{{ $pengajuan->status }}</td>
+                                        <td class="py-3 px-4 border">{{ ucfirst($pengajuan->reviewers->first()->pivot->status) }}</td>
                                         <td class="py-3 px-4 border">{{ $pengajuan->keterangan }}</td>
                                         <td class="py-3 px-4 border">
                                         <button onclick="window.location='{{ route('reviewer.detail_reviewer', ['id_pengajuan' => $pengajuan->id_pengajuan, 'id_reviewer' => auth()->user()->reviewer->id_reviewer]) }}'" class="bg-blue-600 text-white px-4 py-2 rounded-lg">Detail</button>
@@ -192,38 +167,17 @@
             </div>
         </div>
 
-        <footer class="pt-4">
-            <div class="w-full px-6 mx-auto">
-                <div class="flex flex-wrap items-center -mx-3 lg:justify-between">
-                    <div class="w-full max-w-full px-3 mt-0 mb-6 shrink-0 lg:mb-0 lg:w-1/2 lg:flex-none">
-                        <div class="text-sm leading-normal text-center text-slate-500 lg:text-left">
-                            ©
-                            <script>
-                                document.write(new Date().getFullYear() + ",");
-                            </script>
-                            made with <i class="fa fa-heart"></i> by
-                            <a href="https://www.creative-tim.com" class="font-semibold text-slate-700" target="_blank">Creative Tim</a>
-                            for a better web.
-                        </div>
-                    </div>
-                    <div class="w-full max-w-full px-3 mt-0 shrink-0 lg:w-1/2 lg:flex-none">
-                        <ul class="flex flex-wrap justify-center pl-0 mb-0 list-none lg:justify-end">
-                            <li class="nav-item">
-                                <a href="https://www.creative-tim.com" class="block px-4 pt-0 pb-1 text-sm font-normal transition-colors ease-soft-in-out text-slate-500" target="_blank">Creative Tim</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="https://www.creative-tim.com/presentation" class="block px-4 pt-0 pb-1 text-sm font-normal transition-colors ease-soft-in-out text-slate-500" target="_blank">About Us</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="https://creative-tim.com/blog" class="block px-4 pt-0 pb-1 text-sm font-normal transition-colors ease-soft-in-out text-slate-500" target="_blank">Blog</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="https://www.creative-tim.com/license" class="block px-4 pt-0 pb-1 pr-0 text-sm font-normal transition-colors ease-soft-in-out text-slate-500" target="_blank">License</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+        <footer class="pt-4 w-full bg-transparent">
+          <div class="container mx-auto px-6">
+            <div class="flex flex-wrap items-center justify-center">
+              <div class="w-full max-w-full px-3 mt-0 mb-6 lg:mb-0 lg:w-1/2 text-center">
+              <p class="text-center text-sm font-normal text-slate-500">
+                Pengajuan Sarana dan Prasarana<br>
+                Politeknik Negeri Bandung
+              </p>
+              </div>
             </div>
+          </div>
         </footer>
     </div>
 </div>

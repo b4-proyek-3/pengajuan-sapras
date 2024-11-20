@@ -26,8 +26,8 @@ class DatabaseSeeder extends Seeder
             ReviewerSeeder::class,
             TempatSeeder::class,
             PengajuSeeder::class,
-            PengajuanSeeder::class,
-            DokumenSeeder::class,
+            //PengajuanSeeder::class,
+            //DokumenSeeder::class,
         ]);
     }
 }

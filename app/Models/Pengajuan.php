@@ -12,17 +12,20 @@ class Pengajuan extends Model
     protected $table = 'pengajuan'; 
     protected $primaryKey = 'id_pengajuan';
     public $keyType = 'string';
-    
     protected $fillable = [
         'id_pengajuan',
         'nim',
         'tanggal_pengajuan',
+        'id_tempat',
         'tanggal_pinjam',
         'tanggal_akhir',
         'waktu_pinjam',
         'nama_kegiatan',
         'jenis_kegiatan',
         'link_drive',
+        'status', // Menambahkan status
+        'edited', // Menambahkan edited
+        'updated_at',
     ];
     
     public $incrementing = false;
@@ -36,7 +39,7 @@ class Pengajuan extends Model
     public function reviewers()
     {
         return $this->belongsToMany(Reviewer::class, 'reviews', 'id_pengajuan', 'id_reviewer')
-                    ->withPivot('catatan', 'tanggal_review');
+                    ->withPivot('status', 'catatan', 'tanggal_review');
     }
 
     public function latestReview()
