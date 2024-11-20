@@ -160,8 +160,8 @@
                                     </div>
 
                                     <div class="mb-3">
-                                        <label for="activity_type" class="form-label">Jenis Kegiatan</label>
-                                        <select name="activity_type" id="activity_type" class="form-control" required onchange="showFileInputs()">
+                                        <label for="jenis_kegiatan" class="form-label">Jenis Kegiatan</label>
+                                        <select name="jenis_kegiatan" id="activity_type" class="form-control" required onchange="showFileInputs()">
                                             <option value="" disabled selected>Pilih Jenis Kegiatan</option>
                                             <option value="program_kerja">Program Kerja</option>
                                             <option value="pergerakan">Pergerakan</option>
@@ -211,7 +211,7 @@
 
                                     <div class="mb-3">
                                         <label for="link" class="form-label">Link Surat Izin Orang Tua</label>
-                                        <input type="url" name="link_gdrive" id="link_gdrive" class="form-control" placeholder="https://drive.google.com/drive/folders/surat_izin_orang_tua">
+                                        <input type="url" name="link_drive" id="link_drive" class="form-control" placeholder="https://drive.google.com/drive/folders/surat_izin_orang_tua">
                                     </div>
 
                                     <!-- Submit and Cancel buttons -->

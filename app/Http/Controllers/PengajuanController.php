@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Pengajuan;
 use App\Models\Tempat;
 use App\Models\Ormawa;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class PengajuanController extends Controller
@@ -62,14 +64,20 @@ class PengajuanController extends Controller
 
     public function store(Request $request)
     {
+        $user = Auth::user();
+        $pengaju = $user->pengaju;
+
+        $existingCount = Pengajuan::count();
+
         $request->validate([
-            'nim' => 'nullable|exists:pengaju,nim',
             'tanggal_pinjam' => 'required|date',
             'tanggal_akhir' => 'required|date|after_or_equal:tanggal_pinjam',
             'waktu_pinjam' => 'required',
             'id_tempat' => 'required|exists:tempat,id_tempat',
             'nama_kegiatan' => 'required|string|max:100',
-            'link_gdrive' => 'nullable|url',
+            'jenis_kegiatan' => 'required|string|in:proker,pergerakan', 
+            'link_drive' => 'nullable|url',
+
             'dokumen1' => 'nullable|file|mimes:pdf|max:2048',
             'dokumen2' => 'nullable|file|mimes:pdf|max:2048',
             'dokumen3' => 'nullable|file|mimes:pdf|max:2048',
@@ -80,39 +88,41 @@ class PengajuanController extends Controller
         ]);
 
         // Membuat ID pengajuan unik
-        $id_pengajuan = Str::random(6);
+        $idPengajuan = 'P' . str_pad($existingCount + $i, 5, '0', STR_PAD_LEFT);
 
         try {
-            // Menyimpan data pengajuan
-            DB::transaction(function () use ($request, $id_pengajuan) {
-                
-                Pengajuan::create([
-                    'id_pengajuan' => $id_pengajuan,
-                    'nim' => $request->nim,
-                    'tanggal_pengajuan' => now(),
-                    'id_tempat' => $request->id_tempat,
-                    'tanggal_pinjam' => $request->tanggal_pinjam,
-                    'tanggal_akhir' => $request->tanggal_akhir,
-                    'waktu_pinjam' => $request->waktu_pinjam,
-                    'nama_kegiatan' => $request->nama_kegiatan,
-                    'link_gdrive' => $request->link_gdrive,
-                ]);
+            Pengajuan::create([
+                'id_pengajuan' => $id_pengajuan,
+                'nim' => $request->nim,
+                'tanggal_pengajuan' => now(),
+                'id_tempat' => $request->id_tempat,
+                'tanggal_pinjam' => $request->tanggal_pinjam,
+                'tanggal_akhir' => $request->tanggal_akhir,
+                'waktu_pinjam' => $request->waktu_pinjam,
+                'nama_kegiatan' => $request->nama_kegiatan,
+                'jenis_kegiatan' => $request->jenis_kegiatan,
+                'link_drive' => $request->link_drive,
+            ]);
     
-                // Simpan setiap dokumen yang diunggah
-                $this->simpanDokumen($request, $id_pengajuan);
-            });
-    
+            $this->simpanDokumen($request, $id_pengajuan);
+        
             return redirect()->route('pengajuan.index')->with('success', 'Pengajuan berhasil ditambahkan!');
-    
         } catch (\Exception $e) {
-            // Mencatat log error
-            dd('Gagal menyimpan pengajuan: ' . $e->getMessage());
-        }
+            dd([
+                'error' => 'Gagal menyimpan pengajuan',
+                'message' => $e->getMessage(),
+                'data' => $request->all(),
+                'trace' => $e->getTraceAsString()
+            ]);
+        }        
     }
 
     private function simpanDokumen(Request $request, $id_pengajuan)
     {
         \Log::info('Memulai proses penyimpanan dokumen.', ['request' => $request->all(), 'id_pengajuan' => $id_pengajuan]);
+
+        $folderPath = storage_path('app/public/dokumen_pengajuan'); // Lokasi folder penyimpanan
+        \Log::info("Folder Path: $folderPath");
     
         $dokumen_fields = [
             'dokumen1' => 'Proposal',
@@ -123,7 +133,7 @@ class PengajuanController extends Controller
             'dokumen6' => 'Surat Pendampingan Pembina',
             'dokumen7' => 'Lampiran Daftar Peserta',
         ];
-    
+
         foreach ($dokumen_fields as $field => $nama_dokumen) {
             try {
                 if ($request->hasFile($field)) {
@@ -131,21 +141,26 @@ class PengajuanController extends Controller
                     $filename = time() . '_' . $file->getClientOriginalName();
                     $path = $file->storeAs('dokumen_pengajuan', $filename, 'public');
     
+                    \Log::info("Dokumen $nama_dokumen disimpan ke path: $folderPath/$filename");
+    
                     Dokumen::create([
                         'id_pengajuan' => $id_pengajuan,
                         'nama_dokumen' => $nama_dokumen,
                         'path' => $path,
                     ]);
-    
-                    \Log::info("Dokumen $nama_dokumen berhasil disimpan.", ['id_pengajuan' => $id_pengajuan, 'nama_dokumen' => $nama_dokumen, 'path' => $path]);
-    
                 } else {
-                    \Log::warning("Dokumen $field tidak ada dalam permintaan.");
+                    \Log::warning("Dokumen $field tidak ditemukan di permintaan.");
                 }
             } catch (\Exception $e) {
-                dd("Gagal menyimpan dokumen $nama_dokumen: " . $e->getMessage());
+                dd([
+                    'error' => "Gagal menyimpan dokumen $nama_dokumen",
+                    'message' => $e->getMessage(),
+                    'field' => $field,
+                    'trace' => $e->getTraceAsString(),
+                    'folderPath' => $folderPath
+                ]);
             }
-        }
+        }   
     }
     
     public function update(Request $request, string $id_pengajuan)
@@ -175,7 +190,6 @@ class PengajuanController extends Controller
             $pengajuan->edited = true;
             $pengajuan->update($updateData);
     
-            // Update tabel tempat jika nama_tempat disertakan dan id_tempat ada
             if (isset($validatedData['nama_tempat']) && $pengajuan->id_tempat) {
                 $tempat = $pengajuan->tempat;
     
