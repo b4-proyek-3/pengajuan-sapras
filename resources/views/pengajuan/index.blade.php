@@ -288,6 +288,9 @@
                                         <td class="py-3 px-4 border">{{ $pengajuan->keterangan }}</td>
                                         <td class="py-3 px-4 border">
                                             <button onclick="window.location='{{ route('pengajuan.show', ['id_pengajuan' => $pengajuan->id_pengajuan]) }}'" class="bg-blue-600 text-white px-4 py-2 rounded-lg">Detail</button>
+                                            @if($pengajuan->status === 'selesai')
+                                                <button onclick="window.location='{{ route('dokumen.generate', ['id_pengajuan' => $pengajuan->id_pengajuan]) }}'" class="bg-green-600 text-white px-4 py-2 rounded-lg">Generate</button>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach

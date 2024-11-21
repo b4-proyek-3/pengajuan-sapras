@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PengajuanController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\TrackingController;
+use App\Http\Controllers\DokumenController;
 
 Route::get('/', function () {
     return view('progress2');
@@ -49,4 +50,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Routes untuk Status Tracker
     Route::get('/tracking/{id_pengajuan}', [TrackingController::class, 'show'])->name('tracking.show');
+
+    Route::get('/dokumen/generate/{id_pengajuan}', [DokumenController::class, 'generate'])->name('dokumen.generate');
+
 });

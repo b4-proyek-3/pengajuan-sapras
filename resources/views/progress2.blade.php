@@ -4,7 +4,7 @@
 <div class="w-full px-6 py-6 mx-auto">
     <h5 class="pt-2 mb-1 font-bold">Status Pengajuan #{{ $pengajuan->id_pengajuan }}</h5>
     <p class="pt-2 mb-1 font-semibold">
-        <i class="fas fa-calendar-alt"></i> Dibuat pada {{ \Carbon\Carbon::parse($pengajuan->tanggal_pengajuan)->format('d-m-Y H:i') }}
+        <i class="fas fa-calendar-alt"></i> Dibuat pada {{ \Carbon\Carbon::parse($pengajuan->tanggal_pengajuan)->addHours(7)->format('d-m-Y H:i') }}
     </p>
 
     <!-- Progress Bar -->
@@ -69,9 +69,9 @@
                     <li class="tracking_status_item {{ $statusClass }}">
                         <div class="tracking_status_date">
                             @if($step === 'Pengajuan dibuat')
-                                {{ \Carbon\Carbon::parse($pengajuan->tanggal_pengajuan)->format('d-m-Y H:i:s') }}
+                                {{ \Carbon\Carbon::parse($pengajuan->tanggal_pengajuan)->addHours(7)->format('d-m-Y H:i:s') }}
                             @elseif(isset($reviewDates[$step]))
-                                {{ \Carbon\Carbon::parse($reviewDates[$step])->format('d-m-Y H:i:s') }}
+                                {{ \Carbon\Carbon::parse($reviewDates[$step])->addHours(7)->format('d-m-Y H:i:s') }}
                             @else
                                 Menunggu review
                             @endif
