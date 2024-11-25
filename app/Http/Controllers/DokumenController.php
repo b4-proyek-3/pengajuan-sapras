@@ -3,15 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pengajuan;
-use App\Models\Tempat;
-use App\Models\User;
-use App\Models\Reviewer;
-use App\Models\Ormawa;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use PhpOffice\PhpWord\TemplateProcessor;
-use Illuminate\Support\Facades\Storage;
 use PDF;
+use Illuminate\Support\Facades\URL;
 
 class DokumenController extends Controller
 {
@@ -40,10 +35,10 @@ class DokumenController extends Controller
             $kli = $this->getReviewerNameByRole($pengajuan->reviewers, 'kli');
             $wd3 = $this->getReviewerNameByRole($pengajuan->reviewers, 'wd-3');
 
-            // Set path for logo image
-            $logoPath = storage_path('app/public/images/polban.png');
+            // Generate validation URL
+            $validationUrl = URL::route('validasi.show', ['id_pengajuan' => $id_pengajuan]);
 
-            // Generate PDF
+            // Set PDF options
             $pdf = PDF::loadView('dokumen.generate', [
                 'id_pengajuan' => $id_pengajuan,
                 'nama_kegiatan' => $pengajuan->nama_kegiatan,
@@ -57,18 +52,20 @@ class DokumenController extends Controller
                 'sekum_bem' => $sekum_bem,
                 'kli' => $kli,
                 'wd3' => $wd3,
-                'logoPath' => $logoPath // Pass logo path to view
+                'validation_url' => $validationUrl // Pass the validation URL to the view
             ]);
 
+            $pdf->setPaper('A4');
+            
             // Generate filename
             $filename = 'Surat_Pengajuan_Sapras_' . str_replace(' ', '_', $pengajuan->nama_kegiatan) . '_' . date('Y-m-d') . '.pdf';
 
-            // Stream PDF to browser
+            // Return PDF for download
             return $pdf->download($filename);
 
         } catch (\Exception $e) {
-            logger("Error generating PDF: " . $e->getMessage());
-            return back()->with('error', 'Error generating document: ' . $e->getMessage());
+            logger('Error generating PDF: ' . $e->getMessage());
+            return back()->with('error', 'Gagal membuat dokumen: ' . $e->getMessage());
         }
     }
 

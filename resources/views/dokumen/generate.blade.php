@@ -1,94 +1,155 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Surat Peminjaman Sarana dan Prasarana</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            line-height: 1.4; /* Mengurangi jarak antar baris */
+            font-family: "Times New Roman", Times, serif;
+            line-height: 1.4;
             margin: 0 auto;
             max-width: 800px;
             padding: 20px;
         }
+
         .header-table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
+            border-bottom: 2px solid black;
         }
+
         .header-table td {
-            padding: 0; /* Menghapus padding untuk mengurangi jarak */
+            padding: 0;
             text-align: left;
             vertical-align: top;
         }
+
         .header-table .logo {
-            width: 20%;
-            padding: 10px; /* Tambahkan padding untuk mengatur jarak logo */
+            width: 5%;
+            padding: 10px;
         }
+
         .header-table .kop {
-            width: 80%;
+            width: 90%;
             text-align: center;
-            padding: 10px; /* Tambahkan padding untuk mengatur jarak teks */
+            padding: 10px 0;
         }
+
+        .kop h3.kemendikbud {
+            margin: 2px 0;
+            /* Kurangi dari 5px */
+            font-size: 14pt;
+            line-height: 1.2;
+            /* Tambahkan line-height */
+        }
+
+        .kop h3.polban {
+            margin: 2px 0;
+            /* Kurangi dari 5px */
+            font-size: 12pt;
+            font-weight: bold;
+            line-height: 1.2;
+        }
+
+        .kop p.address {
+            margin: 1px 0;
+            /* Kurangi dari 2px */
+            font-size: 12pt;
+            line-height: 1.2;
+            /* Kurangi dari 1.3 */
+        }
+
         .content {
             margin-bottom: 20px;
         }
+
+        .berita-acara-title {
+            text-align: center;
+            font-size: 12pt;
+            font-weight: bold;
+            text-decoration: underline;
+            margin: 20px 0;
+        }
+
         .table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
+            line-height: 1.1;
         }
-        .table th, .table td {
+
+        .table th,
+        .table td {
             border: 1px solid white;
-            padding: 8px;
+            padding: 4px 8px;
             text-align: left;
         }
+
         .table th {
             background-color: transparent;
             font-weight: normal;
         }
+
         .table td {
             background-color: transparent;
         }
+
         .table td:last-child {
             width: 30%;
         }
+
         .signature-section {
             display: flex;
-            justify-content: space-between;
-            margin-top: 50px;
+            justify-content: center;
+            /* Ubah dari 'right' */
+            margin-top: 10px;
         }
+
         .signature-block {
             text-align: center;
+            width: 200px;
         }
+
+        .signature-block p {
+            margin: 5px 0;
+            /* Reduced margin between paragraphs */
+        }
+
         .tembusan {
             margin-top: 30px;
             font-size: 0.9em;
         }
     </style>
 </head>
+
 <body>
     <table class="header-table">
         <tr>
             <td class="logo">
-                <img src="{{ $logoPath }}" alt="Polban Logo" style="width: 100px; height: auto;">
+                <img src="{{ public_path('assets/img/logo-polban.png') }}" alt="Polban Logo"
+                    style="width: 100px; height: auto;">
             </td>
-            <td class="kop" colspan="2">
-                <h3 style="margin: 5px 0;">KEMENTERIAN PENDIDIKAN, KEBUDAYAAN,</h3>
-                <h3 style="margin: 5px 0;">RISET, DAN TEKNOLOGI</h3>
-                <h3 style="margin: 5px 0;">POLITEKNIK NEGERI BANDUNG</h3>
-                <p style="margin: 2px 0;">Jln. Gegerkalong Hilir, Desa Ciwaruga, Kecamatan Parongpong,</p>
-                <p style="margin: 2px 0;">Kabupaten Bandung Barat 40559, Kotak Pos 1234 Telp. (022) 2013789,</p>
-                <p style="margin: 2px 0;">Faksimile: (022) 2013889, Laman: www.polban.ac.id, Pos elektronik: polban@polban.ac.id</p>
+            <td class="kop">
+                <h3 class="kemendikbud">KEMENTERIAN PENDIDIKAN, KEBUDAYAAN,</h3>
+                <h3 class="kemendikbud">RISET, DAN TEKNOLOGI</h3>
+                <h3 class="polban">POLITEKNIK NEGERI BANDUNG</h3>
+                <p class="address">Jln. Gegerkalong Hilir, Desa Ciwaruga, Kecamatan Parongpong,</p>
+                <p class="address">Kabupaten Bandung Barat 40559, Kotak Pos 1234 Telepon: (022) 2013789,</p>
+                <p class="address">Faksimile: (022) 2013889, Laman: www.polban.ac.id, Pos elektronik:
+                    polban@polban.ac.id</p>
             </td>
         </tr>
     </table>
 
     <div class="content">
-        <p style="text-align: center;">BERITA ACARA PEMINJAMAN SARANA DAN PRASARANA</p>
-        <p>Pada tanggal {{ \Carbon\Carbon::now()->isoFormat('D MMMM Y') }}, pukul {{ \Carbon\Carbon::now()->addHours(7)->format('H:i') }} WIB, yang bertanda tangan dibawah ini. Saya selaku ketua pelaksana kegiatan {{ $nama_kegiatan }}, meminjam sarana dengan detail sebagai berikut:</p>
-        
+        <p class="berita-acara-title">BERITA ACARA PEMINJAMAN SARANA DAN PRASARANA</p>
+        <p>Pada tanggal {{ \Carbon\Carbon::now()->isoFormat('D MMMM Y') }}, pukul
+            {{ \Carbon\Carbon::now()->addHours(7)->format('H:i') }} WIB, yang bertanda tangan dibawah ini. Saya selaku
+            ketua pelaksana kegiatan {{ $nama_kegiatan }}, meminjam sarana dengan detail sebagai berikut:</p>
+
         <table class="table">
             <tr>
                 <th>ID Pengajuan:</th>
@@ -152,9 +213,16 @@
         <div class="signature-section">
             <div class="signature-block">
                 <p>Bandung, {{ \Carbon\Carbon::now()->isoFormat('D MMMM Y') }}</p>
-                <p>Bukti Validasi</p><br><br>
+                <p>Bukti Validasi</p>
+                <p style="margin-top: 10px;">
+                    <a href="{{ $validation_url }}" style="color: #0066cc; text-decoration: underline;">
+                        Klik disini untuk memvalidasi dokumen
+                    </a>
+                </p>
+                <br>
             </div>
         </div>
     </div>
 </body>
+
 </html>
