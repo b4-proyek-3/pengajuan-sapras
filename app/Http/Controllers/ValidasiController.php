@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Pengajuan;
 use App\Models\Review;
+use App\Models\Reviewer;
 use App\Models\User;
 use Carbon\Carbon;
 
@@ -17,14 +18,13 @@ class ValidasiController extends Controller
 
         // Mengambil data review terakhir dari reviewer
         $reviews = Review::where('id_pengajuan', $id_pengajuan)
-                        ->with('reviewer.role')
                         ->orderBy('tanggal_review', 'desc')
                         ->get();
 
         // Mengambil nama penandatangan (sekretaris umum, KLI, WD-3)
-        $sekum = User::where('id_role', 2)->first(); // id_role = 2 untuk sekretaris umum
-        $kli = User::where('id_role', 3)->first(); // id_role = 3 untuk KLI
-        $wd3 = User::where('id_role', 4)->first(); // id_role = 4 untuk WD-3
+        $sekum = Reviewer::where('id_user', 2)->with('user')->first(); // id_user = 2 untuk sekretaris umum
+        $kli = Reviewer::where('id_user', 3)->with('user')->first(); // id_user = 3 untuk KLI
+        $wd3 = Reviewer::where('id_user', 4)->with('user')->first(); // id_user = 4 untuk WD-3
 
         // Cek status dokumen (aktif/tidak aktif)
         $waktu_mulai = Carbon::parse($pengajuan->tanggal_pinjam . ' ' . $pengajuan->waktu_pengajuan);
@@ -32,7 +32,7 @@ class ValidasiController extends Controller
         $status_dokumen = Carbon::now()->between($waktu_mulai, $waktu_akhir) ? 'Aktif' : 'Tidak Aktif';
 
         // Mengirim data ke view
-        return view('validasi', [
+        return view('pages.validasi', [
             'pengajuan' => $pengajuan,
             'reviews' => $reviews,
             'status_dokumen' => $status_dokumen,
