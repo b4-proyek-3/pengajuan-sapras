@@ -1,83 +1,116 @@
 @extends('layout.validasi')
 @section('content')
-    <div class="flex justify-center items-center min-h-screen w-full lg:w-1/2 px-6 py-6 mx-auto">
-
-        <div class="w-full max-w-lg px-3 mb-6 lg:mb-0 lg:flex-none">
-            <div class="relative flex flex-col min-w-0 break-words bg-white shadow-soft-xl rounded-2xl bg-clip-border">
-                <div class="flex-auto p-4">
-                    <div class="flex flex-col items-center mb-7 mt-6">
-                        <div class="bg-white-500 w-27 h-27 rounded-full p-6 mb-3">
-                            <i class="fa-sharp fa-solid fa-badge-check fa-7x text-lime-500"></i>
+    <div class="container mx-auto px-4 py-6">
+        <div class="flex justify-center items-center min-h-screen">
+            <div class="w-full max-w-xl lg:max-w-2xl xl:max-w-3xl">
+                <div class="bg-white shadow-soft-xl rounded-2xl overflow-hidden">
+                    <div class="p-6 md:p-10 lg:p-12">
+                        {{-- Verification Icon --}}
+                        <div class="flex justify-center mb-6">
+                            <div
+                                class="bg-white-500 w-24 h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 rounded-full flex items-center justify-center">
+                                <i class="fa-sharp fa-solid fa-badge-check fa-4x md:fa-5x lg:fa-6x text-lime-500"></i>
+                            </div>
                         </div>
-                    </div>
-                    <div class="flex flex-col mx-4">
-                        <h5 class="font-bold">Informasi Dokumen</h5>
-                    </div>
 
-                    <div class="bg-gray-200 rounded-xl shadow-soft-xl mx-4 mb-4">
-                        <div class="p-3 mx-3">
-                            <table class="table-auto w-full">
-                                <tr>
-                                    <td class="text-sm text-gray-700 py-1 font-medium">Status Dokumen</td>
-                                    <td class="text-sm text-gray-700 py-1 text-left">
-                                        <span class="{{ $status_dokumen === 'Aktif' ? 'text-green-500' : 'text-red-500' }}">
-                                            {{ $status_dokumen }}
-                                        </span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-sm text-gray-700 py-1 font-medium">Nomor Surat</td>
-                                    <td class="text-sm text-gray-700 py-1 text-left">{{ $nomor_surat ?? 'Tidak tersedia' }}
-                                    </td>
-                                </tr>
-                                <!-- Info Pengajuan -->
-                                <tr>
-                                    <td class="text-sm text-gray-700 py-1 font-medium"><b>Info Pengajuan</b></td>
-                                </tr>
-                                <tr>
-                                    <td class="text-sm text-gray-700 py-1 font-medium">Nama Kegiatan</td>
-                                    <td class="text-sm text-gray-700 py-1 text-left">{{ $pengajuan->nama_kegiatan }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-sm text-gray-700 py-1 font-medium">Tempat</td>
-                                    <td class="text-sm text-gray-700 py-1 text-left">{{ $pengajuan->tempat->nama_ruangan }}
-                                        {{ $pengajuan->tempat->nama_gedung }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-sm text-gray-700 py-1 font-medium">Tanggal Mulai</td>
-                                    <td class="text-sm text-gray-700 py-1 text-left">{{ $pengajuan->tanggal_pinjam }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-sm text-gray-700 py-1 font-medium">Tanggal Akhir</td>
-                                    <td class="text-sm text-gray-700 py-1 text-left">{{ $pengajuan->tanggal_akhir }}</td>
-                                </tr>
+                        {{-- Section Title --}}
+                        <h5 class="text-xl md:text-2xl lg:text-3xl font-bold text-center mb-6">Informasi Dokumen</h5>
 
-                                <hr class="border-t-2 border-gray-700 my-2">
+                        {{-- Document Information Card --}}
+                        <div class="bg-gray-100 rounded-xl p-4 md:p-6 lg:p-8">
+                            <table class="w-full text-sm md:text-base lg:text-lg">
+                                <tbody>
+                                    {{-- Document Status --}}
+                                    <tr class="border-b border-gray-200">
+                                        <td class="py-2 font-medium text-gray-700">Status Dokumen</td>
+                                        <td class="py-2 text-right">
+                                            <span
+                                                class="{{ $status_dokumen === 'Aktif' ? 'text-green-500' : 'text-red-500' }}">
+                                                {{ $status_dokumen }}
+                                            </span>
+                                        </td>
+                                    </tr>
 
-                                <!-- Info Penandatanganan -->
-                                <tr>
-                                    <td class="text-sm text-gray-700 py-1 font-medium"><b>Info Penandatanganan</b></td>
-                                </tr>
-                                <tr>
-                                    <td class="text-sm text-gray-700 py-1 font-medium">Sekretaris BEM</td>
-                                    <td class="text-sm text-gray-700 py-1 text-left">{{ $sekum->user->name }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-sm text-gray-700 py-1 font-medium">KLI</td>
-                                    <td class="text-sm text-gray-700 py-1 text-left">{{ $kli->user->name }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-sm text-gray-700 py-1 font-medium">WD-3</td>
-                                    <td class="text-sm text-gray-700 py-1 text-left">{{ $wd3->user->name }}</td>
-                                </tr>
+                                    {{-- Letter Number --}}
+                                    <tr class="border-b border-gray-200">
+                                        <td class="py-2 font-medium text-gray-700">Nomor Surat</td>
+                                        <td class="py-2 text-right">
+                                            {{ $nomor_surat ?? 'Tidak tersedia' }}
+                                        </td>
+                                    </tr>
+
+                                    {{-- Submission Information Section --}}
+                                    <tr>
+                                        <td colspan="2" class="py-3 text-base font-bold text-gray-800">Info Pengajuan
+                                        </td>
+                                    </tr>
+
+                                    {{-- Activity Name --}}
+                                    <tr class="border-b border-gray-200">
+                                        <td class="py-2 font-medium text-gray-700">Nama Kegiatan</td>
+                                        <td class="py-2 text-right">
+                                            {{ $pengajuan->nama_kegiatan }}
+                                        </td>
+                                    </tr>
+
+                                    {{-- Location --}}
+                                    <tr class="border-b border-gray-200">
+                                        <td class="py-2 font-medium text-gray-700">Tempat</td>
+                                        <td class="py-2 text-right">
+                                            {{ $pengajuan->tempat->nama_ruangan }}
+                                            {{ $pengajuan->tempat->nama_gedung }}
+                                        </td>
+                                    </tr>
+
+                                    {{-- Start Date --}}
+                                    <tr class="border-b border-gray-200">
+                                        <td class="py-2 font-medium text-gray-700">Tanggal Mulai</td>
+                                        <td class="py-2 text-right">
+                                            {{ $pengajuan->tanggal_pinjam }}
+                                        </td>
+                                    </tr>
+
+                                    {{-- End Date --}}
+                                    <tr class="border-b border-gray-200">
+                                        <td class="py-2 font-medium text-gray-700">Tanggal Akhir</td>
+                                        <td class="py-2 text-right">
+                                            {{ $pengajuan->tanggal_akhir }}
+                                        </td>
+                                    </tr>
+
+                                    {{-- Signature Information Section --}}
+                                    <tr>
+                                        <td colspan="2" class="py-3 text-base font-bold text-gray-800">Info
+                                            Penandatanganan</td>
+                                    </tr>
+
+                                    {{-- BEM Secretary --}}
+                                    <tr class="border-b border-gray-200">
+                                        <td class="py-2 font-medium text-gray-700">Sekretaris BEM</td>
+                                        <td class="py-2 text-right">
+                                            {{ $sekum->user->name }}
+                                        </td>
+                                    </tr>
+
+                                    {{-- KLI --}}
+                                    <tr class="border-b border-gray-200">
+                                        <td class="py-2 font-medium text-gray-700">KLI</td>
+                                        <td class="py-2 text-right">
+                                            {{ $kli->user->name }}
+                                        </td>
+                                    </tr>
+
+                                    {{-- WD-3 --}}
+                                    <tr>
+                                        <td class="py-2 font-medium text-gray-700">WD-3</td>
+                                        <td class="py-2 text-right">
+                                            {{ $wd3->user->name }}
+                                        </td>
+                                    </tr>
+                                </tbody>
                             </table>
                         </div>
                     </div>
-
-
-
-                    <a class="mt-auto text-sm font-semibold leading-normal group text-slate-500" href="javascript:;">
-                    </a>
                 </div>
             </div>
         </div>
