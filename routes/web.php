@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PengajuanController;
@@ -10,9 +11,8 @@ use App\Http\Controllers\QRCodeController;
 use App\Http\Controllers\ValidasiController;
 use App\Models\Dokumen;
 
-Route::get('/', function () {
-    return view('progress2');
-});
+Route::get('/', [DashboardController::class, 'getDashboardStatistics'])->name('dashboard');
+Route::get('/monthly-pengajuan-status', [DashboardController::class, 'getMonthlyPengajuanStatus']);
 
 // ========================================================================================
 // AUTHENTICATION ROUTES ==================================================================
@@ -55,6 +55,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/tracking/{id_pengajuan}', [TrackingController::class, 'show'])->name('tracking.show');
 
     Route::get('/dokumen/generate/{id_pengajuan}', [DokumenController::class, 'generate'])->name('dokumen.generate');
+
+    Route::get('/dashboard', [DashboardController::class, 'getMonthlyPengajuanStatus']);
 });
 
 Route::get('/validasi/{id_pengajuan}', [ValidasiController::class, 'show'])->name('validasi.show');

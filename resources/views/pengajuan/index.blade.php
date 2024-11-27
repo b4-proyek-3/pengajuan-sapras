@@ -93,7 +93,7 @@
                         </thead>
 
                         <tbody>
-                            @foreach ($pengajuanList as $pengajuan)
+                            @foreach ($pengajuanDiajukan as $pengajuan)
                                 <tr>
                                     <td class="py-3 px-4 border">{{ $loop->iteration }}</td>
                                     <td class="py-3 px-4 border">{{ $pengajuan->tanggal_pengajuan }}</td>
@@ -314,7 +314,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($pengajuanList as $pengajuan)
+                                @foreach ($pengajuanRiwayat as $pengajuan)
                                     <tr>
                                         <td class="py-3 px-4 border">{{ $loop->iteration }}</td>
                                         <td class="py-3 px-4 border">{{ $pengajuan->tanggal_pengajuan }}</td>

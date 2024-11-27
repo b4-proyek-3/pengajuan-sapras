@@ -26,25 +26,47 @@ class PengajuanController extends Controller
         $sortStatus = $request->input('sort_status');
         $search = $request->input('search');
 
-        $query = Pengajuan::with(['pengaju.ormawa']);
+        // Status untuk tab Diajukan: yang masih dalam proses
+        $diajukanStatuses = ['diajukan', 'direview', 'direvisi'];
+        
+        // Status untuk tab Riwayat: yang sudah final
+        $riwayatStatuses = ['selesai', 'ditolak'];
 
-        if ($sortStatus) {
-            $query->where('status', $sortStatus);
-        }
+        $queryDiajukan = Pengajuan::with(['pengaju.ormawa'])->whereIn('status', $diajukanStatuses);
+        $queryRiwayat = Pengajuan::with(['pengaju.ormawa'])->whereIn('status', $riwayatStatuses);
 
+        // Filter pencarian untuk kedua query
         if ($search) {
-            $query->where(function ($query) use ($search) {
+            $queryDiajukan->where(function ($query) use ($search) {
                 $query->where('nama_kegiatan', 'like', '%' . $search . '%')
-                      ->orWhereHas('pengaju.ormawa', function ($query) use ($search) {
-                          $query->where('nama_ormawa', 'like', '%' . $search . '%'); 
-                      });
+                    ->orWhereHas('pengaju.ormawa', function ($query) use ($search) {
+                        $query->where('nama_ormawa', 'like', '%' . $search . '%'); 
+                    });
+            });
+
+            $queryRiwayat->where(function ($query) use ($search) {
+                $query->where('nama_kegiatan', 'like', '%' . $search . '%')
+                    ->orWhereHas('pengaju.ormawa', function ($query) use ($search) {
+                        $query->where('nama_ormawa', 'like', '%' . $search . '%'); 
+                    });
             });
         }
 
-        $pengajuanList = $query->get();
+        // Jika ada filter status tambahan
+        if ($sortStatus) {
+            $queryDiajukan->where('status', $sortStatus);
+            $queryRiwayat->where('status', $sortStatus);
+        }
+
+        $pengajuanDiajukan = $queryDiajukan->get();
+        $pengajuanRiwayat = $queryRiwayat->get();
         $tempatList = Tempat::all(); 
 
-        return view('pengajuan.index', compact('pengajuanList', 'tempatList'));
+        return view('pengajuan.index', [
+            'pengajuanDiajukan' => $pengajuanDiajukan, 
+            'pengajuanRiwayat' => $pengajuanRiwayat, 
+            'tempatList' => $tempatList
+        ]);
     }
 
     public function show(string $id_pengajuan)
