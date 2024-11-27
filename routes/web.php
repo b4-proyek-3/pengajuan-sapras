@@ -8,6 +8,7 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\TrackingController;
 use App\Http\Controllers\DokumenController;
 use App\Http\Controllers\QRCodeController;
+use App\Http\Controllers\StatusPengajuanController;
 use App\Http\Controllers\ValidasiController;
 use App\Models\Dokumen;
 
@@ -57,6 +58,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dokumen/generate/{id_pengajuan}', [DokumenController::class, 'generate'])->name('dokumen.generate');
 
     Route::get('/dashboard', [DashboardController::class, 'getMonthlyPengajuanStatus']);
+
+    Route::get('/status-pengajuan', [StatusPengajuanController::class, 'index'])->name('layout.status');
+
 });
 
 Route::get('/validasi/{id_pengajuan}', [ValidasiController::class, 'show'])->name('validasi.show');
