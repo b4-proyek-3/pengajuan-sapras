@@ -11,6 +11,7 @@
     <link href="{{ asset('/assets/css/soft-ui-dashboard-tailwind.css?v=1.0.5') }}" rel="stylesheet" />
     <!-- Nepcha Analytics (nepcha.com) -->
     <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
+    <script src="{{ asset('/assets/js/dropdown.js') }}"></script>
 
     <!-- <script src="https://cdn.jsdelivr.net/npm/wicg-inert@latest/dist/inert.min.js"></script> -->
     <link rel="stylesheet" data-purpose="Layout StyleSheet" title="Web Awesome" href="/css/app-wa-3b124ff0e0d7a67cd8c995d0aeb1d15a.css?vsn=d">

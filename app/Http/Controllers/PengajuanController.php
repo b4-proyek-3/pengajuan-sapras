@@ -15,11 +15,6 @@ use Illuminate\Support\Facades\File;
 
 class PengajuanController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
     public function index(Request $request)
     {
         $pengaju = auth()->user()->pengaju;
@@ -184,10 +179,59 @@ class PengajuanController extends Controller
                     $tempat->save();
                 }
             }
-            return redirect()->route('pengaju.show', $pengajuan->id_pengajuan)->with('success', 'Informasi pengajuan berhasil diperbarui.');
+            return redirect()->route('pengajuan.show', $pengajuan->id_pengajuan)->with('success', 'Informasi pengajuan berhasil diperbarui.');
         } catch (\Exception $e) {
             dd($e->getMessage());
-            return redirect()->route('pengaju.show', $id_pengajuan)->with('failed', 'Informasi pengajuan tidak berhasil diperbarui.');
+            return redirect()->route('pengajuan.show', $id_pengajuan)->with('failed', 'Informasi pengajuan tidak berhasil diperbarui.');
         }
     }
+
+    public function simpan_dokumen(Request $request, $id_pengajuan) {
+        // Decode dokumen dihapus
+        $dokumenDihapus = json_decode($request->dokumenDihapus, true);
+        foreach ($dokumenDihapus as $dokumen) {
+            Dokumen::where('no_dokumen', $dokumen['id'])->delete();
+        }
+    
+        // Simpan dokumen baru atau update dokumen
+        foreach ($request->file('dokumenBaru') as $index => $file) {
+            $namaDokumen = $request->input("dokumenNama.$index");
+            $path = $file->store('dokumen');
+    
+            Dokumen::updateOrCreate(
+                ['id_pengajuan' => $id_pengajuan, 'nama_dokumen' => $namaDokumen],
+                ['path' => $path]
+            );
+        }
+    
+        return response()->json(['success' => true, 'message' => 'Dokumen berhasil disimpan.']);
+    }    
+
+    public function submitPengajuan(Request $request, $id_pengajuan)
+    {
+        // Validasi status yang diterima
+        $request->validate([
+            'status' => 'required|string',
+        ]);
+
+        // Cari pengajuan berdasarkan ID
+        $pengajuan = Pengajuan::find($id_pengajuan);
+
+        // Pastikan pengajuan ditemukan
+        if (!$pengajuan) {
+            return redirect()->back()->with('error', 'Pengajuan tidak ditemukan');
+        }
+
+        // Update kolom 'edited' dan 'status'
+        $pengajuan->edited = false;
+        $pengajuan->status = 'diedit';
+
+        // Simpan perubahan ke database
+        $pengajuan->save();
+
+        // Kembali ke halaman pengajuan dengan pesan sukses
+        return redirect()->route('pengajuan.show', $id_pengajuan)
+                        ->with('success', 'Pengajuan berhasil disubmit');
+    }
+
 }

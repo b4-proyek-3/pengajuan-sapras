@@ -73,7 +73,7 @@
                                     <td class="py-3 px-4 border">{{ ucfirst($pengajuan->status) }}</td>
                                     <td class="py-3 px-4 border">{{ $pengajuan->keterangan }}</td>
                                     <td class="py-3 px-4 border">
-                                    <button onclick="window.location='{{ route('reviewer.detail_reviewer', ['id_pengajuan' => $pengajuan->id_pengajuan, 'id_reviewer' => auth()->user()->reviewer->id_reviewer]) }}'" class="bg-blue-600 text-white px-4 py-2 rounded-lg">Detail</button>
+                                    <button onclick="window.location='{{ route('reviewer.detail_reviewer', ['id_pengajuan' => $pengajuan->id_pengajuan, 'id_reviewer' => auth()->user()->reviewer->id_reviewer]) }}'" class="bg-blue-600 text-white px-4 py-2 rounded-lg">Review</button>
                                     </td>
                                 </tr>
                             @endforeach

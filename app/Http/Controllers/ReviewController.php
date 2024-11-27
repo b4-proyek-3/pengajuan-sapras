@@ -12,14 +12,8 @@ use Illuminate\Support\Facades\Log;
 
 class ReviewController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
     public function index(Request $request)
     {
-        $sortStatus = $request->input('sort_status');
         $search = $request->input('search');
         $reviewer = auth()->user()->reviewer;
         $id_reviewer = $reviewer->id_reviewer;
@@ -28,7 +22,6 @@ class ReviewController extends Controller
         $queryDiajukan = Pengajuan::with(['pengaju.ormawa', 'reviewers'])
             ->where(function ($query) use ($role) {
                 if ($role == 'sekum-bem') {
-                    // Sekum BEM hanya melihat pengajuan dengan status 'diajukan'
                     $query->where('status', 'diajukan');
                 } else {
                     $query->where('status', 'direview')
@@ -39,25 +32,18 @@ class ReviewController extends Controller
                                 $query->where('role', 'kli')->where('reviews.status', 'diterima');
                             }
                         });
-                    }
+                }
             })
             ->whereDoesntHave('reviewers', function ($query) use ($id_reviewer) {
-                $query->where('reviewers.id_reviewer', $id_reviewer); // Belum direview oleh reviewer ini
-            })
-            ->get();
+                $query->where('reviewers.id_reviewer', $id_reviewer);
+            })->get();
 
         $queryRiwayat = Pengajuan::with(['pengaju.ormawa', 'reviewers' => function ($query) use ($id_reviewer) {
-                $query->where('reviewers.id_reviewer', $id_reviewer) // Sudah direview oleh reviewer ini
-                      ->withPivot('status');
+                $query->where('reviewers.id_reviewer', $id_reviewer)->withPivot('status');
             }])
             ->whereHas('reviewers', function ($query) use ($id_reviewer) {
-                $query->where('reviewers.id_reviewer', $id_reviewer); // Sudah direview oleh reviewer ini
-            })
-            ->get();
-
-        if ($sortStatus) {
-            $query->where('status', $sortStatus);
-        }
+                $query->where('reviewers.id_reviewer', $id_reviewer);
+            })->get();
 
         if ($search) {
             $queryRiwayat->where(function ($query) use ($search) {
@@ -89,15 +75,10 @@ class ReviewController extends Controller
                         ->where('id_reviewer', $id_reviewer)
                         ->first();
 
-        if (!$this->canReview($id_pengajuan, $id_reviewer)) {
-            return redirect()->route('reviewer.index')->with('error', 'Anda belum bisa mereview pengajuan ini.');
-        }
-
         $hasReviewed = $review ? $review->status != 'diajukan' : false;
 
         return view('reviewer.detail_reviewer', compact('pengajuan', 'review', 'hasReviewed', 'id_reviewer'));
     }
-
 
     public function updateReview(Request $request, string $id_pengajuan, string $id_reviewer)
     {
@@ -159,7 +140,6 @@ class ReviewController extends Controller
         if ($review && $review->status != 'diajukan') {
             return false; 
         }
-
         return true; 
     }
 
@@ -172,5 +152,4 @@ class ReviewController extends Controller
         }
         return null;
     }
-
 }

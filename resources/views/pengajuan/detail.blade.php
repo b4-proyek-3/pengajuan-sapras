@@ -212,11 +212,11 @@
                   </div>
                   <div class="flex-none w-5/12 max-w-full px-3 my-auto text-right lg:w-1/2 lg:flex-none">
                     <div class="relative pr-6 lg:float-right">
-                      <!-- @if ($pengajuans->status == 'direvisi')
+                      @if ($pengajuans->status == 'direvisi')
                         <a dropdown-trigger class="cursor-pointer" aria-expanded="false" onclick="openDokumenModal()">
                           <i class="fa fa-ellipsis-v"></i>
                         </a>
-                      @endif -->
+                      @endif
                     </div>
                   </div>
                 </div>
@@ -267,6 +267,18 @@
                 </div>
             </div>
           </form>
+          @if ($pengajuans->status == 'direvisi')
+          <form action="{{ route('pengajuan.submit', $pengajuans->id_pengajuan) }}" method="POST">
+              @csrf
+              @method('POST')
+              
+              <div class="flex justify-end">
+                  <button type="submit" name="status" value="diterima" class="mt-2 bg-gradient-to-tl from-blue-600 to-teal-400 px-2.5 text-xs rounded-1.8 py-1.4 inline-block whitespace-nowrap text-center align-baseline font-bold uppercase leading-none text-white">
+                      Submit
+                  </button>
+              </div>
+          </form>
+          @endif
         </div>
 
         <footer class="pt-4 w-full bg-transparent">
@@ -283,6 +295,7 @@
         </footer>
 </div>
 @include('modal.modal_edit_pengajuan')
+@include('modal.modal_edit_dokumen')
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     // Ambil semua elemen dengan class 'dokumen-link'
@@ -301,83 +314,6 @@
       });
     });
   });
-</script>
-<script>
-    let selectedFiles = [];
-    let removedFiles = [];
-
-    document.getElementById('fileInput').addEventListener('change', function(event) {
-        handleFiles(event.target.files);
-        this.value = ''; // Reset input file
-    });
-
-    function removeFile(button, fileId = null) {
-        const listItem = button.closest('li');
-        listItem.remove();
-
-        // Tambahkan ID file yang akan dihapus ke array removedFiles
-        if (fileId) {
-        if (!removedFiles.includes(fileId)) {
-                removedFiles.push(fileId);
-                document.getElementById('removedFiles').value = JSON.stringify(removedFiles);
-            }
-        } else {
-            // Hapus file baru dari selectedFiles jika bukan dari database
-            const fileName = listItem.querySelector('span').textContent;
-            selectedFiles = selectedFiles.filter(file => file.name !== fileName);
-        }
-    }
-
-    function handleFiles(files) {
-        const fileListElement = document.getElementById('fileList');
-        Array.from(files).forEach(file => {
-            if (file.type === 'application/pdf') {
-              if (!selectedFiles.some(f => f.name === file.name)) {
-                  selectedFiles.push(file);
-
-                    const li = document.createElement('li');
-                    li.classList.add('flex', 'justify-between', 'items-center', 'p-2');
-
-                    const img = document.createElement('img');
-                    img.src = '/assets/img/pdf.png';
-                    img.alt = 'PDF Icon';
-                    img.classList.add('w-6', 'h-6', 'mr-2');
-
-                    const fileName = document.createElement('span');
-                    fileName.textContent = file.name;
-                    fileName.classList.add('text-xs', 'mr-2', 'flex-shrink-0');
-
-                    const deleteButton = document.createElement('button');
-                    deleteButton.classList.add('text-red-500');
-                    deleteButton.innerHTML = '&times;';
-                    deleteButton.onclick = () => {
-                        li.remove();
-                        selectedFiles = selectedFiles.filter(f => f.name !== file.name);
-                    };
-
-                    li.appendChild(img);
-                    li.appendChild(fileName);
-                    li.appendChild(deleteButton);
-                    fileListElement.appendChild(li);
-                }
-            } else {
-                alert("Hanya file PDF yang diperbolehkan");
-            }
-        });
-    }
-
-    function resetFiles() {
-        selectedFiles = [];
-        removedFiles = [];
-        document.getElementById('fileList').innerHTML = '';
-        document.getElementById('removedFiles').value = '[]';
-    }
-
-    document.getElementById('uploadForm').onsubmit = function() {
-        // Tambahkan selectedFiles ke FormData sebelum mengirim form
-        const formData = new FormData(this);
-        selectedFiles.forEach(file => formData.append('files[]', file));
-    };
 </script>
 
 @endsection

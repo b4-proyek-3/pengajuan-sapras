@@ -29,18 +29,11 @@ Route::controller(AuthController::class)->group(function () {
 // PROTECTED ROUTES (Require Authentication)
 Route::middleware(['auth'])->group(function () {
     Route::get('/pengajuan', [PengajuanController::class, 'index'])->name('pengajuan.index');
-    // Route untuk menyimpan data pengajuan baru
-    Route::post('/pengajuan', [PengajuanController::class, 'store'])->name('pengajuan.form');
+    Route::post('/pengajuan', [PengajuanController::class, 'store'])->name('pengajuan.store');
 
-    // === Detail Pengajuan Route ==== //
+    // Detail Pengajuan Route
     Route::get('/pengajuan/detail/{id_pengajuan}', [PengajuanController::class, 'show'])->name('pengajuan.show');
     Route::put('/pengajuan/detail/{id_pengajuan}', [PengajuanController::class, 'update'])->name('pengajuan.update');
-
-    // Route untuk menampilkan page pengajuan
-    Route::get('/pengajuan', [PengajuanController::class, 'index'])->name('pengajuan.index');
-
-    // Route untuk menyimpan data pengajuan baru
-    Route::post('/pengajuan', [PengajuanController::class, 'store'])->name('pengajuan.store');
 
     // Route untuk reviewer
     Route::get('/reviewer', [ReviewController::class, 'index'])->name('reviewer.index');
@@ -49,4 +42,8 @@ Route::middleware(['auth'])->group(function () {
 
     // Routes untuk Status Tracker
     Route::get('/tracking/{id_pengajuan}', [TrackingController::class, 'show'])->name('tracking.show');
+
+    Route::delete('/pengajuan/{id_pengajuan}/dokumen/{id_dokumen}', [PengajuanController::class, 'destroyDokumen'])
+    ->name('pengajuan.dokumen.destroy');
+    Route::post('/pengajuan/{id_pengajuan}/submit', [PengajuanController::class, 'submitPengajuan'])->name('pengajuan.submit');
 });

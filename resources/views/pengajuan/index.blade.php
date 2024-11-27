@@ -107,7 +107,7 @@
                 </div>
 
                 <!-- Modal -->
-                <div class="modal fade" id="pengajuanModal" tabindex="-1" aria-labelledby="pengajuanModalLabel" aria-hidden="true">
+                <div class="modal fade overflow-y-auto" id="pengajuanModal" tabindex="-1" aria-labelledby="pengajuanModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -279,17 +279,19 @@
                             </thead>
                             <tbody>
                                 @foreach ($pengajuanList as $pengajuan)
-                                    <tr>
-                                        <td class="py-3 px-4 border">{{ $loop->iteration }}</td>
-                                        <td class="py-3 px-4 border">{{ $pengajuan->tanggal_pengajuan }}</td>
-                                        <td class="py-3 px-4 border">{{ $pengajuan->nama_kegiatan }}</td>
-                                        <td class="py-3 px-4 border">{{ $pengajuan->pengaju->ormawa->nama_ormawa ?? '-' }}</td>
-                                        <td class="py-3 px-4 border">{{ ucfirst($pengajuan->status) }}</td>
-                                        <td class="py-3 px-4 border">{{ $pengajuan->keterangan }}</td>
-                                        <td class="py-3 px-4 border">
-                                            <button onclick="window.location='{{ route('pengajuan.show', ['id_pengajuan' => $pengajuan->id_pengajuan]) }}'" class="bg-blue-600 text-white px-4 py-2 rounded-lg">Detail</button>
-                                        </td>
-                                    </tr>
+                                    @if ($pengajuan->status == 'selesai' || 'ditolak')
+                                        <tr>
+                                            <td class="py-3 px-4 border">{{ $loop->iteration }}</td>
+                                            <td class="py-3 px-4 border">{{ $pengajuan->tanggal_pengajuan }}</td>
+                                            <td class="py-3 px-4 border">{{ $pengajuan->nama_kegiatan }}</td>
+                                            <td class="py-3 px-4 border">{{ $pengajuan->pengaju->ormawa->nama_ormawa ?? '-' }}</td>
+                                            <td class="py-3 px-4 border">{{ ucfirst($pengajuan->status) }}</td>
+                                            <td class="py-3 px-4 border">{{ $pengajuan->keterangan }}</td>
+                                            <td class="py-3 px-4 border">
+                                                <button onclick="window.location='{{ route('pengajuan.show', ['id_pengajuan' => $pengajuan->id_pengajuan]) }}'" class="bg-blue-600 text-white px-4 py-2 rounded-lg">Detail</button>
+                                            </td>
+                                        </tr>
+                                    @endif
                                 @endforeach
                             </tbody>
                         </table>
