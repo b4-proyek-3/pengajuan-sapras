@@ -27,7 +27,7 @@
                         </tr>
                         <tr>
                             <td class="text-sm text-gray-700 py-1 font-medium">Nomor Surat</td>
-                            <td class="text-sm text-gray-700 py-1 text-left">{{ $nomor_surat ?? 'Tidak tersedia'}}</td>
+                            <td class="text-sm text-gray-700 py-1 text-left">{{ $pengajuan->id_pengajuan }}</td>
                         </tr>
                     <!-- Info Pengajuan -->
                         <tr>
@@ -58,15 +58,15 @@
                         </tr>
                         <tr>
                             <td class="text-sm text-gray-700 py-1 font-medium">Sekretaris BEM</td>
-                            <td class="text-sm text-gray-700 py-1 text-left">{{ $sekum->user->name }}</td>
+                            <td class="text-sm text-gray-700 py-1 text-left">{{ $sekum }}</td>
                         </tr>
                         <tr>
                             <td class="text-sm text-gray-700 py-1 font-medium">KLI</td>
-                            <td class="text-sm text-gray-700 py-1 text-left">{{ $kli->user->name }}</td>
+                            <td class="text-sm text-gray-700 py-1 text-left">{{ $kli }}</td>
                         </tr>
                         <tr>
                             <td class="text-sm text-gray-700 py-1 font-medium">WD-3</td>
-                            <td class="text-sm text-gray-700 py-1 text-left">{{ $wd3->user->name }}</td>
+                            <td class="text-sm text-gray-700 py-1 text-left">{{ $wd3 }}</td>
                         </tr>
                     </table>
                 </div>

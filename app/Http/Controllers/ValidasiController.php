@@ -17,14 +17,28 @@ class ValidasiController extends Controller
         $pengajuan = Pengajuan::with('tempat', 'pengaju.ormawa')->where('id_pengajuan', $id_pengajuan)->first();
 
         // Mengambil data review terakhir dari reviewer
-        $reviews = Review::where('id_pengajuan', $id_pengajuan)
+        $reviews = Review::with('reviewer')->where('id_pengajuan', $id_pengajuan)
                         ->orderBy('tanggal_review', 'desc')
-                        ->get();
+                        ->first();
 
-        // Mengambil nama penandatangan (sekretaris umum, KLI, WD-3)
         $sekum = Reviewer::where('id_user', 2)->with('user')->first(); // id_user = 2 untuk sekretaris umum
         $kli = Reviewer::where('id_user', 3)->with('user')->first(); // id_user = 3 untuk KLI
         $wd3 = Reviewer::where('id_user', 4)->with('user')->first(); // id_user = 4 untuk WD-3
+
+        if ($reviews->reviewer->role === 'sekum-bem') {
+            $sekum = $sekum->user->name;
+            $kli = 'Belum mereview';
+            $wd3 = 'Belum mereview';
+        } else if ($reviews->reviewer->role === 'kli') {
+            $sekum = $sekum->user->name;
+            $kli = $kli->user->name;
+            $wd3 = 'Belum mereview';
+        } else {
+            $sekum = $sekum->user->name;
+            $kli = $kli->user->name;
+            $wd3 = $wd3->user->name;
+        }
+        // Mengambil nama penandatangan (sekretaris umum, KLI, WD-3)
 
         // Cek status dokumen (aktif/tidak aktif)
         $waktu_mulai = Carbon::parse($pengajuan->tanggal_pinjam . ' ' . $pengajuan->waktu_pengajuan);
