@@ -15,35 +15,61 @@ class ReviewController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
+        $sortStatus = $request->input('sort_status');
         $reviewer = auth()->user()->reviewer;
         $id_reviewer = $reviewer->id_reviewer;
         $role = $reviewer->role;
 
-        $queryDiajukan = Pengajuan::with(['pengaju.ormawa', 'reviewers'])
-            ->where(function ($query) use ($role) {
-                if ($role == 'sekum-bem') {
-                    $query->where('status', 'diajukan');
-                } else {
-                    $query->where('status', 'direview')
-                        ->whereHas('reviewers', function ($query) use ($role) {
-                            if ($role == 'kli') {
-                                $query->where('role', 'sekum-bem')->where('reviews.status', 'diterima');
-                            } elseif ($role == 'wd-3') {
-                                $query->where('role', 'kli')->where('reviews.status', 'diterima');
-                            }
-                        });
-                }
-            })
-            ->whereDoesntHave('reviewers', function ($query) use ($id_reviewer) {
-                $query->where('reviewers.id_reviewer', $id_reviewer);
-            })->get();
+        $query = Pengajuan::with(['pengaju.ormawa', 'reviewers']);
+
+        $query->where(function ($query) use ($role, $id_reviewer) {
+            if ($role == 'sekum-bem') {
+                $query->where('status', 'diajukan');
+            } else {
+                $query->where('status', 'direview')
+                      ->whereHas('reviewers', function ($query) use ($role) {
+                          if ($role == 'kli') {
+                              $query->where('role', 'sekum-bem')->where('reviews.status', 'diterima');
+                          } elseif ($role == 'wd-3') {
+                              $query->where('role', 'kli')->where('reviews.status', 'diterima');
+                          }
+                      });
+            }
+        });
+
+        $query->whereDoesntHave('reviewers', function ($query) use ($id_reviewer) {
+            $query->where('reviewers.id_reviewer', $id_reviewer);
+        });
+
+        if ($sortStatus) {
+            $query->where('status', $sortStatus);
+        }
+
+        if ($search) {
+            $query->where(function ($query) use ($search) {
+                $query->where('nama_kegiatan', 'like', '%' . $search . '%')
+                      ->orWhereHas('pengaju.ormawa', function ($query) use ($search) {
+                          $query->where('nama_ormawa', 'like', '%' . $search . '%');
+                      });
+            });
+        }
+
+        $pengajuanDiajukan = $query->get();
+
+        $queryRiwayat = Pengajuan::with(['pengaju.ormawa', 'reviewers' => function ($query) use ($id_reviewer) {
+            $query->where('reviewers.id_reviewer', $id_reviewer)->withPivot('status');
+        }])
+        ->whereHas('reviewers', function ($query) use ($id_reviewer) {
+            $query->where('reviewers.id_reviewer', $id_reviewer)
+                  ->whereIn('reviews.status', ['diterima', 'ditolak']);
+        })->get();
 
         $queryRiwayat = Pengajuan::with(['pengaju.ormawa', 'reviewers' => function ($query) use ($id_reviewer) {
                 $query->where('reviewers.id_reviewer', $id_reviewer)->withPivot('status');
             }])
             ->whereHas('reviewers', function ($query) use ($id_reviewer) {
                 $query->where('reviewers.id_reviewer', $id_reviewer);
-            })->get();
+            });
 
         if ($search) {
             $queryRiwayat->where(function ($query) use ($search) {
@@ -52,17 +78,10 @@ class ReviewController extends Controller
                           $query->where('nama_ormawa', 'like', '%' . $search . '%');
                       });
             });
-    
-            $queryDiajukan->where(function ($query) use ($search) {
-                $query->where('nama_kegiatan', 'like', '%' . $search . '%')
-                      ->orWhereHas('pengaju.ormawa', function ($query) use ($search) {
-                          $query->where('nama_ormawa', 'like', '%' . $search . '%');
-                      });
-            });
         }
 
-        $pengajuanRiwayat = $queryRiwayat;
-        $pengajuanDiajukan = $queryDiajukan;
+        $pengajuanRiwayat = $queryRiwayat->get();
+
         $tempatList = Tempat::all();
 
         return view('reviewer.index', compact('tempatList', 'reviewer', 'pengajuanRiwayat', 'pengajuanDiajukan'));

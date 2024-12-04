@@ -18,11 +18,11 @@ class PengajuanController extends Controller
     public function index(Request $request)
     {
         $pengaju = auth()->user()->pengaju;
+        $search = $request->input('search');   
         $sortStatus = $request->input('sort_status');
-        $search = $request->input('search');
-
-        $query = Pengajuan::with(['pengaju.ormawa']);
-
+    
+        $query = Pengajuan::with(['pengaju.ormawa'])->where('nim', $pengaju->nim);
+    
         if ($sortStatus) {
             $query->where('status', $sortStatus);
         }
@@ -31,17 +31,24 @@ class PengajuanController extends Controller
             $query->where(function ($query) use ($search) {
                 $query->where('nama_kegiatan', 'like', '%' . $search . '%')
                       ->orWhereHas('pengaju.ormawa', function ($query) use ($search) {
-                          $query->where('nama_ormawa', 'like', '%' . $search . '%'); 
+                          $query->where('nama_ormawa', 'like', '%' . $search . '%');
                       });
             });
         }
-
-        $pengajuanList = $query->get();
-        $tempatList = Tempat::all(); 
-
-        return view('pengajuan.index', compact('pengajuanList', 'tempatList'));
+    
+        $pengajuanDiajukan = (clone $query)
+            ->whereIn('status', ['diajukan', 'direview', 'direvisi'])
+            ->get();
+    
+        $pengajuanRiwayat = (clone $query)
+            ->whereIn('status', ['diterima', 'ditolak'])
+            ->get();
+        
+        $tempatList = Tempat::all();
+    
+        return view('pengajuan.index', compact('pengajuanDiajukan', 'pengajuanRiwayat', 'tempatList'));
     }
-
+    
     public function show(string $id_pengajuan)
     {
         $pengajuans = Pengajuan::with(['pengaju', 'reviewers', 'latestReview', 'dokumen'])
