@@ -167,7 +167,6 @@ class PengajuanController extends Controller
                 return $value !== null;
             });
 
-            $pengajuan->edited = true;
             $pengajuan->update($updateData);
     
             // Update tabel tempat jika nama_tempat disertakan dan id_tempat ada
@@ -186,27 +185,6 @@ class PengajuanController extends Controller
         }
     }
 
-    public function simpan_dokumen(Request $request, $id_pengajuan) {
-        // Decode dokumen dihapus
-        $dokumenDihapus = json_decode($request->dokumenDihapus, true);
-        foreach ($dokumenDihapus as $dokumen) {
-            Dokumen::where('no_dokumen', $dokumen['id'])->delete();
-        }
-    
-        // Simpan dokumen baru atau update dokumen
-        foreach ($request->file('dokumenBaru') as $index => $file) {
-            $namaDokumen = $request->input("dokumenNama.$index");
-            $path = $file->store('dokumen');
-    
-            Dokumen::updateOrCreate(
-                ['id_pengajuan' => $id_pengajuan, 'nama_dokumen' => $namaDokumen],
-                ['path' => $path]
-            );
-        }
-    
-        return response()->json(['success' => true, 'message' => 'Dokumen berhasil disimpan.']);
-    }    
-
     public function submitPengajuan(Request $request, $id_pengajuan)
     {
         // Validasi status yang diterima
@@ -223,7 +201,7 @@ class PengajuanController extends Controller
         }
 
         // Update kolom 'edited' dan 'status'
-        $pengajuan->edited = false;
+        $pengajuan->edited = true;
         $pengajuan->status = 'diedit';
 
         // Simpan perubahan ke database
@@ -233,40 +211,4 @@ class PengajuanController extends Controller
         return redirect()->route('pengajuan.show', $id_pengajuan)
                         ->with('success', 'Pengajuan berhasil disubmit');
     }
-
-    // PengajuanController.php
-
-    public function getDokumen($id_pengajuan) {
-        $dokumen = Dokumen::where('id_pengajuan', $id_pengajuan)->get();
-        return response()->json(['dokumen' => $dokumen]);
-    }
-
-    public function updateDokumen(Request $request) {
-        $dokumenDihapus = json_decode($request->input('dokumenDihapus'), true);
-
-        // Hapus dokumen dari database dan storage
-        foreach ($dokumenDihapus as $dokumen) {
-            $doc = Dokumen::where('no_dokumen', $dokumen['no_dokumen'])->first();
-            if ($doc) {
-                Storage::delete($doc->path); // Hapus file dari storage
-                $doc->delete(); // Hapus dari database
-            }
-        }
-
-        // Simpan dokumen baru
-        if ($request->has('dokumenBaru')) {
-            foreach ($request->file('dokumenBaru') as $file) {
-                $path = $file->store('dokumen'); // Simpan file baru
-                Dokumen::create([
-                    'id_pengajuan' => $request->input('id_pengajuan'),
-                    'nama_dokumen' => $file->getClientOriginalName(),
-                    'path' => $path
-                ]);
-            }
-        }
-
-        return response()->json(['success' => true, 'message' => 'Perubahan berhasil disimpan.']);
-    }
-
-
 }

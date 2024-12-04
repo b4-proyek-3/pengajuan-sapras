@@ -23,8 +23,8 @@ class Pengajuan extends Model
         'nama_kegiatan',
         'jenis_kegiatan',
         'link_drive',
-        'status', // Menambahkan status
-        'edited', // Menambahkan edited
+        'status', 
+        'edited', 
         'updated_at',
     ];
     

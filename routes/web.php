@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PengajuanController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\TrackingController;
+use App\Http\Controllers\DokumenController;
 
 Route::get('/', function () {
     return view('progress2');
@@ -42,8 +43,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Routes untuk Status Tracker
     Route::get('/tracking/{id_pengajuan}', [TrackingController::class, 'show'])->name('tracking.show');
-
-    Route::delete('/pengajuan/{id_pengajuan}/dokumen/{id_dokumen}', [PengajuanController::class, 'destroyDokumen'])
-    ->name('pengajuan.dokumen.destroy');
     Route::post('/pengajuan/{id_pengajuan}/submit', [PengajuanController::class, 'submitPengajuan'])->name('pengajuan.submit');
+    Route::put('/pengajuan/{id_pengajuan}/update', [DokumenController::class, 'update'])->name('dokumen.update');
+
 });

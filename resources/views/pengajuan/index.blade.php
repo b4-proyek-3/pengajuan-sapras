@@ -286,7 +286,7 @@
                                             <td class="py-3 px-4 border">{{ $pengajuan->nama_kegiatan }}</td>
                                             <td class="py-3 px-4 border">{{ $pengajuan->pengaju->ormawa->nama_ormawa ?? '-' }}</td>
                                             <td class="py-3 px-4 border">{{ ucfirst($pengajuan->status) }}</td>
-                                            <td class="py-3 px-4 border">{{ $pengajuan->keterangan }}</td>
+                                            <td class="py-3 px-4 border">{{ $pengajuan->latestReview->first()->catatan ?? '-' }}</td>
                                             <td class="py-3 px-4 border">
                                                 <button onclick="window.location='{{ route('pengajuan.show', ['id_pengajuan' => $pengajuan->id_pengajuan]) }}'" class="bg-blue-600 text-white px-4 py-2 rounded-lg">Detail</button>
                                             </td>
@@ -371,7 +371,7 @@
         pergerakanFiles.style.display = "none";
         commonFiles.style.display = "block"; // Show common files for both types
 
-        if (activityType === "program_kerja") {
+        if (activityType === "proker") {
             programKerjaFiles.style.display = "block";
         } else if (activityType === "pergerakan") {
             pergerakanFiles.style.display = "block";

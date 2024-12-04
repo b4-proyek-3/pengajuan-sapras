@@ -22,9 +22,10 @@ class ReviewController extends Controller
         $queryDiajukan = Pengajuan::with(['pengaju.ormawa', 'reviewers'])
             ->where(function ($query) use ($role) {
                 if ($role == 'sekum-bem') {
-                    $query->where('status', 'diajukan');
+                    $query->where('status', 'diajukan')
+                    ->orWhere('status', 'diedit');
                 } else {
-                    $query->where('status', 'direview')
+                    $query->where('status', 'direview')->orWhere('status', 'diedit')
                         ->whereHas('reviewers', function ($query) use ($role) {
                             if ($role == 'kli') {
                                 $query->where('role', 'sekum-bem')->where('reviews.status', 'diterima');
@@ -34,16 +35,26 @@ class ReviewController extends Controller
                         });
                 }
             })
-            ->whereDoesntHave('reviewers', function ($query) use ($id_reviewer) {
-                $query->where('reviewers.id_reviewer', $id_reviewer);
-            })->get();
+            ->where(function ($query) use ($id_reviewer) {
+                $query->whereDoesntHave('reviewers', function ($subQuery) use ($id_reviewer) {
+                    $subQuery->where('reviewers.id_reviewer', $id_reviewer);
+                })
+                ->orWhereHas('reviewers', function ($subQuery) use ($id_reviewer) {
+                    $subQuery->where('reviewers.id_reviewer', $id_reviewer)
+                             ->where('reviews.status', 'direvisi');
+                });
+            })
+            ->get();
 
         $queryRiwayat = Pengajuan::with(['pengaju.ormawa', 'reviewers' => function ($query) use ($id_reviewer) {
                 $query->where('reviewers.id_reviewer', $id_reviewer)->withPivot('status');
             }])
             ->whereHas('reviewers', function ($query) use ($id_reviewer) {
                 $query->where('reviewers.id_reviewer', $id_reviewer);
-            })->get();
+            })
+            ->where('status', '!=', 'diedit')  // Menambahkan kondisi status bukan 'diedit'
+            ->get();
+        
 
         if ($search) {
             $queryRiwayat->where(function ($query) use ($search) {

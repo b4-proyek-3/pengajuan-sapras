@@ -271,7 +271,6 @@
           <form action="{{ route('pengajuan.submit', $pengajuans->id_pengajuan) }}" method="POST">
               @csrf
               @method('POST')
-              
               <div class="flex justify-end">
                   <button type="submit" name="status" value="diterima" class="mt-2 bg-gradient-to-tl from-blue-600 to-teal-400 px-2.5 text-xs rounded-1.8 py-1.4 inline-block whitespace-nowrap text-center align-baseline font-bold uppercase leading-none text-white">
                       Submit
@@ -293,7 +292,7 @@
             </div>
           </div>
         </footer>
-</div>
+    </div>
 @include('modal.modal_edit_pengajuan')
 @include('modal.modal_edit_dokumen')
 <script>
