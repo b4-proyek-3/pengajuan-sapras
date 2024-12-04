@@ -234,4 +234,39 @@ class PengajuanController extends Controller
                         ->with('success', 'Pengajuan berhasil disubmit');
     }
 
+    // PengajuanController.php
+
+    public function getDokumen($id_pengajuan) {
+        $dokumen = Dokumen::where('id_pengajuan', $id_pengajuan)->get();
+        return response()->json(['dokumen' => $dokumen]);
+    }
+
+    public function updateDokumen(Request $request) {
+        $dokumenDihapus = json_decode($request->input('dokumenDihapus'), true);
+
+        // Hapus dokumen dari database dan storage
+        foreach ($dokumenDihapus as $dokumen) {
+            $doc = Dokumen::where('no_dokumen', $dokumen['no_dokumen'])->first();
+            if ($doc) {
+                Storage::delete($doc->path); // Hapus file dari storage
+                $doc->delete(); // Hapus dari database
+            }
+        }
+
+        // Simpan dokumen baru
+        if ($request->has('dokumenBaru')) {
+            foreach ($request->file('dokumenBaru') as $file) {
+                $path = $file->store('dokumen'); // Simpan file baru
+                Dokumen::create([
+                    'id_pengajuan' => $request->input('id_pengajuan'),
+                    'nama_dokumen' => $file->getClientOriginalName(),
+                    'path' => $path
+                ]);
+            }
+        }
+
+        return response()->json(['success' => true, 'message' => 'Perubahan berhasil disimpan.']);
+    }
+
+
 }
