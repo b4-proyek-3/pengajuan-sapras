@@ -16,15 +16,14 @@
             <!-- Sorting dan Pencarian -->
             <div class="bg-orange-500 p-4 border-b border-orange-500 mt-4"></div>
                 <div class="bg-gray-100 p-4 border-b border-gray-300">
-                    <form method="GET" action="{{ route('pengajuan.index') }}" class="flex justify-between items-center">
+                    <form method="GET" action="{{ route('reviewer.index') }}" class="flex justify-between items-center">
                         <!-- Sort Dropdown -->
                         <div class="w-1/4">
                             <div class="relative">
-                                <select name="status_filter" class="appearance-none border border-gray-300 rounded-md p-2 w-full pr-10" onchange="this.form.submit()">
+                                <select name="sort_status" class="appearance-none border border-gray-300 rounded-md p-2 w-full pr-10" onchange="this.form.submit()">
                                     <option value=""> Pilih Status </option>
                                     <option value="diajukan">Diajukan</option>
                                     <option value="direview">Direvisi</option>
-                                    <option value="direvisi">Ditolak</option>
                                 </select>
 
                                 <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
@@ -42,7 +41,7 @@
                             </span>
                             <input type="text" name="search" value="{{ request('search') }}" class="pl-8.75 text-sm border border-gray-300 rounded-md p-2 w-full" placeholder=" Cari">
                             @if(request('search') || request('sort_status'))
-                                <a href="{{ route('pengajuan.index') }}" class="bg-gray-600 text-white py-2 px-4 rounded-md ml-4">Reset</a>
+                                <a href="{{ route('reviewer.index') }}" class="bg-gray-600 text-white py-2 px-4 rounded-md ml-4">Reset</a>
                             @endif
                         </div>
                     </form>

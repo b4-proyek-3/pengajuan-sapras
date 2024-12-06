@@ -45,11 +45,11 @@
                         <!-- Sort Dropdown -->
                         <div class="w-1/4">
                             <div class="relative">
-                                <select name="status_filter" class="appearance-none border border-gray-300 rounded-md p-2 w-full pr-10" onchange="this.form.submit()">
+                                <select name="sort_status" class="appearance-none border border-gray-300 rounded-md p-2 w-full pr-10" onchange="this.form.submit()">
                                     <option value=""> Pilih Status </option>
                                     <option value="diajukan">Diajukan</option>
-                                    <option value="direview">Direvisi</option>
-                                    <option value="direvisi">Ditolak</option>
+                                    <option value="direview">Direview</option>
+                                    <option value="direvisi">Direvisi</option>
                                 </select>
 
                                 <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
@@ -89,7 +89,7 @@
                         </thead>
 
                         <tbody>
-                            @foreach ($pengajuanList as $pengajuan)
+                            @foreach ($pengajuanDiajukan as $pengajuan)
                                 <tr>
                                     <td class="py-3 px-4 border">{{ $loop->iteration }}</td>
                                     <td class="py-3 px-4 border">{{ $pengajuan->tanggal_pengajuan }}</td>
@@ -278,7 +278,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($pengajuanList as $pengajuan)
+                            @foreach ($pengajuanList as $pengajuan)
                                     @if ($pengajuan->status == 'selesai' || 'ditolak')
                                         <tr>
                                             <td class="py-3 px-4 border">{{ $loop->iteration }}</td>

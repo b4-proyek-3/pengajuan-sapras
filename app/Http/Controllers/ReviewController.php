@@ -15,6 +15,7 @@ class ReviewController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
+        $sortStatus = $request->input('sort_status');
         $reviewer = auth()->user()->reviewer;
         $id_reviewer = $reviewer->id_reviewer;
         $role = $reviewer->role;
@@ -55,6 +56,18 @@ class ReviewController extends Controller
             ->where('status', '!=', 'diedit')  // Menambahkan kondisi status bukan 'diedit'
             ->get();
         
+        if ($sortStatus) {
+            $queryDiajukan->where('status', $sortStatus);
+        }
+
+        if ($search) {
+            $queryDiajukan->where(function ($query) use ($search) {
+                $query->where('nama_kegiatan', 'like', '%' . $search . '%')
+                        ->orWhereHas('pengaju.ormawa', function ($query) use ($search) {
+                            $query->where('nama_ormawa', 'like', '%' . $search . '%');
+                        });
+            });
+        }
 
         if ($search) {
             $queryRiwayat->where(function ($query) use ($search) {
@@ -63,17 +76,10 @@ class ReviewController extends Controller
                           $query->where('nama_ormawa', 'like', '%' . $search . '%');
                       });
             });
-    
-            $queryDiajukan->where(function ($query) use ($search) {
-                $query->where('nama_kegiatan', 'like', '%' . $search . '%')
-                      ->orWhereHas('pengaju.ormawa', function ($query) use ($search) {
-                          $query->where('nama_ormawa', 'like', '%' . $search . '%');
-                      });
-            });
         }
 
-        $pengajuanRiwayat = $queryRiwayat;
-        $pengajuanDiajukan = $queryDiajukan;
+        $pengajuanRiwayat = $queryRiwayat->get();
+
         $tempatList = Tempat::all();
 
         return view('reviewer.index', compact('tempatList', 'reviewer', 'pengajuanRiwayat', 'pengajuanDiajukan'));
