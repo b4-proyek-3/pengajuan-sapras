@@ -18,15 +18,18 @@ class PengajuanController extends Controller
     public function index(Request $request)
     {
         $pengaju = auth()->user()->pengaju;
-        $search = $request->input('search');   
+        $search = $request->input('search');
         $sortStatus = $request->input('sort_status');
     
-        $query = Pengajuan::with(['pengaju.ormawa'])->where('nim', $pengaju->nim);
+        // Query awal dengan filtering berdasarkan nim pengaju
+        $query = Pengajuan::with(['pengaju.ormawa', 'latestReview'])->where('nim', $pengaju->nim);
     
+        // Filter berdasarkan status
         if ($sortStatus) {
             $query->where('status', $sortStatus);
         }
-
+    
+        // Filter berdasarkan pencarian
         if ($search) {
             $query->where(function ($query) use ($search) {
                 $query->where('nama_kegiatan', 'like', '%' . $search . '%')
@@ -36,19 +39,28 @@ class PengajuanController extends Controller
             });
         }
     
-        $pengajuanDiajukan = (clone $query)
-            ->whereIn('status', ['diajukan', 'direview', 'direvisi'])
-            ->get();
+        $pengajuanDiajukan = Pengajuan::where('status', 'diajukan')
+        ->when($request->input('search'), function ($query, $search) {
+            return $query->where('nama_kegiatan', 'like', "%$search%");
+        })
+        ->paginate(10, ['*'], 'diajukan_page');
+
     
-        $pengajuanRiwayat = (clone $query)
-            ->whereIn('status', ['diterima', 'ditolak'])
-            ->get();
+        $pengajuanRiwayat = Pengajuan::whereIn('status', ['diterima', 'ditolak'])
+        ->when($request->input('status_filter'), function ($query, $status) {
+            return $query->where('status', $status);
+        })
+        ->when($request->input('search'), function ($query, $search) {
+            return $query->where('nama_kegiatan', 'like', "%$search%");
+        })
+        ->paginate(10, ['*'], 'riwayat_page'); 
         
         $tempatList = Tempat::all();
     
         return view('pengajuan.index', compact('pengajuanDiajukan', 'pengajuanRiwayat', 'tempatList'));
     }
     
+        
     public function show(string $id_pengajuan)
     {
         $pengajuans = Pengajuan::with(['pengaju', 'reviewers', 'latestReview', 'dokumen'])

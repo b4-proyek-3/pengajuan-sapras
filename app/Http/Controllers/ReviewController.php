@@ -54,7 +54,7 @@ class ReviewController extends Controller
             });
         }
 
-        $pengajuanDiajukan = $query->get();
+        $pengajuanDiajukan = $query->paginate(10);
 
         $queryRiwayat = Pengajuan::with(['pengaju.ormawa', 'reviewers' => function ($query) use ($id_reviewer) {
             $query->where('reviewers.id_reviewer', $id_reviewer)->withPivot('status');
@@ -80,7 +80,7 @@ class ReviewController extends Controller
             });
         }
 
-        $pengajuanRiwayat = $queryRiwayat->get();
+        $pengajuanRiwayat = $queryRiwayat->paginate(10);
 
         $tempatList = Tempat::all();
 
