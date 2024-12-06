@@ -77,8 +77,8 @@ class ReviewController extends Controller
                       });
             });
         }
-
-        $pengajuanRiwayat = $queryRiwayat->get();
+        $pengajuanRiwayat = $queryRiwayat;
+        $pengajuanDiajukan = $queryDiajukan;
         $tempatList = Tempat::all();
         return view('reviewer.index', compact('tempatList', 'reviewer', 'pengajuanRiwayat', 'pengajuanDiajukan'));
     }
