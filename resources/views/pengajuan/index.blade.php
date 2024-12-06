@@ -98,7 +98,7 @@
                                     <td class="py-3 px-4 border">{{ $pengajuan->pengaju->ormawa->nama_ormawa ?? '-' }}</td>
                                     <td class="py-3 px-4 border">
                                         <span class="inline-block py-1 px-3 rounded-lg 
-                                            @if($pengajuan->status == 'diajukan')
+                                            @if($pengajuan->status == 'diajukan' || $pengajuan->status == 'diedit')
                                                 bg-blue-200 text-blue-800
                                             @elseif($pengajuan->status == 'direview')
                                                 bg-yellow-200 text-yellow-800
@@ -343,8 +343,8 @@
                                     <td class="py-3 px-4 border">{{ $pengajuan->tanggal_pengajuan }}</td>
                                     <td class="py-3 px-4 border">{{ $pengajuan->nama_kegiatan }}</td>
                                     <td class="py-3 px-4 border">{{ $pengajuan->pengaju->ormawa->nama_ormawa ?? '-' }}</td>
-                                    <td class="py-3 px-4 border 
-                                        @if($pengajuan->status == 'diterima')
+                                    <td class="py-3 px-4 border
+                                        @if($pengajuan->status == 'selesai')
                                             bg-green-200 text-green-800
                                         @elseif($pengajuan->status == 'ditolak')
                                             bg-red-200 text-red-800
