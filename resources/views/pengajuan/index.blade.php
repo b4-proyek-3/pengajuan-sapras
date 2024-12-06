@@ -278,7 +278,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                            @foreach ($pengajuanList as $pengajuan)
+                            @foreach ($pengajuanRiwayat as $pengajuan)
                                     @if ($pengajuan->status == 'selesai' || 'ditolak')
                                         <tr>
                                             <td class="py-3 px-4 border">{{ $loop->iteration }}</td>

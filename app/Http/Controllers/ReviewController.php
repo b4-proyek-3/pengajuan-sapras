@@ -79,9 +79,7 @@ class ReviewController extends Controller
         }
 
         $pengajuanRiwayat = $queryRiwayat->get();
-
         $tempatList = Tempat::all();
-
         return view('reviewer.index', compact('tempatList', 'reviewer', 'pengajuanRiwayat', 'pengajuanDiajukan'));
     }
 
