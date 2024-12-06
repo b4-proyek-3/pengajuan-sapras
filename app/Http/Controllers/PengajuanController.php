@@ -18,9 +18,8 @@ class PengajuanController extends Controller
     public function index(Request $request)
     {
         $pengaju = auth()->user()->pengaju;
-        $search = $request->input('search');   
+        $search = $request->input('search');
         $sortStatus = $request->input('sort_status');
-    
         $query = Pengajuan::with(['pengaju.ormawa'])->where('nim', $pengaju->nim);
     
         if ($sortStatus) {
@@ -37,11 +36,11 @@ class PengajuanController extends Controller
         }
     
         $pengajuanDiajukan = (clone $query)
-            ->whereIn('status', ['diajukan', 'direview', 'direvisi'])
+            ->whereIn('status', ['diajukan', 'direview', 'direvisi', 'diedit'])
             ->get();
     
         $pengajuanRiwayat = (clone $query)
-            ->whereIn('status', ['diterima', 'ditolak'])
+            ->whereIn('status', ['selesai', 'ditolak'])
             ->get();
         
         $tempatList = Tempat::all();
@@ -60,15 +59,15 @@ class PengajuanController extends Controller
 
     public function create()
     {
-        $ormawaList = Ormawa::all(); 
-        $tempatList = Tempat::all(); 
+        $ormawaList = Ormawa::all();
+        $tempatList = Tempat::all();
 
         return view('pengajuan.index', compact('ormawaList', 'tempatList'));
     }
 
     public function store(Request $request)
     {
-        $user = Auth::user(); 
+        $user = Auth::user();
         $pengaju = $user->pengaju;
 
         $existingCount = Pengajuan::count();
