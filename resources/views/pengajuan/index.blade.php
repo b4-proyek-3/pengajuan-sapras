@@ -18,9 +18,9 @@
                     <span class="mr-2 text-lg font-bold">+</span>Tambah Pengajuan
                 </button>
                 @if (session('success'))
-                    <div x-data="{ show: true }" 
-                        x-show="show" 
-                        x-init="setTimeout(() => show = false, 5000)" 
+                    <div x-data="{ show: true }"
+                        x-show="show"
+                        x-init="setTimeout(() => show = false, 5000)"
                         class="text-green-400 px-4 py-4 z-10"
                         role="alert">
                         <span class="block sm:inline">{{ session('success') }}</span>
@@ -28,9 +28,9 @@
                 @endif
 
                 @if (session('failed'))
-                    <div x-data="{ show: true }" 
-                        x-show="show" 
-                        x-init="setTimeout(() => show = false, 5000)" 
+                    <div x-data="{ show: true }"
+                        x-show="show"
+                        x-init="setTimeout(() => show = false, 5000)"
                         class="text-red-400 px-4 py-4 z-10"
                         role="alert">
                         <span class="block sm:inline">{{ session('failed') }}</span>
@@ -383,5 +383,4 @@
         showFileInputs();
     });
 </script>
-
 @endsection
