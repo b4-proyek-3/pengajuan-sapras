@@ -18,15 +18,23 @@ class PengajuanController extends Controller
     public function index(Request $request)
     {
         $pengaju = auth()->user()->pengaju;
+        $activeTab = $request->query('active_tab', 'diajukan');
         $search = $request->input('search');
         $sortStatus = $request->input('sort_status');
     
         // Query awal dengan filtering berdasarkan nim pengaju
         $query = Pengajuan::with(['pengaju.ormawa', 'latestReview'])->where('nim', $pengaju->nim);
     
-        // Filter berdasarkan status
-        if ($sortStatus) {
-            $query->where('status', $sortStatus);
+        if ($activeTab == 'diajukan') {
+            // Jika active_tab adalah 'diajukan', maka yang bisa disortir selain 'diterima' dan 'ditolak'
+            if ($sortStatus && !in_array($sortStatus, ['selesai', 'ditolak'])) {
+                $query->where('status', $sortStatus);
+            }
+        } else {
+            // Jika active_tab bukan 'diajukan', hanya 'diterima' dan 'ditolak' yang bisa disortir
+            if ($sortStatus && in_array($sortStatus, ['selesai', 'ditolak'])) {
+                $query->where('status', $sortStatus);
+            }
         }
     
         // Filter berdasarkan pencarian
@@ -46,7 +54,7 @@ class PengajuanController extends Controller
         ->paginate(10, ['*'], 'diajukan_page');
 
     
-        $pengajuanRiwayat = Pengajuan::whereIn('status', ['diterima', 'ditolak'])
+        $pengajuanRiwayat = Pengajuan::whereIn('status', ['selesai', 'ditolak'])
         ->when($request->input('status_filter'), function ($query, $status) {
             return $query->where('status', $status);
         })
@@ -57,7 +65,7 @@ class PengajuanController extends Controller
         
         $tempatList = Tempat::all();
     
-        return view('pengajuan.index', compact('pengajuanDiajukan', 'pengajuanRiwayat', 'tempatList'));
+        return view('pengajuan.index', compact('pengajuanDiajukan', 'pengajuanRiwayat', 'tempatList', 'activeTab'));
     }
     
         
