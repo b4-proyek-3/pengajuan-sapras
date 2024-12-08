@@ -321,18 +321,29 @@
                                         <td class="py-3 px-4 border">{{ $pengajuan->nama_kegiatan }}</td>
                                         <td class="py-3 px-4 border">{{ $pengajuan->pengaju->ormawa->nama_ormawa ?? '-' }}
                                         </td>
-                                        <td class="py-3 px-4 border">{{ ucfirst($pengajuan->status) }}</td>
+                                        <td class="py-3 px-4 border">
+                                        <span class="inline-block py-1 px-3 rounded-lg 
+                                                @if($pengajuan->status == 'selesai')
+                                                    bg-green-200 text-blue-800
+                                                @elseif($pengajuan->status == 'ditolak')
+                                                    bg-red-200 text-red-800
+                                                @else
+                                                    bg-gray-200 text-gray-800
+                                                @endif">
+                                                {{ ucfirst($pengajuan->status) }}
+                                            </span>
+                                        </td>
                                         <td class="py-3 px-4 border">{{ $pengajuan->keterangan }}</td>
                                         <td class="py-3 px-4 border">
+                                        <button
+                                            onclick="window.location='{{ route('pengajuan.show', ['id_pengajuan' => $pengajuan->id_pengajuan]) }}'"
+                                            class="bg-blue-600 text-white px-2 py-1 text-sm rounded-md">Detail</button>
+                                        @if ($pengajuan->status === 'selesai')
                                             <button
-                                                onclick="window.location='{{ route('pengajuan.show', ['id_pengajuan' => $pengajuan->id_pengajuan]) }}'"
-                                                class="bg-blue-600 text-white px-4 py-2 rounded-lg">Detail</button>
-                                            @if ($pengajuan->status === 'selesai')
-                                                <button
-                                                    onclick="window.location='{{ route('dokumen.generate', ['id_pengajuan' => $pengajuan->id_pengajuan]) }}'"
-                                                    class="bg-green-600 text-white px-4 py-2 rounded-lg">Generate</button>
-                                            @endif
-                                        </td>
+                                                onclick="window.location='{{ route('dokumen.generate', ['id_pengajuan' => $pengajuan->id_pengajuan]) }}'"
+                                                class="bg-green-600 text-white px-2 py-1 text-sm rounded-md">Generate</button>
+                                        @endif
+                                    </td>
                                     </tr>
                                 @endforeach
                             </tbody>
