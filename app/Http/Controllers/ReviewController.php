@@ -110,7 +110,6 @@ class ReviewController extends Controller
         ]);
 
         $pengajuan = Pengajuan::findOrFail($id_pengajuan);
-        $reviewer = Reviewer::findOrFail($id_reviewer);
 
         try {
             $existingReview = $pengajuan->reviewers()->wherePivot('id_reviewer', $id_reviewer)->first();
@@ -135,43 +134,5 @@ class ReviewController extends Controller
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to update review: ' . $e->getMessage()], 500);
         }
-    }
-
-    private function canReview($id_pengajuan, $id_reviewer)
-    {
-        $pengajuan = Pengajuan::find($id_pengajuan);
-        $currentReviewer = Reviewer::find($id_reviewer);
-        
-        if ($pengajuan->status == 'diajukan') {
-            return $currentReviewer->role == 'sekum-bem';
-        }
-
-        if ($pengajuan->status == 'direview' || $pengajuan->status == 'direvisi') {
-            $previousReview = Review::where('id_pengajuan', $id_pengajuan)
-                                    ->where('id_reviewer', $this->getPreviousReviewerId($currentReviewer->role))
-                                    ->first();
-            if (!$previousReview || $previousReview->status != 'diterima') {
-                return false; 
-            }
-        }
-
-        $review = Review::where('id_pengajuan', $id_pengajuan)
-                        ->where('id_reviewer', $id_reviewer)
-                        ->first();
-        
-        if ($review && $review->status != 'diajukan') {
-            return false; 
-        }
-        return true; 
-    }
-
-    private function getPreviousReviewerId($currentRole)
-    {
-        if ($currentRole == 'kli') {
-            return Reviewer::where('role', 'sekum-bem')->first()->id_reviewer;
-        } elseif ($currentRole == 'wd-3') {
-            return Reviewer::where('role', 'kli')->first()->id_reviewer;
-        }
-        return null;
     }
 }
