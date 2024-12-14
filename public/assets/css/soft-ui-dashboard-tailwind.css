@@ -25,6 +25,7 @@
 2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
 */
 
+
 *,
 ::before,
 ::after {
@@ -122,6 +123,594 @@ a {
   color: inherit;
   text-decoration: inherit;
 }
+
+.icon {
+  width: 60px;
+  height: 60px;
+  margin-right: 15px;
+}
+
+.icon-content { 
+  padding-bottom: 20px;
+}
+
+.top {
+  padding-top: 40px;
+  padding-left: 13% !important;
+  padding-right: 13% !important;
+}
+
+/* Styling untuk semua card */
+.card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+}
+
+.form-col .card-header {
+  display: none;        /* Menyembunyikan judul form pengajuan */
+}
+
+.card-header {
+  padding: 15px 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.card-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.card-body {
+  padding: 20px;
+}
+
+.dashboard-container {
+  padding: 20px;
+  width: 100%;
+}
+
+.dashboard-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.dashboard-col {
+  min-width: 300px; /* Minimum width sebelum wrap */
+}
+
+/* Kolom form pengajuan dibuat lebih pendek */
+.dashboard-col.form-col {
+  flex: 0 0 35%;        /* Mengatur lebar tetap 35% */
+}
+
+/* Kolom tracker status dibuat full width */
+.dashboard-col.tracker-col {
+  flex: 0 0 100%;      /* Mengubah menjadi full width */
+  margin-top: 20px;    /* Memberi jarak dari form di atasnya */
+}
+
+/* Icon progressbar */
+#progressbar {
+  margin-bottom: 30px;
+  overflow: hidden;
+  color: #455A64;
+  padding-left: 0px;
+  margin-top: 30px;
+}
+
+#progressbar li {
+  list-style-type: none;
+  font-size: 13px;
+  width: 20%;
+  float: left;
+  position: relative;
+  font-weight: 400;
+  text-align: center;
+}
+
+/* Outer and Inner Circle combined */
+.circle {
+  width: 60px;
+  height: 60px;
+  border: 5px solid #C5CAE9;
+  border-radius: 50%;
+  background-color: #fff;
+  margin: auto;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.5s ease-in-out;
+}
+
+#progressbar li i {
+  font-size: 25px;
+  color: #C5CAE9;
+  transition: color 0.5s ease-in-out;
+}
+
+/* ProgressBar connectors */
+#progressbar li:after {
+  content: '';
+  width: 100%;
+  height: 8px;
+  background: #C5CAE9;
+  position: absolute;
+  left: 0;
+  top: 28px;
+  z-index: -1;
+  transition: background 0.5s ease-in-out;
+}
+
+#progressbar li:last-child:after {
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  position: absolute;
+  left: -50%;
+}
+
+#progressbar li:nth-child(2):after, 
+#progressbar li:nth-child(3):after,
+#progressbar li:nth-child(4):after {
+  left: -50%;
+}
+
+#progressbar li:first-child:after {
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  position: absolute;
+  left: 50%;
+}
+
+/* Active Steps Styling with Animation */
+#progressbar li.active .circle {
+  border-color: #FF9800;
+  background-color: #ffffff;
+  animation: pulseCircle 1s ease-in-out;
+}
+
+#progressbar li.active i {
+  color: #FF9800;
+  animation: fadeIcon 1s ease-in-out;
+}
+
+#progressbar li.active:after {
+  background: #FF9800;
+  animation: fillProgressBar 1s ease-in-out forwards;
+}
+
+/* Revised Steps Styling with Animation */
+#progressbar li.revisi .circle {
+  border-color: #2196F3;
+  background-color: #ffffff;
+  animation: pulseCircle 1s ease-in-out;
+}
+
+#progressbar li.revisi i {
+  color: #2196F3;
+  animation: fadeIcon 1s ease-in-out;
+}
+
+#progressbar li.revisi:after {
+  background: #2196F3;
+  animation: fillProgressBar 1s ease-in-out forwards;
+}
+
+/* Rejected Steps Styling */
+#progressbar li.ditolak .circle {
+  border-color: #F44336;
+  background-color: #ffffff;
+  animation: pulseCircle 1s ease-in-out;
+}
+
+#progressbar li.ditolak i {
+  color: #F44336;
+  animation: fadeIcon 1s ease-in-out;
+}
+
+#progressbar li.ditolak:after {
+  background: #F44336;
+  animation: fillProgressBar 1s ease-in-out forwards;
+}
+
+/* Animation Keyframes */
+@keyframes pulseCircle {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Fill Animation for Progress Bar */
+@keyframes fillProgressBar {
+  0% {
+      clip-path: inset(0 100% 0 0);
+  }
+  100% {
+      clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes fadeIcon {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes progressLine {
+  0% {
+    background-position: right center;
+    background: linear-gradient(to right, #FF9800 50%, #C5CAE9 50%);
+    background-size: 200% 100%;
+  }
+  100% {
+    background-position: left center;
+    background: #FF9800;
+  }
+}
+
+
+/* form pengajuan */
+.form-pengajuan {
+  background: #fff;
+  border-radius: 8px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 10px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.form-row {
+  display: flex;
+  justify-content: space-between;
+  width: 100%; /* Ensure full width */
+  max-width: 100%; /* Remove any limitation to width */
+  padding: 0; /* Remove padding */
+  margin: 0; /* Remove margin */
+}
+
+.form-group {
+  margin-bottom: 1rem;
+  flex: 1; /* Ensures equal width of form groups */
+}
+
+.form-group:first-child {
+  flex: 0 0 25%; /* Set the width of Nama Kegiatan to 45% */
+  margin-right: 20px;
+}
+
+.form-group:nth-child(2) {
+  flex: 0 0 25%; /* Set the width of Tanggal Kegiatan to 45% */
+  margin-right: 20px;
+}
+
+.form-group:last-child {
+  margin-right: 0;
+  flex: 1; /* Ensures the Ormawa field takes up the remaining space */
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.form-control {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.form-control:focus {
+  border-color: #FF9800;
+  box-shadow: 0 0 5px rgba(255, 152, 0, 0.5);
+}
+
+/* Revision status styling */
+.tracking_status_item.revisi .tracking_status_dot {
+  background-color: #2196F3; /* Blue for revision */
+  border-color: #2196F3;
+}
+
+/* Rejected status styling */
+.tracking_status_item.ditolak .tracking_status_dot {
+  background-color: #F44336; /* Red for rejection */
+  border-color: #F44336;
+}
+
+/* Active Steps Styling */
+.tracking_status_item.active .tracking_status_dot {
+  background-color: #FF9800; /* Orange color for active steps */
+}
+
+/* Tracking status */
+.tracking_status_container {
+    padding: 40px;
+    padding-right: 300px;
+}
+
+.tracking_status_header {
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.tracking_status_wrapper {
+  position: relative;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.tracking_status_list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  position: relative;
+}
+
+/* Vertical line styling update */
+.tracking_status_list::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 176px;
+  width: 2px;
+  height: 100%;
+  background: #ddd;
+  z-index: 0;
+}
+
+.tracking_status_item {
+  position: relative;
+  padding-left: 196px;   /* sebelumnya 125px */
+  padding-bottom: 25px;
+  min-height: 70px;
+}
+
+.tracking_status_date {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 120px;          /* lebih lebar untuk menampung format waktu penuh */
+  min-width: 120px;      /* memastikan tidak lebih kecil dari ini */
+  text-align: right;
+  color: #666;
+  font-size: 12px;
+  white-space: nowrap;   /* mencegah text wrapping */
+}
+
+.tracking_status_content {
+  display: flex;
+  align-items: flex-start;
+  position: relative;
+  padding-left: 30px;
+}
+
+/* Base status dot styling */
+.tracking_status_dot {
+  position: absolute;
+  left: -28px;
+  top: 0;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #ddd;
+  border: 2px solid transparent;
+  z-index: 1;
+  transition: all 0.3s ease;
+}
+
+.tracking_status_icon {
+  margin-right: 12px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+}
+
+.tracking_status_text {
+  flex: 1;
+}
+
+.tracking_status_title {
+  font-weight: 500;
+  margin-bottom: 4px;
+  color: #333;
+}
+
+.tracking_status_desc {
+  color: #666;
+  font-size: 14px;
+}
+
+/* Status styles */
+.tracking_status_item.completed .tracking_status_dot {
+  background: #ff9800;
+}
+
+.tracking_status_item.active .tracking_status_dot {
+  background: #ff9800;
+}
+
+/* Form styles */
+.form_group {
+  margin-bottom: 15px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+  .tracking_status_container {
+      padding: 40px;
+  }
+
+  .tracking_status_item {
+    padding-left: 166px; /* sesuaikan dengan desktop */
+  }
+
+  .tracking_status_list::before {
+    left: 146px;       /* sesuaikan dengan desktop */
+  }
+
+  .tracking_status_date {
+    width: 120px;      /* tetap konsisten di mobile */
+    font-size: 11px;
+  }
+
+  .tracking_status_dot {
+      left: -24px;
+  }
+}
+
+.tracking_status_item.revisi .tracking_status_dot {
+  background-color: #2196F3; /* Change the dot color */
+}
+
+/* Active item text emphasis */
+.tracking_status_item.active .tracking_status_title,
+.tracking_status_item.revisi .tracking_status_title,
+.tracking_status_item.ditolak .tracking_status_title {
+  font-weight: 600;
+  color: #000;
+}
+
+/* Status icon colors */
+.tracking_status_item.revisi .tracking_status_icon { color: #2196F3; }
+.tracking_status_item.ditolak .tracking_status_icon { color: #F44336; }
+
+
+/* riwayat dokumen */
+/* Default width */
+.timeline-wrapper {
+  width: 100%; /* Lebar penuh untuk layar yang lebih kecil */
+  margin: 0 auto; /* Tetap di tengah */
+}
+
+/* Media query untuk layar yang lebih besar */
+@media screen and (min-width: 1200px) {
+  .timeline-wrapper {
+    width: 50%; /* Lebar 60% untuk layar besar */
+  }
+}
+#riwayat-dokumen {
+  margin-bottom: 30px;
+  overflow: hidden;
+  color: #455A64;
+  padding-left: 0px;
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative; /* Menjaga konten tetap dalam layout */
+}
+
+#riwayat-dokumen li {
+  list-style-type: none;
+  font-size: 13px;
+  width: 100%; /* Lebar penuh */
+  position: relative;
+  font-weight: 400;
+  text-align: center;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center; /* Pusatkan lingkaran */
+}
+
+.date {
+  position: absolute;
+  left: 10px; /* Atur jarak dari kiri lebih kecil */
+  text-align: right;
+  width: 100px; /* Kurangi lebar jika diperlukan */
+  color: #455A64;
+}
+
+.description {
+  position: absolute;
+  right: 10px; /* Atur jarak dari kanan lebih kecil */
+  text-align: left;
+  width: 200px; /* Disesuaikan agar lebih lebar */
+  color: #455A64;
+}
+
+/* Styling untuk teks bold pada deskripsi */
+.description strong {
+  font-weight: bold;
+  color: #FF9800; /* Warna bold yang sama dengan ikon aktif */
+}
+
+.circle-dokumen {
+  width: 60px;
+  height: 60px;
+  border: 5px solid #C5CAE9;
+  border-radius: 50%;
+  background-color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#riwayat-dokumen li i {
+  font-size: 25px;
+  color: #C5CAE9;
+}
+
+#riwayat-dokumen li:after {
+  content: '';
+  width: 8px;
+  height: 50px;
+  background: #C5CAE9;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: -1;
+}
+
+#riwayat-dokumen li:last-child:after {
+  display: none;
+}
+
+#riwayat-dokumen li.active .circle-dokumen {
+  border-color: #FF9800;
+  background-color: #ffffff;
+}
+
+#riwayat-dokumen li.active i {
+  color: #FF9800;
+}
+
+#riwayat-dokumen li.active:after {
+  background: #FF9800;
+}
+
+
 
 /*
 Add the correct font weight in Edge and Safari.
@@ -4253,4 +4842,9 @@ h6 {
   .xl-max\:opacity-65 {
     opacity: 0.65;
   }
+
+  .hidden {
+    display: none;
+  }
+
 }

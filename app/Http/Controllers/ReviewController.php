@@ -1,0 +1,138 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\Pengajuan;
+use App\Models\Review;
+use App\Models\Reviewer;
+use App\Models\Tempat;
+use App\Models\Ormawa;
+use Illuminate\Support\Facades\Log;
+
+class ReviewController extends Controller
+{
+    public function index(Request $request)
+    {
+        $search = $request->input('search');
+        $sortStatus = $request->input('sort_status');
+        $reviewer = auth()->user()->reviewer;
+        $id_reviewer = $reviewer->id_reviewer;
+        $role = $reviewer->role;
+
+        $queryDiajukan = Pengajuan::with(['pengaju.ormawa', 'reviewers'])
+            ->where(function ($query) use ($role) {
+                if ($role == 'sekum-bem') {
+                    // Sekum-BEM: Pengajuan baru atau diedit
+                    $query->where('status', 'diajukan')
+                        ->orWhere('status', 'diedit');
+                } elseif ($role == 'kli') {
+                    // KLI: Hanya pengajuan yang diterima oleh Sekum-BEM
+                    $query->where('status', 'direview')->orWhere('status', 'diedit')
+                        ->whereHas('reviewers', function ($subQuery) {
+                            $subQuery->where('role', 'sekum-bem')
+                                    ->where('reviews.status', 'diterima');
+                        });
+                } elseif ($role == 'wd-3') {
+                    // WD-3: Hanya pengajuan yang diterima oleh KLI
+                    $query->where('status', 'direview')->orWhere('status', 'diedit')
+                        ->whereHas('reviewers', function ($subQuery) {
+                            $subQuery->where('role', 'kli')
+                                    ->where('reviews.status', 'diterima');
+                        });
+                }
+            })
+            ->where(function ($query) use ($id_reviewer) {
+                // Filter: Pengajuan yang belum direview oleh reviewer saat ini
+                $query->whereDoesntHave('reviewers', function ($subQuery) use ($id_reviewer) {
+                    $subQuery->where('reviewers.id_reviewer', $id_reviewer);
+                })
+                ->orWhereHas('reviewers', function ($subQuery) use ($id_reviewer) {
+                    $subQuery->where('reviewers.id_reviewer', $id_reviewer)
+                            ->where('reviews.status', 'direvisi');
+                });
+            })
+            ->get();
+
+        $queryRiwayat = Pengajuan::with(['pengaju.ormawa', 'reviewers' => function ($query) use ($id_reviewer) {
+                $query->where('reviewers.id_reviewer', $id_reviewer)->withPivot('status');
+            }])
+            ->whereHas('reviewers', function ($query) use ($id_reviewer) {
+                $query->where('reviewers.id_reviewer', $id_reviewer);
+            })
+            ->where('status', '!=', 'diedit')  // Menambahkan kondisi status bukan 'diedit'
+            ->get();
+        
+        if ($sortStatus) {
+            $queryDiajukan->where('status', $sortStatus);
+        }
+
+        if ($search) {
+            $queryDiajukan->where(function ($query) use ($search) {
+                $query->where('nama_kegiatan', 'like', '%' . $search . '%')
+                        ->orWhereHas('pengaju.ormawa', function ($query) use ($search) {
+                            $query->where('nama_ormawa', 'like', '%' . $search . '%');
+                        });
+            });
+        }
+
+        if ($search) {
+            $queryRiwayat->where(function ($query) use ($search) {
+                $query->where('nama_kegiatan', 'like', '%' . $search . '%')
+                      ->orWhereHas('pengaju.ormawa', function ($query) use ($search) {
+                          $query->where('nama_ormawa', 'like', '%' . $search . '%');
+                      });
+            });
+        }
+        $pengajuanRiwayat = $queryRiwayat;
+        $pengajuanDiajukan = $queryDiajukan;
+        $tempatList = Tempat::all();
+        return view('reviewer.index', compact('tempatList', 'reviewer', 'pengajuanRiwayat', 'pengajuanDiajukan'));
+    }
+
+    public function detailReviewer($id_pengajuan, $id_reviewer)
+    {
+        $pengajuan = Pengajuan::with('reviewers', 'latestReview')->findOrFail($id_pengajuan);
+        $review = Review::where('id_pengajuan', $id_pengajuan)
+                        ->where('id_reviewer', $id_reviewer)
+                        ->first();
+
+        $hasReviewed = $review ? $review->status != 'diajukan' : false;
+
+        return view('reviewer.detail_reviewer', compact('pengajuan', 'review', 'hasReviewed', 'id_reviewer'));
+    }
+
+    public function updateReview(Request $request, string $id_pengajuan, string $id_reviewer)
+    {
+        $request->validate([
+            'catatan' => 'string|nullable',
+            'status' => 'required|in:diterima,direvisi,ditolak',
+        ]);
+
+        $pengajuan = Pengajuan::findOrFail($id_pengajuan);
+
+        try {
+            $existingReview = $pengajuan->reviewers()->wherePivot('id_reviewer', $id_reviewer)->first();
+
+            if (!$existingReview) {
+                $pengajuan->reviewers()->attach($id_reviewer, [
+                    'status' => $request->input('status'),
+                    'catatan' => $request->input('catatan'),
+                    'tanggal_review' => now(),
+                ]);
+            } else {
+                $pengajuan->reviewers()->updateExistingPivot($id_reviewer, [
+                    'status' => $request->input('status'),
+                    'catatan' => $request->input('catatan'),
+                    'tanggal_review' => now(),
+                ]);
+            }
+
+            return redirect()->route('reviewer.detail_reviewer', ['id_pengajuan' => $id_pengajuan, 'id_reviewer' => $id_reviewer])
+                            ->with('success', 'Review berhasil disimpan');
+
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to update review: ' . $e->getMessage()], 500);
+        }
+    }
+}
