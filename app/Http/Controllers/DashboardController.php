@@ -33,7 +33,5 @@ class DashboardController extends Controller
             'totalOrmawa',
             'monthlyStatus'
         ));
-    }
-    
-    
+    }  
 }
