@@ -36,7 +36,7 @@ class TrackingController extends Controller
         $stepStatus = $this->getStepStatus($reviews);
         $progressStatus = $this->calculateProgress($reviews, $pengajuan);
 
-        return view('progress2', compact(
+        return view('tracking.show', compact(
             'pengajuan',
             'reviews',
             'ormawa',

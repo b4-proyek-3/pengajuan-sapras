@@ -12,33 +12,28 @@
                     class="tab-button bg-gray-200 text-gray-400 font-bold py-2 px-6 rounded-t-lg border-b-0 mr-2">Riwayat</button>
             </div>
 
-        <!-- Card Diajukan -->
-        <div id="diajukanCard" class="bg-white shadow-md rounded-lg p-6 -mt-1 relative">
-            <!-- Tombol Pengajuan -->
-            <div class="flex flex-col items-start">
-                <button data-bs-toggle="modal" data-bs-target="#pengajuanModal" class="flex items-center bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg transition duration-200 ease-in-out">
-                    <span class="mr-2 text-lg font-bold">+</span>Tambah Pengajuan
-                </button>
-                @if (session('success'))
-                    <div x-data="{ show: true }"
-                        x-show="show"
-                        x-init="setTimeout(() => show = false, 5000)"
-                        class="text-green-400 px-4 py-4 z-10"
-                        role="alert">
-                        <span class="block sm:inline">{{ session('success') }}</span>
-                    </div>
-                @endif
+            <!-- Card Diajukan -->
+            <div id="diajukanCard" class="bg-white shadow-md rounded-lg p-6 -mt-1 relative">
+                <!-- Tombol Pengajuan -->
+                <div class="flex flex-col items-start">
+                    <button data-bs-toggle="modal" data-bs-target="#pengajuanModal"
+                        class="flex items-center bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg transition duration-200 ease-in-out">
+                        <span class="mr-2 text-lg font-bold">+</span>Tambah Pengajuan
+                    </button>
+                    @if (session('success'))
+                        <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)"
+                            class="text-green-400 px-4 py-4 z-10" role="alert">
+                            <span class="block sm:inline">{{ session('success') }}</span>
+                        </div>
+                    @endif
 
-                @if (session('failed'))
-                    <div x-data="{ show: true }"
-                        x-show="show"
-                        x-init="setTimeout(() => show = false, 5000)"
-                        class="text-red-400 px-4 py-4 z-10"
-                        role="alert">
-                        <span class="block sm:inline">{{ session('failed') }}</span>
-                    </div>
-                @endif
-            </div>
+                    @if (session('failed'))
+                        <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)"
+                            class="text-red-400 px-4 py-4 z-10" role="alert">
+                            <span class="block sm:inline">{{ session('failed') }}</span>
+                        </div>
+                    @endif
+                </div>
 
                 <!-- Sorting dan Pencarian -->
                 <div class="bg-orange-500 p-4 border-b border-orange-500 mt-4"></div>
@@ -47,11 +42,13 @@
                         <!-- Sort Dropdown -->
                         <div class="w-1/4">
                             <div class="relative">
-                                <select name="sort_status" class="appearance-none border border-gray-300 rounded-md p-2 w-full pr-10" onchange="this.form.submit()">
+                                <select name="status_filter"
+                                    class="appearance-none border border-gray-300 rounded-md p-2 w-full pr-10"
+                                    onchange="this.form.submit()">
                                     <option value=""> Pilih Status </option>
                                     <option value="diajukan">Diajukan</option>
-                                    <option value="direview">Direview</option>
-                                    <option value="direvisi">Direvisi</option>
+                                    <option value="direview">Direvisi</option>
+                                    <option value="direvisi">Ditolak</option>
                                 </select>
 
                                 <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
@@ -97,7 +94,6 @@
 
                         <tbody>
                             @foreach ($pengajuanDiajukan as $pengajuan)
-                            @foreach ($pengajuanDiajukan as $pengajuan)
                                 <tr>
                                     <td class="py-3 px-4 border">{{ $loop->iteration }}</td>
                                     <td class="py-3 px-4 border">{{ $pengajuan->tanggal_pengajuan }}</td>
@@ -117,7 +113,8 @@
                 </div>
 
                 <!-- Modal -->
-                <div class="modal fade overflow-y-auto" id="pengajuanModal" tabindex="-1" aria-labelledby="pengajuanModalLabel" aria-hidden="true">
+                <div class="modal fade" id="pengajuanModal" tabindex="-1" aria-labelledby="pengajuanModalLabel"
+                    aria-hidden="true">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -317,20 +314,37 @@
                                 </tr>
                             </thead>
                             <tbody>
-                            @foreach ($pengajuanRiwayat as $pengajuan)
-                                    @if ($pengajuan->status == 'selesai' || 'ditolak')
-                                        <tr>
-                                            <td class="py-3 px-4 border">{{ $loop->iteration }}</td>
-                                            <td class="py-3 px-4 border">{{ $pengajuan->tanggal_pengajuan }}</td>
-                                            <td class="py-3 px-4 border">{{ $pengajuan->nama_kegiatan }}</td>
-                                            <td class="py-3 px-4 border">{{ $pengajuan->pengaju->ormawa->nama_ormawa ?? '-' }}</td>
-                                            <td class="py-3 px-4 border">{{ ucfirst($pengajuan->status) }}</td>
-                                            <td class="py-3 px-4 border">{{ $pengajuan->latestReview->first()->catatan ?? '-' }}</td>
-                                            <td class="py-3 px-4 border">
-                                                <button onclick="window.location='{{ route('pengajuan.show', ['id_pengajuan' => $pengajuan->id_pengajuan]) }}'" class="bg-blue-600 text-white px-4 py-2 rounded-lg">Detail</button>
-                                            </td>
-                                        </tr>
-                                    @endif
+                                @foreach ($pengajuanRiwayat as $pengajuan)
+                                    <tr>
+                                        <td class="py-3 px-4 border">{{ $loop->iteration }}</td>
+                                        <td class="py-3 px-4 border">{{ $pengajuan->tanggal_pengajuan }}</td>
+                                        <td class="py-3 px-4 border">{{ $pengajuan->nama_kegiatan }}</td>
+                                        <td class="py-3 px-4 border">{{ $pengajuan->pengaju->ormawa->nama_ormawa ?? '-' }}
+                                        </td>
+                                        <td class="py-3 px-4 border">
+                                        <span class="inline-block py-1 px-3 rounded-lg 
+                                                @if($pengajuan->status == 'selesai')
+                                                    bg-green-200 text-blue-800
+                                                @elseif($pengajuan->status == 'ditolak')
+                                                    bg-red-200 text-red-800
+                                                @else
+                                                    bg-gray-200 text-gray-800
+                                                @endif">
+                                                {{ ucfirst($pengajuan->status) }}
+                                            </span>
+                                        </td>
+                                        <td class="py-3 px-4 border">{{ $pengajuan->keterangan }}</td>
+                                        <td class="py-3 px-4 border">
+                                        <button
+                                            onclick="window.location='{{ route('pengajuan.show', ['id_pengajuan' => $pengajuan->id_pengajuan]) }}'"
+                                            class="bg-blue-600 text-white px-2 py-1 text-sm rounded-md">Detail</button>
+                                        @if ($pengajuan->status === 'selesai')
+                                            <button
+                                                onclick="window.location='{{ route('dokumen.generate', ['id_pengajuan' => $pengajuan->id_pengajuan]) }}'"
+                                                class="bg-green-600 text-white px-2 py-1 text-sm rounded-md">Generate</button>
+                                        @endif
+                                    </td>
+                                    </tr>
                                 @endforeach
                             </tbody>
                         </table>
@@ -410,16 +424,17 @@
             pergerakanFiles.style.display = "none";
             commonFiles.style.display = "block"; // Show common files for both types
 
-        if (activityType === "proker") {
-            programKerjaFiles.style.display = "block";
-        } else if (activityType === "pergerakan") {
-            pergerakanFiles.style.display = "block";
+            if (activityType === "program_kerja") {
+                programKerjaFiles.style.display = "block";
+            } else if (activityType === "pergerakan") {
+                pergerakanFiles.style.display = "block";
+            }
         }
-    }
 
-    // Trigger initial check on page load if activity type is preselected
-    document.addEventListener("DOMContentLoaded", function () {
-        showFileInputs();
-    });
-</script>
+        // Trigger initial check on page load if activity type is preselected
+        document.addEventListener("DOMContentLoaded", function() {
+            showFileInputs();
+        });
+    </script>
+
 @endsection

@@ -49,12 +49,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/tracking/{id_pengajuan}', [TrackingController::class, 'show'])->name('tracking.show');
     Route::post('/pengajuan/{id_pengajuan}/submit', [PengajuanController::class, 'submitPengajuan'])->name('pengajuan.submit');
     Route::put('/pengajuan/{id_pengajuan}/update', [DokumenController::class, 'update'])->name('dokumen.update');
-
-
     Route::get('/dokumen/generate/{id_pengajuan}', [DokumenController::class, 'generate'])->name('dokumen.generate');
-
     Route::get('/dashboard', [DashboardController::class, 'getMonthlyPengajuanStatus']);
-
     Route::get('/status-pengajuan', [StatusPengajuanController::class, 'index'])->name('layout.status');
 
 });
