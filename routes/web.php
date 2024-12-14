@@ -7,9 +7,6 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\TrackingController;
 use App\Http\Controllers\DokumenController;
 
-Route::get('/', function () {
-    return view('progress2');
-});
 
 // ========================================================================================
 // AUTHENTICATION ROUTES ==================================================================
