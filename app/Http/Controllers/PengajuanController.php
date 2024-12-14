@@ -27,7 +27,14 @@ class PengajuanController extends Controller
         }
 
         if ($search) {
-            $query->where(function ($query) use ($search) {
+            $queryDiajukan->where(function ($query) use ($search) {
+                $query->where('nama_kegiatan', 'like', '%' . $search . '%')
+                    ->orWhereHas('pengaju.ormawa', function ($query) use ($search) {
+                        $query->where('nama_ormawa', 'like', '%' . $search . '%'); 
+                    });
+            });
+
+            $queryRiwayat->where(function ($query) use ($search) {
                 $query->where('nama_kegiatan', 'like', '%' . $search . '%')
                       ->orWhereHas('pengaju.ormawa', function ($query) use ($search) {
                           $query->where('nama_ormawa', 'like', '%' . $search . '%');
