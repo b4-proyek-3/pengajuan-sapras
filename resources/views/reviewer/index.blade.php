@@ -146,7 +146,18 @@
                                         <td class="py-3 px-4 border">{{ $pengajuan->tanggal_pengajuan }}</td>
                                         <td class="py-3 px-4 border">{{ $pengajuan->nama_kegiatan }}</td>
                                         <td class="py-3 px-4 border">{{ $pengajuan->pengaju->ormawa->nama_ormawa }}</td>
-                                        <td class="py-3 px-4 border">{{ ucfirst($pengajuan->reviewers->first()->pivot->status) }}</td>
+                                        <td class="py-3 px-4 border">
+                                            <span class="inline-block py-1 px-3 rounded-lg 
+                                                @if($pengajuan->reviewers->first()->pivot->status == 'diterima')
+                                                    bg-green-200 text-green-800
+                                                @elseif($pengajuan->reviewers->first()->pivot->status == 'ditolak')
+                                                    bg-red-200 text-red-800
+                                                @else
+                                                    bg-gray-200 text-gray-800
+                                                @endif">
+                                                {{ ucfirst($pengajuan->reviewers->first()->pivot->status) }}
+                                            </span>
+                                        </td>
                                         <td class="py-3 px-4 border">{{ $pengajuan->keterangan }}</td>
                                         <td class="py-3 px-4 border">
                                         <button onclick="window.location='{{ route('reviewer.detail_reviewer', ['id_pengajuan' => $pengajuan->id_pengajuan, 'id_reviewer' => auth()->user()->reviewer->id_reviewer]) }}'" class="bg-blue-600 text-white px-4 py-2 rounded-lg">Detail</button>

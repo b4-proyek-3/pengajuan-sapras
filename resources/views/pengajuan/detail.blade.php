@@ -240,6 +240,20 @@
                         </td>
                       </tr>
                     @endforeach
+                      <tr>
+                        <td class="p-2 align-middle bg-transparent whitespace-nowrap">
+                          <div class="flex px-4 py-1">
+                            <div class="flex flex-col justify-center">
+                              <!-- Link dokumen untuk Card 1 -->
+                              <h6 class="mb-0 text-sm leading-normal">
+                              <a href="{{ $pengajuans->link_drive }}" target="_blank" rel="noopener noreferrer">
+                                  Surat Izin Orang Tua
+                              </a>
+                              </h6>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
                 </tbody>
               </table>
             </div>
