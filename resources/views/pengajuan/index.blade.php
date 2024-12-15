@@ -27,6 +27,7 @@
                 <button data-bs-toggle="modal" data-bs-target="#pengajuanModal" class="flex items-center bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg transition duration-200 ease-in-out">
                     <span class="mr-2 text-lg font-bold">+</span>Tambah Pengajuan
                 </button>
+
                     @if (session('failed'))
                         <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)"
                             class="text-red-400 px-4 py-4 z-10" role="alert">
@@ -427,7 +428,7 @@
                                         <div class="mb-3">
                                             <label for="dokumen1" class="form-label">Proposal</label>
                                             <input type="file" name="dokumen1" id="dokumen1" class="form-control"
-                                                accept=".pdf" require>
+                                                accept=".pdf">
                                         </div>
                                     </div>
 
@@ -435,7 +436,7 @@
                                         <div class="mb-3">
                                             <label for="dokumen2" class="form-label">Term of Reference</label>
                                             <input type="file" name="dokumen2" id="dokumen2" class="form-control"
-                                                accept=".pdf" require>
+                                                accept=".pdf">
                                         </div>
                                     </div>
 
@@ -444,27 +445,27 @@
                                             <label for="dokumen3" class="form-label">Surat Peminjaman Sarana
                                                 Prasarana</label>
                                             <input type="file" name="dokumen3" id="dokumen3" class="form-control"
-                                                accept=".pdf" require>
+                                                accept=".pdf">
                                         </div>
                                         <div class="mb-3">
                                             <label for="dokumen4" class="form-label">Surat Izin Berkegiatan</label>
                                             <input type="file" name="dokumen4" id="dokumen4" class="form-control"
-                                                accept=".pdf" require>
+                                                accept=".pdf">
                                         </div>
                                         <div class="mb-3">
                                             <label for="dokumen5" class="form-label">Surat Pernyataan Ketua Ormawa</label>
                                             <input type="file" name="dokumen5" id="dokumen5" class="form-control"
-                                                accept=".pdf" require>
+                                                accept=".pdf">
                                         </div>
                                         <div class="mb-3">
                                             <label for="dokumen6" class="form-label">Surat Pendampingan Pembina</label>
                                             <input type="file" name="dokumen6" id="dokumen6" class="form-control"
-                                                accept=".pdf" require>
+                                                accept=".pdf">
                                         </div>
                                         <div class="mb-3">
                                             <label for="dokumen7" class="form-label">Lampiran Daftar Peserta</label>
                                             <input type="file" name="dokumen7" id="dokumen7" class="form-control"
-                                                accept=".pdf" require>
+                                                accept=".pdf">
                                         </div>
                                     </div>
 
