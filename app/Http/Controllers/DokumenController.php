@@ -78,9 +78,9 @@ class DokumenController extends Controller
         try {
             // Get pengajuan data with all necessary relationships
             $pengajuan = Pengajuan::with([
-                'tempat', 
-                'pengaju.user', 
-                'pengaju.ormawa', 
+                'tempat',
+                'pengaju.user',
+                'pengaju.ormawa',
                 'reviewers.user'
             ])->findOrFail($id_pengajuan);
             

@@ -129,6 +129,7 @@ class ReviewController extends Controller
                     'tanggal_review' => now(),
                 ]);
             } else {
+                $pengajuan->update(['edited' => false]);
                 $pengajuan->reviewers()->updateExistingPivot($id_reviewer, [
                     'status' => $request->input('status'),
                     'catatan' => $request->input('catatan'),

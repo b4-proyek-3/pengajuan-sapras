@@ -128,13 +128,13 @@ class PengajuanController extends Controller
             'nama_kegiatan' => 'required|string|max:100',
             'link_gdrive' => 'nullable|url',
             'activity_type' => 'required|string|in:proker,pergerakan',
-            'dokumen1' => 'nullable|file|mimes:pdf|max:2048',
-            'dokumen2' => 'nullable|file|mimes:pdf|max:2048',
-            'dokumen3' => 'nullable|file|mimes:pdf|max:2048',
-            'dokumen4' => 'nullable|file|mimes:pdf|max:2048',
-            'dokumen5' => 'nullable|file|mimes:pdf|max:2048',
-            'dokumen6' => 'nullable|file|mimes:pdf|max:2048',
-            'dokumen7' => 'nullable|file|mimes:pdf|max:2048',
+            'dokumen1' => 'required|file|mimes:pdf|max:2048',
+            'dokumen2' => 'required|file|mimes:pdf|max:2048',
+            'dokumen3' => 'required|file|mimes:pdf|max:2048',
+            'dokumen4' => 'required|file|mimes:pdf|max:2048',
+            'dokumen5' => 'required|file|mimes:pdf|max:2048',
+            'dokumen6' => 'required|file|mimes:pdf|max:2048',
+            'dokumen7' => 'required|file|mimes:pdf|max:2048',
         ]);
 
         // Membuat ID pengajuan unik
@@ -255,7 +255,6 @@ class PengajuanController extends Controller
             return redirect()->back()->with('error', 'Pengajuan tidak ditemukan');
         }
 
-        // Update kolom 'edited' dan 'status'
         $pengajuan->edited = true;
         $pengajuan->status = 'diedit';
 

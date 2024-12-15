@@ -331,7 +331,7 @@
                                     @if ($pengajuan->status === 'selesai')
                                         <button
                                             onclick="window.location='{{ route('dokumen.generate', ['id_pengajuan' => $pengajuan->id_pengajuan]) }}'"
-                                            class="bg-green-600 text-white px-2 py-1 text-sm rounded-md">Generate</button>
+                                            class="bg-green-600 text-white px-2 py-1 text-sm rounded-md">Unduh</button>
                                     @endif
                                 </td>
                             </tr>

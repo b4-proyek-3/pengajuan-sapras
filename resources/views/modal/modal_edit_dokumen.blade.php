@@ -27,7 +27,7 @@
                 <input type="checkbox" id="dokumen3-checkbox" name="dokumen3_checkbox" onclick="toggleFileInput('dokumen3')"> Surat Peminjaman Sarana Prasarana
               </div>
               <div>
-                <input type="checkbox" id="dokumen4-checkbox" name="dokumen4_checkbox" onclick="toggleFileInput('dokumen4')"> Surat Izin Berkegiatan
+                <input type="checkbox" id="dokumen4-checkbox" name="dokumen4_checkbox" onclick="toggleFileInput('dokumen4')"> Surat Pernyataan Berkegiatan
               </div>
               <div>
                 <input type="checkbox" id="dokumen5-checkbox" name="dokumen5_checkbox" onclick="toggleFileInput('dokumen5')"> Surat Pernyataan Ketua Ormawa

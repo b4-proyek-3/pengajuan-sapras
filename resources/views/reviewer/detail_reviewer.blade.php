@@ -162,9 +162,10 @@
                   @if($pengajuan->latestReview->isNotEmpty())
                     @foreach ($pengajuan->latestReview as $index => $review)
                         <span class="w-6.5 h-6.5 text-base absolute left-4 z-10 inline-flex -translate-x-1/2 items-center justify-center rounded-full bg-white text-center font-semibold">
-                            <i class="relative z-10 leading-none text-transparent 
-                              {{ $index === 0 ? 'ni ni-bell-55 bg-gradient-to-tl from-green-600 to-lime-400' : 'ni ni-time-alarm bg-gradient-to-tl from-blue-600 to-indigo-400' }} 
-                              leading-pro bg-clip-text fill-transparent"></i>
+                          <i class="relative z-10 leading-none text-transparent
+                            {{ $review->status == 'ditolak' ? 'ni ni-fat-remove bg-gradient-to-tl from-red-600 to-red-400' :
+                            ($review->status == 'direvisi' ? 'fa fa-pencil bg-gradient-to-tl from-orange-600 to-yellow-400' : 'ni ni-check-bold bg-gradient-to-tl from-green-600 to-lime-400') }}
+                            leading-pro bg-clip-text fill-transparent"></i>
                         </span>
                         <div class="ml-11.252 pt-1.4 lg:max-w-120 relative -top-1.5 w-auto">
                             <h6 class="mb-0 text-sm font-semibold leading-normal text-slate-700">{{ $review->reviewer->role_name ?? 'N/A' }}</h6>
@@ -259,7 +260,7 @@
 
         <!-- cards row 3 -->
         <h5 class="font-bold px-6 mt-6 mb-0">Catatan</h5>
-        <div class="w-full max-w-full px-6 mb-6 mt-6">           
+        <div class="w-full max-w-full px-6 mb-6 mt-6">
           <form action="{{ route('update.review', ['id_pengajuan' => $pengajuan->id_pengajuan, 'id_reviewer' => $id_reviewer]) }}" method="POST">
             @csrf
             <div class="w-full mb-4 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
@@ -268,7 +269,7 @@
                     <textarea name="catatan" id="catatan" rows="8"
                       class="block w-full px-2 mt-2 text-sm text-gray-800 bg-white border-0 dark:bg-gray-800 focus:ring-0 dark:text-white dark:placeholder-gray-400"
                       placeholder="Masukkan Catatan.."
-                      @if ($hasReviewed && $pengajuan->edited != 'true')  @endif >{{ $pengajuan->latestReview->first()->catatan ?? '-' }}</textarea>
+                      @if ($hasReviewed && $pengajuan->edited != 'true') readonly @endif >{{ $pengajuan->latestReview->first()->catatan ?? '-' }}</textarea>
                 </div>
             </div>
             @if (!$hasReviewed || $pengajuan->status == 'diedit')
