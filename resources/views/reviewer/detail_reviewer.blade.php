@@ -274,15 +274,14 @@
             </div>
             @if (!$hasReviewed || $pengajuan->status == 'diedit')
               <div class="flex justify-end">
-                  <button type="submit" name="status" value="diterima" class="mt-2 bg-gradient-to-tl from-blue-600 to-teal-400 px-2.5 text-xs rounded-1.8 py-1.4 inline-block whitespace-nowrap text-center align-baseline font-bold uppercase leading-none text-white">
-                      terima
-                  </button>
-                  <button type="submit" name="status" value= "direvisi" class="mt-2 bg-gradient-to-tl from-slate-600 to-slate-300 px-2.5 text-xs rounded-1.8 py-1.4 inline-block whitespace-nowrap text-center align-baseline font-bold uppercase leading-none text-white ml-2">
-                      revisi
-                  </button>
-                  <button type="submit" name="status" value= "ditolak" class="mt-2 bg-gradient-to-tl from-slate-600 to-slate-300 px-2.5 text-xs rounded-1.8 py-1.4 inline-block whitespace-nowrap text-center align-baseline font-bold uppercase leading-none text-white ml-2">
-                      tolak
-                  </button>
+              <select name="status" class="appearance-none border border-gray-300 rounded-md p-1 w-1/3 pr-4">
+                  <option value="diterima" @if($pengajuan->status == 'diterima') selected @endif>Terima</option>
+                  <option value="direvisi" @if($pengajuan->status == 'direvisi') selected @endif>Revisi</option>
+                  <option value="ditolak" @if($pengajuan->status == 'ditolak') selected @endif>Tolak</option>
+                </select>
+              <button type="submit" class="mt-2 bg-gradient-to-tl from-blue-600 to-teal-400 px-4 text-sm rounded-lg py-3 inline-block whitespace-nowrap text-center align-baseline font-bold uppercase leading-none text-white ml-4">
+                  Submit
+              </button>
               </div>
             @endif
           </form>
@@ -301,6 +300,32 @@
           </div>
         </footer>
 </div>
+
+@if (session('success'))
+<script>
+    Swal.fire({
+    position: "center",
+    title: "{{session('success')}}",
+    text: "Review sudah tersimpan!",
+    showConfirmButton: false,
+    timer: 1500,
+    icon: "success"
+  });
+</script>
+@endif
+
+@if (session('error'))
+    <script>
+        Swal.fire({
+            position: "center",
+            title: "Terjadi Kesalahan!",
+            text: "{{ session('error') }}",  // Menampilkan pesan error dari session
+            showConfirmButton: true,
+            icon: "error"
+        });
+    </script>
+@endif
+
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     const dokumenLinks = document.querySelectorAll('.dokumen-link');

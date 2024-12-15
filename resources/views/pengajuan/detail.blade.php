@@ -327,6 +327,18 @@
     </div>
 @include('modal.modal_edit_pengajuan')
 @include('modal.modal_edit_dokumen')
+@if (session('success'))
+<script>
+    Swal.fire({
+    position: "center",
+    title: "{{session('success')}}",
+    showConfirmButton: false,
+    timer: 1500,
+    icon: "success"
+  });
+</script>
+@endif
+
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     // Ambil semua elemen dengan class 'dokumen-link'

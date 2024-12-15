@@ -15,6 +15,7 @@
     },
     "dependencies": {
         "@preline/overlay": "^2.5.0",
-        "pg": "^8.13.0"
+        "pg": "^8.13.0",
+        "sweetalert2": "^11.15.0"
     }
 }
