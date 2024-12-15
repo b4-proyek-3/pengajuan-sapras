@@ -22,8 +22,6 @@ class Pengajuan extends Model
         'waktu_pinjam',
         'nama_kegiatan',
         'jenis_kegiatan',
-        'status', 
-        'edited', 
         'link_drive',
         'status', 
         'edited', 

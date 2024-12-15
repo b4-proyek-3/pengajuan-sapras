@@ -9,8 +9,10 @@ class StatusPengajuanController extends Controller
 {
     public function index()
     {
-        // Fetch all submissions
-        $pengajuanRiwayat = Pengajuan::with(['pengaju.ormawa'])->get();
+        $pengaju = auth()->user()->pengaju;
+        $pengajuanRiwayat = Pengajuan::with(['pengaju.ormawa'])
+            ->where('nim', $pengaju->nim)
+            ->paginate(10);
 
         return view('layout.status', compact('pengajuanRiwayat'));
     }

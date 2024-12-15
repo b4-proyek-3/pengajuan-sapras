@@ -23,7 +23,7 @@
                     <div class="relative pr-6 lg:float-right">
                     @if ($pengajuans->status == 'direvisi')
                       <a dropdown-trigger class="cursor-pointer" aria-expanded="false" onclick="openPengajuanModal()">
-                        <i class="fa fa-ellipsis-v"></i>
+                        <i class="fa fa-pencil"></i>
                       </a>
                     @endif
                     </div>
@@ -64,6 +64,21 @@
                                 </div>
                                 <div class="flex flex-col justify-center pl-2">
                                     <h6 class="mb-0 text-sm leading-normal">{{ $pengajuans->pengaju->ormawa->nama_ormawa ?? 'N/A' }}</h6>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="p-2 align-middle bg-transparent whitespace-nowrap">
+                            <div class="flex px-4 py-1">
+                                <div class="flex flex-col justify-center" style="min-width: 150px;">
+                                    <h6 class="mb-0 text-sm leading-normal">Jenis Kegiatan</h6>
+                                </div>
+                                <div class="flex flex-col justify-center" style="min-width: 10px; text-align: right;">
+                                    <h6 class="mb-0 text-sm leading-normal">:</h6>
+                                </div>
+                                <div class="flex flex-col justify-center pl-2">
+                                    <h6 class="mb-0 text-sm leading-normal">{{ str_replace('proker', 'Program Kerja', $pengajuans->jenis_kegiatan ?? 'N/A') }}</h6>
                                 </div>
                             </div>
                         </td>
@@ -159,7 +174,7 @@
                 </p>
               </div>
               <table class="items-center w-full mb-0 align-top border-gray-200 text-slate-500">
-                    <td class="p-0 align-middle bg-transparent border-b whitespace-nowrap">                
+                    <td class="p-0 align-middle bg-transparent border-b whitespace-nowrap">
               </table>
               <div class="flex-auto p-4">
                 <div class="before:border-r-solid relative before:absolute before:top-0 before:left-4 before:h-full before:border-r-2 before:border-r-slate-100 before:content-[''] before:lg:-ml-px">
@@ -167,13 +182,14 @@
                   @if($pengajuans->latestReview->isNotEmpty())
                     @foreach ($pengajuans->latestReview as $index => $review)
                         <span class="w-6.5 h-6.5 text-base absolute left-4 z-10 inline-flex -translate-x-1/2 items-center justify-center rounded-full bg-white text-center font-semibold">
-                            <i class="relative z-10 leading-none text-transparent 
-                              {{ $index === 0 ? 'ni ni-bell-55 bg-gradient-to-tl from-green-600 to-lime-400' : 'ni ni-time-alarm bg-gradient-to-tl from-blue-600 to-indigo-400' }} 
-                              leading-pro bg-clip-text fill-transparent"></i>
+                        <i class="relative z-10 leading-none text-transparent
+                          {{ $review->status == 'ditolak' ? 'ni ni-fat-remove bg-gradient-to-tl from-red-600 to-red-400' :
+                          ($review->status == 'direvisi' ? 'fa fa-pencil bg-gradient-to-tl from-orange-600 to-yellow-400' : 'ni ni-check-bold bg-gradient-to-tl from-green-600 to-lime-400') }}
+                          leading-pro bg-clip-text fill-transparent"></i>
                         </span>
                         <div class="ml-11.252 pt-1.4 lg:max-w-120 relative -top-1.5 w-auto">
                             <h6 class="mb-0 text-sm font-semibold leading-normal text-slate-700">{{ $review->reviewer->role_name ?? 'N/A' }}</h6>
-                            <p class="mt-1 mb-0 text-xs font-semibold leading-tight text-slate-400">{{ $review->status ?? 'N/A' }}</p>
+                            <p class="mt-1 mb-0 text-xs font-semibold leading-tight text-slate-400">{{ ucfirst($review->status ?? 'N/A') }}</p>
                             <p class="mt-1 mb-0 text-xs font-semibold leading-tight text-slate-400">{{ $review->tanggal_review ?? 'N/A' }}</p>
                         </div>
                     @endforeach
@@ -214,7 +230,7 @@
                     <div class="relative pr-6 lg:float-right">
                       @if ($pengajuans->status == 'direvisi')
                         <a dropdown-trigger class="cursor-pointer" aria-expanded="false" onclick="openDokumenModal()">
-                          <i class="fa fa-ellipsis-v"></i>
+                          <i class="fa fa-pencil"></i>
                         </a>
                       @endif
                     </div>
@@ -273,11 +289,13 @@
 
         <!-- cards row 3 -->
         <h5 class="font-bold px-6 mt-6 mb-0">Catatan</h5>
-        <div class="w-full max-w-full px-6 mb-6 mt-6">           
+        <div class="w-full max-w-full px-6 mb-6 mt-6">
           <form>
             <div class="w-full mb-4 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
                 <div class="px-4 py-2 bg-white rounded-b-lg dark:bg-gray-800">
-                    <textarea id="editor" rows="8" class="block w-full px-0 text-sm text-gray-800 bg-white border-0 dark:bg-gray-800 focus:ring-0 dark:text-white dark:placeholder-gray-400" value="{{ $pengajuans->reviews->review ?? 'N/A' }}" readonly></textarea>
+                    <textarea id="editor" rows="8"
+                    class="block w-full px-2 mt-2 text-sm text-gray-800 bg-white border-0 dark:bg-gray-800 focus:ring-0 dark:text-white dark:placeholder-gray-400" readonly>{{ $pengajuans->latestReview->first()->catatan ?? '-' }}
+                    </textarea>
                 </div>
             </div>
           </form>

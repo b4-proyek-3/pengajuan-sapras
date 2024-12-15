@@ -34,7 +34,7 @@
                                 <select name="diajukan_sort_status" class="appearance-none border border-gray-300 rounded-md p-2 w-full pr-10" onchange="this.form.submit()">
                                     <option value=""> Pilih Status </option>
                                     <option value="diajukan">Diajukan</option>
-                                    <option value="direvisi">Direvisi</option>
+                                    <option value="diedit">Diedit</option>
                                 </select>
 
                                 <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
@@ -82,19 +82,21 @@
                                     <td class="py-3 px-4 border">{{ $pengajuan->pengaju->ormawa->nama_ormawa }}</td>
                                     <td class="py-3 px-4 border">
                                         <span class="inline-block py-1 px-3 rounded-lg 
-                                            @if($pengajuan->status == 'diajukan')
+                                            @if($pengajuan->status == 'diajukan' || $pengajuan->status == 'direview' )
                                                 bg-blue-200 text-blue-800
-                                            @elseif($pengajuan->status == 'direview')
-                                                bg-yellow-200 text-yellow-800
                                             @elseif($pengajuan->status == 'direvisi')
                                                 bg-orange-200 text-orange-800
                                             @else
                                                 bg-gray-200 text-gray-800
                                             @endif">
-                                            {{ ucfirst($pengajuan->status ?? '-') }}
+                                            @if($pengajuan->status == 'direview')
+                                                Diajukan
+                                            @else
+                                                {{ ucfirst($pengajuan->status ?? '-') }}
+                                            @endif
                                         </span>
                                     </td>
-                                    <td class="py-3 px-4 border">{{ $pengajuan->keterangan }}</td>
+                                    <td class="py-3 px-4 border">{{ $pengajuan->latestReview->first()->catatan ?? '-' }}</td>
                                     <td class="py-3 px-4 border">
                                     <button onclick="window.location='{{ route('reviewer.detail_reviewer', ['id_pengajuan' => $pengajuan->id_pengajuan, 'id_reviewer' => auth()->user()->reviewer->id_reviewer]) }}'" class="bg-blue-600 text-white px-4 py-2 rounded-lg">Review</button>
                                     </td>
@@ -158,6 +160,7 @@
                                 <select name="riwayat_sort_status" class="appearance-none border border-gray-300 rounded-md p-2 w-full pr-10" onchange="this.form.submit()">
                                     <option value=""> Pilih Status </option>
                                     <option value="diterima" {{ request('riwayat_sort_status') == 'diterima' ? 'selected' : '' }}>Diterima</option>
+                                    <option value="direvisi" {{ request('riwayat_sort_status') == 'direvisi' ? 'selected' : '' }}>Direvisi</option>
                                     <option value="ditolak" {{ request('riwayat_sort_status') == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
                                 </select>
 
@@ -215,7 +218,7 @@
                                                 {{ ucfirst($pengajuan->reviewers->first()->pivot->status) }}
                                             </span>
                                         </td>
-                                        <td class="py-3 px-4 border">{{ $pengajuan->keterangan }}</td>
+                                        <td class="py-3 px-4 border">{{ $pengajuan->latestReview->first()->catatan ?? '-' }}</td>
                                         <td class="py-3 px-4 border">
                                             <button onclick="window.location='{{ route('reviewer.detail_reviewer', ['id_pengajuan' => $pengajuan->id_pengajuan, 'id_reviewer' => auth()->user()->reviewer->id_reviewer]) }}'" class="bg-blue-600 text-white px-4 py-2 rounded-lg">Detail</button>
                                         </td>

@@ -168,7 +168,7 @@
                         </span>
                         <div class="ml-11.252 pt-1.4 lg:max-w-120 relative -top-1.5 w-auto">
                             <h6 class="mb-0 text-sm font-semibold leading-normal text-slate-700">{{ $review->reviewer->role_name ?? 'N/A' }}</h6>
-                            <p class="mt-1 mb-0 text-xs font-semibold leading-tight text-slate-400">{{ $review->status ?? 'N/A' }}</p>
+                            <p class="mt-1 mb-0 text-xs font-semibold leading-tight text-slate-400">{{ ucfirst($review->status ?? 'N/A') }}</p>
                             <p class="mt-1 mb-0 text-xs font-semibold leading-tight text-slate-400">{{ $review->tanggal_review ?? 'N/A' }}</p>
                         </div>
                     @endforeach
@@ -265,13 +265,10 @@
             <div class="w-full mb-4 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
                 <div class="px-4 py-2 bg-white rounded-b-lg dark:bg-gray-800">
                     <label for="catatan" class="sr-only">Publish post</label>
-                    <textarea 
-                      name="catatan" 
-                      id="catatan" 
-                      rows="8" 
-                      class="block w-full px-2 mt-2 text-sm text-gray-800 bg-white border-0 dark:bg-gray-800 focus:ring-0 dark:text-white dark:placeholder-gray-400" 
+                    <textarea name="catatan" id="catatan" rows="8"
+                      class="block w-full px-2 mt-2 text-sm text-gray-800 bg-white border-0 dark:bg-gray-800 focus:ring-0 dark:text-white dark:placeholder-gray-400"
                       placeholder="Masukkan Catatan.."
-                      @if ($hasReviewed && $pengajuan->edited != 'true') readonly @endif ></textarea>
+                      @if ($hasReviewed && $pengajuan->edited != 'true')  @endif >{{ $pengajuan->latestReview->first()->catatan ?? '-' }}</textarea>
                 </div>
             </div>
             @if (!$hasReviewed || $pengajuan->status == 'diedit')

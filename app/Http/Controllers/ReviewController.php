@@ -19,7 +19,7 @@ class ReviewController extends Controller
         $role = $reviewer->role;
         $diajukanSortStatus = $request->input('diajukan_sort_status');
         $riwayatSortStatus = $request->input('riwayat_sort_status');
-        $activeTab = $request->input('active_tab', 'diajukan');
+        $activeTab = $request->input('active_tab', 'diajukan'); 
 
         $queryDiajukan = Pengajuan::with(['pengaju.ormawa', 'reviewers'])
             ->where(function ($query) use ($role) {
@@ -60,12 +60,15 @@ class ReviewController extends Controller
             ->whereHas('reviewers', function ($query) use ($id_reviewer) {
                 $query->where('reviewers.id_reviewer', $id_reviewer);
             })
-            ->where('status', '!=', 'diedit')  // Menambahkan kondisi status bukan 'diedit'
-            ->get();
+            ->where('status', '!=', 'diedit');
         
         $pengajuanRiwayat = $queryRiwayat
-            ->when($request->input('riwayat_sort_status'), function ($query, $status) {
-                return $query->where('status', $status);
+            ->when($request->input('riwayat_sort_status'), function ($query, $status) use ($id_reviewer) {
+                return $query->whereHas('reviewers', function ($subQuery) use ($status, $id_reviewer) {
+                    // Filter by status and a specific reviewer id
+                    $subQuery->where('reviewers.id_reviewer', $id_reviewer)
+                             ->where('reviews.status', $status); // Filter by status in 'reviews'
+                });
             })
             ->when($request->input('riwayat_search'), function ($query, $search) { 
                 return $query->where(function($q) use ($search) {
@@ -115,7 +118,6 @@ class ReviewController extends Controller
         ]);
 
         $pengajuan = Pengajuan::findOrFail($id_pengajuan);
-        $reviewer = Reviewer::findOrFail($id_reviewer);
 
         try {
             $existingReview = $pengajuan->reviewers()->wherePivot('id_reviewer', $id_reviewer)->first();

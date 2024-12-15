@@ -57,7 +57,3 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::get('/validasi/{id_pengajuan}', [ValidasiController::class, 'show'])->name('validasi.show');
-
-Route::get('/now', function () {
-    return now();
-});

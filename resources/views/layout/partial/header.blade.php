@@ -92,12 +92,12 @@
                     <span class="ml-1 duration-300 opacity-100 pointer-events-none ease-soft">Pengajuan</span>
                 </a>
             </li>
-
+            @if (auth()->user()->pengaju)
             <li class="mt-0.5 w-full">
                 <a class="{{ request()->routeIs('layout.status') ? 'shadow-lg bg-white text-slate-700 ring-2 ring-purple-200 transition-all duration-300 transform hover:scale-105' : 'text-slate-700 hover:shadow-md' }} 
                 py-2.7 text-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap rounded-lg 
                 px-4 font-semibold transition-colors"
-                    href="{{ auth()->user()->pengaju ? route('layout.status') : route('reviewer.index') }}">
+                    href="{{ route('layout.status') }}">
                     <div
                         class="{{ request()->routeIs('layout.status')
                             ? 'bg-gradient-to-tl from-purple-700 to-pink-500 shadow-soft-2xl scale-105'
@@ -130,6 +130,7 @@
                     <span class="ml-1 duration-300 opacity-100 pointer-events-none ease-soft">Status Pengajuan</span>
                 </a>
             </li>
+            @endif
         </ul>
     </div>
 </aside>
@@ -157,6 +158,8 @@
                             Dashboard
                         @elseif(request()->routeIs('pengajuan.show'))
                             Detail Pengajuan
+                        @elseif(request()->routeIs('reviewer.detail_reviewer'))
+                            Review Pengajuan
                         @elseif(request()->routeIs('layout.status'))
                             Status Pengajuan
                         @elseif(request()->routeIs('reviewer.index'))
@@ -175,6 +178,8 @@
                         Dashboard
                     @elseif(request()->routeIs('pengajuan.show'))
                         Detail Pengajuan
+                    @elseif(request()->routeIs('reviewer.detail_reviewer'))
+                        Review Pengajuan
                     @elseif(request()->routeIs('layout.status'))
                         Status Pengajuan
                     @elseif(request()->routeIs('reviewer.index'))

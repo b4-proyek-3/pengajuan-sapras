@@ -58,6 +58,7 @@
                                     <option value="diajukan" {{ request('diajukan_sort_status') == 'diajukan' ? 'selected' : '' }}>Diajukan</option>
                                     <option value="direview" {{ request('diajukan_sort_status') == 'direview' ? 'selected' : '' }}>Direview</option>
                                     <option value="direvisi" {{ request('diajukan_sort_status') == 'direvisi' ? 'selected' : '' }}>Direvisi</option>
+                                    <option value="diedit" {{ request('diajukan_sort_status') == 'diedit' ? 'selected' : '' }}>Diedit</option>
                                 </select>
 
                                 <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
@@ -313,7 +314,7 @@
                                 <td class="py-3 px-4 border">{{ $pengajuan->nama_kegiatan }}</td>
                                 <td class="py-3 px-4 border">{{ $pengajuan->pengaju->ormawa->nama_ormawa ?? '-' }}</td>
                                 <td class="py-3 px-4 border">
-                                <span class="inline-block py-1 px-3 rounded-lg 
+                                <span class="inline-block py-1 px-3 rounded-lg
                                         @if($pengajuan->status == 'selesai')
                                             bg-green-200 text-blue-800
                                         @elseif($pengajuan->status == 'ditolak')
@@ -324,9 +325,14 @@
                                         {{ ucfirst($pengajuan->status) }}
                                     </span>
                                 </td>
-                                <td class="py-3 px-4 border">{{ $pengajuan->keterangan }}</td>
+                                <td class="py-3 px-4 border">{{ $pengajuan->latestReview->first()->catatan ?? '-' }}</td>
                                 <td class="py-3 px-4 border">
-                                    <button onclick="window.location='{{ route('pengajuan.show', ['id_pengajuan' => $pengajuan->id_pengajuan]) }}'" class="bg-blue-600 text-white px-4 py-2 rounded-lg">Detail</button>
+                                    <button onclick="window.location='{{ route('pengajuan.show', ['id_pengajuan' => $pengajuan->id_pengajuan]) }}'" class="bg-blue-600 text-white px-2 py-1 rounded-lg">Detail</button>
+                                    @if ($pengajuan->status === 'selesai')
+                                        <button
+                                            onclick="window.location='{{ route('dokumen.generate', ['id_pengajuan' => $pengajuan->id_pengajuan]) }}'"
+                                            class="bg-green-600 text-white px-2 py-1 text-sm rounded-md">Generate</button>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach
@@ -754,7 +760,7 @@
         pergerakanFiles.style.display = "none";
         commonFiles.style.display = "block"; 
 
-        if (activityType === "program_kerja") {
+        if (activityType === "proker") {
             programKerjaFiles.style.display = "block";
         } else if (activityType === "pergerakan") {
             pergerakanFiles.style.display = "block";

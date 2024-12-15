@@ -19,12 +19,11 @@ class PengajuanController extends Controller
     public function index(Request $request)
     {
         $pengaju = auth()->user()->pengaju;
-        $diajukanSortStatus = $request->input('diajukan_sort_status');
-        $riwayatSortStatus = $request->input('riwayat_sort_status');
 
         $activeTab = $request->input('active_tab', 'diajukan'); 
 
-        $pengajuanDiajukan = Pengajuan::whereIn('status', ['diajukan', 'direview', 'direvisi'])
+        $pengajuanDiajukan = Pengajuan::whereIn('status', ['diajukan', 'direview', 'direvisi', 'diedit'])
+            ->where('nim', $pengaju->nim)
             ->when($request->input('diajukan_sort_status'), function ($query, $status) {
                 return $query->where('status', $status);
             })
@@ -39,6 +38,7 @@ class PengajuanController extends Controller
             ->paginate(10, ['*'], 'diajukan_page');
     
         $pengajuanRiwayat = Pengajuan::whereIn('status', ['selesai', 'ditolak'])
+            ->where('nim', $pengaju->nim)
             ->when($request->input('riwayat_sort_status'), function ($query, $status) {
                 return $query->where('status', $status);
             })
