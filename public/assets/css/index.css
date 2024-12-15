@@ -40,6 +40,10 @@ div {
     margin: auto;
 }
 
+.modal-footer button {
+    transition: none;
+}
+
 /* Table */
 table {
     border-spacing: 0;

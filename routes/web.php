@@ -30,6 +30,7 @@ Route::controller(AuthController::class)->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/pengajuan', [PengajuanController::class, 'index'])->name('pengajuan.index');
     Route::post('/pengajuan', [PengajuanController::class, 'store'])->name('pengajuan.store');
+    Route::delete('/pengajuan/{id_pengajuan}', [PengajuanController::class, 'destroy'])->name('pengajuan.destroy');
 
     // Detail Pengajuan Route
     Route::get('/pengajuan/detail/{id_pengajuan}', [PengajuanController::class, 'show'])->name('pengajuan.show');

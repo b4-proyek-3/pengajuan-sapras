@@ -6,24 +6,35 @@
     <div class="container mx-auto mt-6">
         <!-- Tabs -->
         <div class="flex justify-end -mb-px">
-            <button id="diajukanBtn" onclick="showCard('diajukan')" class="tab-button bg-white text-gray-800 font-bold py-2 px-6 rounded-t-lg shadow-md mr-2">Diajukan</button>
-            <button id="riwayatBtn" onclick="showCard('riwayat')" class="tab-button bg-gray-200 text-gray-400 font-bold py-2 px-6 rounded-t-lg border-b-0 mr-2">Riwayat</button>
+            <button 
+                id="diajukanBtn" 
+                onclick="showCard('diajukan')" 
+                class="tab-button {{ $activeTab === 'diajukan' ? 'bg-white text-gray-800 shadow-md' : 'bg-gray-200 text-gray-400' }} font-bold py-2 px-6 rounded-t-lg shadow-md mr-2">
+                Diajukan
+            </button>
+            <button 
+                id="riwayatBtn" 
+                onclick="showCard('riwayat')" 
+                class="tab-button {{ $activeTab === 'riwayat' ? 'bg-white text-gray-800 shadow-md' : 'bg-gray-200 text-gray-400' }} font-bold py-2 px-6 rounded-t-lg shadow-md mr-2">
+                Riwayat
+            </button>
         </div>
 
         <!-- Card Diajukan -->
-        <div id="diajukanCard" class="bg-white shadow-md rounded-lg p-6 -mt-1 relative">
+        <div id="diajukanCard" class="bg-white shadow-md rounded-lg p-6 -mt-1 relative ? {{ ($activeTab ?? '') === 'diajukan' }}">
 
             <!-- Sorting dan Pencarian -->
             <div class="bg-orange-500 p-4 border-b border-orange-500 mt-4"></div>
                 <div class="bg-gray-100 p-4 border-b border-gray-300">
                     <form method="GET" action="{{ route('reviewer.index') }}" class="flex justify-between items-center">
+                        <input type="hidden" name="active_tab" value="diajukan">
                         <!-- Sort Dropdown -->
                         <div class="w-1/4">
                             <div class="relative">
-                                <select name="sort_status" class="appearance-none border border-gray-300 rounded-md p-2 w-full pr-10" onchange="this.form.submit()">
+                                <select name="diajukan_sort_status" class="appearance-none border border-gray-300 rounded-md p-2 w-full pr-10" onchange="this.form.submit()">
                                     <option value=""> Pilih Status </option>
                                     <option value="diajukan">Diajukan</option>
-                                    <option value="direview">Direvisi</option>
+                                    <option value="direvisi">Direvisi</option>
                                 </select>
 
                                 <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
@@ -40,8 +51,8 @@
                                 <i class="fas fa-search"></i>
                             </span>
                             <input type="text" name="search" value="{{ request('search') }}" class="pl-8.75 text-sm border border-gray-300 rounded-md p-2 w-full" placeholder=" Cari">
-                            @if(request('search') || request('sort_status'))
-                                <a href="{{ route('reviewer.index') }}" class="bg-gray-600 text-white py-2 px-4 rounded-md ml-4">Reset</a>
+                            @if(request('search') || request('diajukan_sort_status'))
+                                <a href="{{ route('reviewer.index', ['active_tab' => 'diajukan']) }}" class="bg-gray-600 text-white py-2 px-4 rounded-md ml-4">Reset</a>
                             @endif
                         </div>
                     </form>
@@ -132,19 +143,23 @@
             </div>
 
             <!-- Card Riwayat -->
-            <div id="riwayatCard" class="bg-white shadow-md rounded-lg p-6 -mt-1 relative hidden">
+            <div id="riwayatCard" class="bg-white shadow-md rounded-lg p-6 -mt-1 relative hidden ? {{ ($activeTab ?? '') === 'riwayat' }}">
                 
-                <div class="bg-orange-500 p-4 border-b border-orange-500 mt-4"></div>
+                <!-- Sorting dan Pencarian -->
+                <div class="relative">
+                    <div class="bg-orange-500 p-4 border-b border-orange-500 mt-4"></div>
                     <div class="bg-gray-100 p-4 border-b border-gray-300">
                         <form method="GET" action="{{ route('reviewer.index') }}" class="flex justify-between items-center">
+                            <input type="hidden" name="active_tab" value="riwayat">
+
                             <!-- Sort Dropdown -->
                             <div class="w-1/4">
                                 <div class="relative">
-                                    <select name="sort_status" class="appearance-none border border-gray-300 rounded-md p-2 w-full pr-10" onchange="this.form.submit()">
-                                        <option value=""> Pilih Status </option>
-                                        <option value="diterima" {{ request('sort_status') == 'diterima' ? 'selected' : '' }}>Diterima</option>
-                                        <option value="ditolak" {{ request('sort_status') == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
-                                    </select>
+                                <select name="riwayat_sort_status" class="appearance-none border border-gray-300 rounded-md p-2 w-full pr-10" onchange="this.form.submit()">
+                                    <option value=""> Pilih Status </option>
+                                    <option value="diterima" {{ request('riwayat_sort_status') == 'diterima' ? 'selected' : '' }}>Diterima</option>
+                                    <option value="ditolak" {{ request('riwayat_sort_status') == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
+                                </select>
 
                                     <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
@@ -159,9 +174,9 @@
                                 <span class="text-sm flex items-center px-2 text-gray-500">
                                     <i class="fas fa-search"></i>
                                 </span>
-                                <input type="text" name="search" value="{{ request('search') }}" class="pl-8.75 text-sm border border-gray-300 rounded-md p-2 w-full" placeholder=" Cari">
-                                @if(request('search') || request('sort_status'))
-                                    <a href="{{ route('reviewer.index') }}" class="bg-gray-600 text-white py-2 px-4 rounded-md ml-4">Reset</a>
+                                <input type="text" name="riwayat_search" value="{{ request('riwayat_search') }}" class="pl-8.75 text-sm border border-gray-300 rounded-md p-2 w-full" placeholder=" Cari">
+                                @if(request('riwayat_search') || request('riwayat_sort_status'))
+                                    <a href="{{ route('reviewer.index', ['active_tab' => 'riwayat']) }}" class="bg-gray-600 text-white py-2 px-4 rounded-md ml-4">Reset</a>
                                 @endif
                             </div>
                         </form>
@@ -197,7 +212,7 @@
                                                 @else
                                                     bg-gray-200 text-gray-800
                                                 @endif">
-                                                {{ ucfirst($pengajuan->status ?? '-') }}
+                                                {{ ucfirst($pengajuan->reviewers->first()->pivot->status) }}
                                             </span>
                                         </td>
                                         <td class="py-3 px-4 border">{{ $pengajuan->reviews->catatan ?? '-' }}</td>
@@ -207,7 +222,7 @@
                                     </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="7" class="text-center text-gray-500">Tidak ada data pengajuan yang sesuai dengan filter.</td>
+                                            <td colspan="7" class="text-center text-gray-500">Tidak ada data pengajuan.</td>
                                         </tr>
                                     @endforelse
                             </tbody>
@@ -265,48 +280,40 @@
 
 
 <script>
-    $(document).ready(function() {
-        $('#ormawa').select2({
-            placeholder: "Pilih Organisasi Mahasiswa"
-        });
-    });
+    function showCard(activeTab) {
+        const url = new URL(window.location.href);
+        url.searchParams.set('active_tab', activeTab); 
+        window.history.pushState({}, '', url); 
 
-    document.getElementById("link").addEventListener("blur", function() {
-        // Ambil nilai link dari form
-        var linkValue = document.getElementById("link").value;
+        const diajukanCard = document.getElementById('diajukanCard');
+        const riwayatCard = document.getElementById('riwayatCard');
 
-        // Validasi apakah input adalah URL yang benar
-        if (!linkValue.startsWith("http://") && !linkValue.startsWith("https://")) {
-            alert("Harap masukkan URL yang valid (dimulai dengan http:// atau https://)");
-        } else {
-            // Jika valid, otomatis submit form
-            alert("Link berhasil disubmit: " + linkValue);
-            document.getElementById("linkForm").submit(); // Kirim form secara otomatis
-        }
-    });
-
-    function showCard(card) {
-        // Sembunyikan kedua card terlebih dahulu
-        document.getElementById('diajukanCard').classList.add('hidden');
-        document.getElementById('riwayatCard').classList.add('hidden');
-        
-        // Atur ulang button style
-        document.getElementById('diajukanBtn').classList.remove('bg-white', 'text-gray-800', 'shadow-md');
-        document.getElementById('diajukanBtn').classList.add('bg-gray-200', 'text-gray-400');
-        document.getElementById('riwayatBtn').classList.remove('bg-white', 'text-gray-800', 'shadow-md');
-        document.getElementById('riwayatBtn').classList.add('bg-gray-200', 'text-gray-400');
-        
-        // Tampilkan card sesuai tombol yang diklik
-        if (card === 'diajukan') {
-            document.getElementById('diajukanCard').classList.remove('hidden');
+        if (activeTab === 'diajukan') {
+            diajukanCard.classList.remove('hidden');
+            riwayatCard.classList.add('hidden');
+            
             document.getElementById('diajukanBtn').classList.add('bg-white', 'text-gray-800', 'shadow-md');
             document.getElementById('diajukanBtn').classList.remove('bg-gray-200', 'text-gray-400');
-        } else if (card === 'riwayat') {
-            document.getElementById('riwayatCard').classList.remove('hidden');
+            
+            document.getElementById('riwayatBtn').classList.add('bg-gray-200', 'text-gray-400');
+            document.getElementById('riwayatBtn').classList.remoave('bg-white', 'text-gray-800', 'shadow-md');
+        } else if (activeTab === 'riwayat') {
+            riwayatCard.classList.remove('hidden');
+            diajukanCard.classList.add('hidden');
+            
             document.getElementById('riwayatBtn').classList.add('bg-white', 'text-gray-800', 'shadow-md');
             document.getElementById('riwayatBtn').classList.remove('bg-gray-200', 'text-gray-400');
+            
+            document.getElementById('diajukanBtn').classList.add('bg-gray-200', 'text-gray-400');
+            document.getElementById('diajukanBtn').classList.remove('bg-white', 'text-gray-800', 'shadow-md');
         }
     }
+
+    window.onload = function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const activeTab = urlParams.get('active_tab') || 'diajukan'; 
+        showCard(activeTab); b
+    };
 
     function showFileInputs() {
         const activityType = document.getElementById("activity_type").value;
