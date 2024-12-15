@@ -6,24 +6,35 @@
     <div class="container mx-auto mt-6">
         <!-- Tabs -->
         <div class="flex justify-end -mb-px">
-            <button id="diajukanBtn" onclick="showCard('diajukan')" class="tab-button bg-white text-gray-800 font-bold py-2 px-6 rounded-t-lg shadow-md mr-2">Diajukan</button>
-            <button id="riwayatBtn" onclick="showCard('riwayat')" class="tab-button bg-gray-200 text-gray-400 font-bold py-2 px-6 rounded-t-lg border-b-0 mr-2">Riwayat</button>
+            <button 
+                id="diajukanBtn" 
+                onclick="showCard('diajukan')" 
+                class="tab-button {{ $activeTab === 'diajukan' ? 'bg-white text-gray-800 shadow-md' : 'bg-gray-200 text-gray-400' }} font-bold py-2 px-6 rounded-t-lg shadow-md mr-2">
+                Diajukan
+            </button>
+            <button 
+                id="riwayatBtn" 
+                onclick="showCard('riwayat')" 
+                class="tab-button {{ $activeTab === 'riwayat' ? 'bg-white text-gray-800 shadow-md' : 'bg-gray-200 text-gray-400' }} font-bold py-2 px-6 rounded-t-lg shadow-md mr-2">
+                Riwayat
+            </button>
         </div>
 
         <!-- Card Diajukan -->
-        <div id="diajukanCard" class="bg-white shadow-md rounded-lg p-6 -mt-1 relative">
+        <div id="diajukanCard" class="bg-white shadow-md rounded-lg p-6 -mt-1 relative ? {{ ($activeTab ?? '') === 'diajukan' }}">
 
             <!-- Sorting dan Pencarian -->
             <div class="bg-orange-500 p-4 border-b border-orange-500 mt-4"></div>
                 <div class="bg-gray-100 p-4 border-b border-gray-300">
                     <form method="GET" action="{{ route('reviewer.index') }}" class="flex justify-between items-center">
+                        <input type="hidden" name="active_tab" value="diajukan">
                         <!-- Sort Dropdown -->
                         <div class="w-1/4">
                             <div class="relative">
-                                <select name="sort_status" class="appearance-none border border-gray-300 rounded-md p-2 w-full pr-10" onchange="this.form.submit()">
+                                <select name="diajukan_sort_status" class="appearance-none border border-gray-300 rounded-md p-2 w-full pr-10" onchange="this.form.submit()">
                                     <option value=""> Pilih Status </option>
                                     <option value="diajukan">Diajukan</option>
-                                    <option value="direview">Direvisi</option>
+                                    <option value="direvisi">Direvisi</option>
                                 </select>
 
                                 <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
@@ -132,18 +143,19 @@
             </div>
 
             <!-- Card Riwayat -->
-            <div id="riwayatCard" class="bg-white shadow-md rounded-lg p-6 -mt-1 relative hidden">
+            <div id="riwayatCard" class="bg-white shadow-md rounded-lg p-6 -mt-1 relative hidden ? {{ ($activeTab ?? '') === 'riwayat' }}">
                 
                 <div class="bg-orange-500 p-4 border-b border-orange-500 mt-4"></div>
                     <div class="bg-gray-100 p-4 border-b border-gray-300">
                         <form method="GET" action="{{ route('reviewer.index') }}" class="flex justify-between items-center">
+                            <input type="hidden" name="active_tab" value="riwayat">
                             <!-- Sort Dropdown -->
                             <div class="w-1/4">
                                 <div class="relative">
-                                    <select name="sort_status" class="appearance-none border border-gray-300 rounded-md p-2 w-full pr-10" onchange="this.form.submit()">
+                                    <select name="riwayat_sort_status" class="appearance-none border border-gray-300 rounded-md p-2 w-full pr-10" onchange="this.form.submit()">
                                         <option value=""> Pilih Status </option>
-                                        <option value="diterima" {{ request('sort_status') == 'diterima' ? 'selected' : '' }}>Diterima</option>
-                                        <option value="ditolak" {{ request('sort_status') == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
+                                        <option value="diterima" {{ request('riwayat_sort_status') == 'diterima' ? 'selected' : '' }}>Diterima</option>
+                                        <option value="ditolak" {{ request('riwayat_sort_status') == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
                                     </select>
 
                                     <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
@@ -159,8 +171,8 @@
                                 <span class="text-sm flex items-center px-2 text-gray-500">
                                     <i class="fas fa-search"></i>
                                 </span>
-                                <input type="text" name="search" value="{{ request('search') }}" class="pl-8.75 text-sm border border-gray-300 rounded-md p-2 w-full" placeholder=" Cari">
-                                @if(request('search') || request('sort_status'))
+                                <input type="text" name="riwayat_search" value="{{ request('riwayat_search') }}" class="pl-8.75 text-sm border border-gray-300 rounded-md p-2 w-full" placeholder=" Cari">
+                                @if(request('riwayat_search') || request('riwayat_sort_status'))
                                     <a href="{{ route('reviewer.index') }}" class="bg-gray-600 text-white py-2 px-4 rounded-md ml-4">Reset</a>
                                 @endif
                             </div>
@@ -197,7 +209,7 @@
                                                 @else
                                                     bg-gray-200 text-gray-800
                                                 @endif">
-                                                {{ ucfirst($pengajuan->status ?? '-') }}
+                                                {{ ucfirst($pengajuan->reviewers->first()->pivot->status) }}
                                             </span>
                                         </td>
                                         <td class="py-3 px-4 border">{{ $pengajuan->reviews->catatan ?? '-' }}</td>

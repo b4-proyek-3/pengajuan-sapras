@@ -18,49 +18,44 @@ class PengajuanController extends Controller
     public function index(Request $request)
     {
         $pengaju = auth()->user()->pengaju;
-        $search = $request->input('search');
-        $sortStatus = $request->input('sort_status');
-    
-        // Query awal dengan filtering berdasarkan nim pengaju
-        $query = Pengajuan::with(['pengaju.ormawa', 'latestReview'])->where('nim', $pengaju->nim);
-    
-        // Filter berdasarkan status
-        if ($sortStatus) {
-            $query->where('status', $sortStatus);
-        }
-    
-        // Filter berdasarkan pencarian
-        if ($search) {
-            $query->where(function ($query) use ($search) {
-                $query->where('nama_kegiatan', 'like', '%' . $search . '%')
-                      ->orWhereHas('pengaju.ormawa', function ($query) use ($search) {
-                          $query->where('nama_ormawa', 'like', '%' . $search . '%');
-                      });
-            });
-        }
-    
-        $pengajuanDiajukan = Pengajuan::where('status', 'diajukan')
-        ->when($request->input('search'), function ($query, $search) {
-            return $query->where('nama_kegiatan', 'like', "%$search%");
-        })
-        ->paginate(10, ['*'], 'diajukan_page');
+        $diajukanSortStatus = $request->input('diajukan_sort_status');
+        $riwayatSortStatus = $request->input('riwayat_sort_status');
 
+        $activeTab = $request->input('active_tab', 'diajukan'); 
+
+        $pengajuanDiajukan = Pengajuan::whereIn('status', ['diajukan', 'direview', 'direvisi'])
+            ->when($request->input('diajukan_sort_status'), function ($query, $status) {
+                return $query->where('status', $status);
+            })
+            ->when($request->input('search'), function ($query, $search) {
+                return $query->where(function($q) use ($search) {
+                    $q->where('nama_kegiatan', 'like', "%{$search}%")
+                      ->orWhereHas('pengaju.ormawa', function($subQuery) use ($search) {
+                          $subQuery->where('nama_ormawa', 'like', "%{$search}%");
+                      });
+                });
+            })
+            ->paginate(10, ['*'], 'diajukan_page');
     
-        $pengajuanRiwayat = Pengajuan::whereIn('status', ['diterima', 'ditolak'])
-        ->when($request->input('status_filter'), function ($query, $status) {
-            return $query->where('status', $status);
-        })
-        ->when($request->input('search'), function ($query, $search) {
-            return $query->where('nama_kegiatan', 'like', "%$search%");
-        })
-        ->paginate(10, ['*'], 'riwayat_page'); 
-        
+        $pengajuanRiwayat = Pengajuan::whereIn('status', ['selesai', 'ditolak'])
+            ->when($request->input('riwayat_sort_status'), function ($query, $status) {
+                return $query->where('status', $status);
+            })
+            ->when($request->input('search'), function ($query, $search) { 
+                return $query->where(function($q) use ($search) {
+                    $q->where('nama_kegiatan', 'like', "%{$search}%")
+                      ->orWhereHas('pengaju.ormawa', function($subQuery) use ($search) {
+                          $subQuery->where('nama_ormawa', 'like', "%{$search}%");
+                      });
+                });
+            })
+            ->paginate(10, ['*'], 'riwayat_page');
+    
         $tempatList = Tempat::all();
     
-        return view('pengajuan.index', compact('pengajuanDiajukan', 'pengajuanRiwayat', 'tempatList'));
+        return view('pengajuan.index', compact('pengajuanDiajukan', 'pengajuanRiwayat', 'tempatList', 'activeTab'));        
     }
-    
-        
+
     public function show(string $id_pengajuan)
     {
         $pengajuans = Pengajuan::with(['pengaju', 'reviewers', 'latestReview', 'dokumen'])
@@ -76,6 +71,18 @@ class PengajuanController extends Controller
         $tempatList = Tempat::all(); 
 
         return view('pengajuan.index', compact('ormawaList', 'tempatList'));
+    }
+
+    public function destroy($id_pengajuan)
+    {
+        $pengajuan = Pengajuan::findOrFail($id_pengajuan);
+
+        try {
+            $pengajuan->delete();
+            return redirect()->route('pengajuan.index')->with('success', 'Pengajuan berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->route('pengajuan.index')->with('error', 'Pengajuan gagal dihapus.');
+        }
     }
 
     public function store(Request $request)

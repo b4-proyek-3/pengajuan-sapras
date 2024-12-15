@@ -6,12 +6,22 @@
     <div class="container mx-auto mt-6">
         <!-- Tabs -->
         <div class="flex justify-end -mb-px">
-            <button id="diajukanBtn" onclick="showCard('diajukan')" class="tab-button bg-white text-gray-800 font-bold py-2 px-6 rounded-t-lg shadow-md mr-2">Diajukan</button>
-            <button id="riwayatBtn" onclick="showCard('riwayat')" class="tab-button bg-gray-200 text-gray-400 font-bold py-2 px-6 rounded-t-lg border-b-0 mr-2">Riwayat</button>
+            <button 
+                id="diajukanBtn" 
+                onclick="showCard('diajukan')" 
+                class="tab-button {{ $activeTab === 'diajukan' ? 'bg-white text-gray-800 shadow-md' : 'bg-gray-200 text-gray-400' }} font-bold py-2 px-6 rounded-t-lg shadow-md mr-2">
+                Diajukan
+            </button>
+            <button 
+                id="riwayatBtn" 
+                onclick="showCard('riwayat')" 
+                class="tab-button {{ $activeTab === 'riwayat' ? 'bg-white text-gray-800 shadow-md' : 'bg-gray-200 text-gray-400' }} font-bold py-2 px-6 rounded-t-lg shadow-md mr-2">
+                Riwayat
+            </button>
         </div>
 
         <!-- Card Diajukan -->
-        <div id="diajukanCard" class="bg-white shadow-md rounded-lg p-6 -mt-1 relative">
+        <div id="diajukanCard" class="bg-white shadow-md rounded-lg p-6 -mt-1 relative ? {{ ($activeTab ?? '') === 'diajukan' }}">
             <!-- Tombol Pengajuan -->
             <div class="flex flex-col items-start">
                 <button data-bs-toggle="modal" data-bs-target="#pengajuanModal" class="flex items-center bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg transition duration-200 ease-in-out">
@@ -42,15 +52,15 @@
             <div class="bg-orange-500 p-4 border-b border-orange-500 mt-4"></div>
                 <div class="bg-gray-100 p-4 border-b border-gray-300">
                     <form method="GET" action="{{ route('pengajuan.index') }}" class="flex justify-between items-center">
-                    <input type="hidden" name="active_tab" value="diajukan">
+                        <input type="hidden" name="active_tab" value="diajukan">
                         <!-- Sort Dropdown -->
                         <div class="w-1/4">
                             <div class="relative">
-                                <select name="sort_status" class="appearance-none border border-gray-300 rounded-md p-2 w-full pr-10" onchange="this.form.submit()">
+                                <select name="diajukan_sort_status" class="appearance-none border border-gray-300 rounded-md p-2 w-full pr-10" onchange="this.form.submit()">
                                     <option value=""> Pilih Status </option>
-                                    <option value="diajukan">Diajukan</option>
-                                    <option value="direview">Direview</option>
-                                    <option value="direvisi">Direvisi</option>
+                                    <option value="diajukan" {{ request('diajukan_sort_status') == 'diajukan' ? 'selected' : '' }}>Diajukan</option>
+                                    <option value="direview" {{ request('diajukan_sort_status') == 'direview' ? 'selected' : '' }}>Direview</option>
+                                    <option value="direvisi" {{ request('diajukan_sort_status') == 'direvisi' ? 'selected' : '' }}>Direvisi</option>
                                 </select>
 
                                 <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
@@ -67,9 +77,9 @@
                                 <i class="fas fa-search"></i>
                             </span>
                             <input type="text" name="search" value="{{ request('search') }}" class="pl-8.75 text-sm border border-gray-300 rounded-md p-2 w-full" placeholder=" Cari">
-                            @if(request('search') || request('sort_status'))
-                                <a href="{{ route('pengajuan.index') }}" class="bg-gray-600 text-white py-2 px-4 rounded-md ml-4">Reset</a>
-                            @endif
+                                @if(request('search') || request('diajukan_sort_status'))
+                                    <a href="{{ route('pengajuan.index', ['active_tab' => 'diajukan']) }}" class="bg-gray-600 text-white py-2 px-4 rounded-md ml-4">Reset</a>
+                                @endif
                         </div>
                     </form>
                 </div>
@@ -111,15 +121,92 @@
                                         </span>
                                     </td>
                                     <td class="py-3 px-4 border">{{ $pengajuan->latestReview->first()->catatan ?? '-' }}</td>
-                                    <td class="py-3 px-4 border">
-                                    <button onclick="window.location='{{ route('pengajuan.show', ['id_pengajuan' => $pengajuan->id_pengajuan]) }}'" class="bg-blue-600 text-white px-4 py-2 rounded-lg">Detail</button>
+                                    <td class="py-3 px-4 border flex items-center space-x-2">
+                                        <!-- Button Detail -->
+                                        <button 
+                                            onclick="window.location='{{ route('pengajuan.show', ['id_pengajuan' => $pengajuan->id_pengajuan]) }}'" 
+                                            class="bg-blue-600 text-white px-4 py-2 rounded-lg">
+                                            Detail
+                                        </button>
+                                        <form
+                                            action="{{ route('pengajuan.destroy', ['id_pengajuan' => $pengajuan->id_pengajuan]) }}" 
+                                            method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                        
+                                            <!-- Button Hapus -->
+                                            <button 
+                                                type="button" 
+                                                data-id="{{ $pengajuan->id_pengajuan }}" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#deleteModal"
+                                                class="text-white px-4 py-2 rounded-lg" 
+                                                style="background-color: #ff7f00 !important;"
+                                                onclick="openModal('{{ $pengajuan->id_pengajuan }}')">
+                                                Hapus
+                                            </button>
+
+                                            <!-- Modal -->
+                                            <div class="modal fade overflow-y-auto" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog flex items-center justify-center min-h-screen">
+                                                    <div class="modal-content">
+                                                        <!-- Header Modal -->
+                                                        <div class="modal-header bg-gray-100">
+                                                            <h5 class="modal-title text-xl font-bold text-gray-800" id="deleteModalLabel">
+                                                               Hapus Pengajuan
+                                                            </h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        
+                                                        <div class="modal-body">
+                                                            <p class="text-gray-700 text-lg">
+                                                                Apakah Anda yakin ingin menghapus pengajuan ini?
+                                                            </p>
+                                                        </div>
+                                                        
+                                                        <div class="modal-footer flex justify-end space-x-4">
+                                                            <button type="button" 
+                                                                class="text-white px-4 py-2 rounded hover:bg-gray-500" 
+                                                                style="background-color: #808080 !important;"
+                                                                data-bs-dismiss="modal">
+                                                                Batal
+                                                            </button>
+                                                            
+                                                            <form id="deleteForm" method="POST" action="/pengajuan/1">
+                                                                <button type="submit" 
+                                                                    class="text-white px-4 py-2 rounded hover:bg-red-700"
+                                                                    style="background-color: #ff0000 !important;">
+                                                                    Hapus
+                                                                </button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+
+                                        <script>
+                                            function openModal(id) {
+                                                const modal = document.getElementById('deleteModal');
+                                                const form = document.getElementById('deleteForm');
+                                                
+                                                form.action = `/pengajuan/${id}`;
+                                                
+                                                modal.classList.remove('hidden');
+                                            }
+
+                                            function closeModal() {
+                                                const modal = document.getElementById('deleteModal');
+                                                modal.classList.add('hidden');
+                                            }
+                                        </script>
                                     </td>
                                 </tr>
                             @endforeach
 
                             @if($pengajuanDiajukan->isEmpty())
                                 <tr>
-                                    <td colspan="7" class="text-center">Tidak ada pengajuan yang diajukan</td>
+                                    <td colspan="7" class="text-center">Tidak ada data pengajuan</td>
                                 </tr>
                             @endif
                         </tbody>
@@ -173,7 +260,7 @@
                             </div>
                             <div class="modal-body">
                                 <form action="{{ route('pengajuan.store') }}" method="POST" enctype="multipart/form-data">
-                                    @csrf <!-- CSRF token for security -->
+                                    @csrf 
 
                                     <div class="mb-3">
                                         <label for="nama_kegiatan" class="form-label">Nama Kegiatan</label>
@@ -215,7 +302,6 @@
                                         <p class="text-gray-500 text-sm mt-1">File maksimal 2 MB</p>
                                     </div>
 
-                                    <!-- File upload field khusus untuk Program Kerja (Proposal) -->
                                     <div id="program_kerja_files" style="display: none;">
                                         <div class="mb-3">
                                             <label for="dokumen1" class="form-label">Proposal</label>
@@ -223,7 +309,6 @@
                                         </div>
                                     </div>
 
-                                    <!-- File upload field khusus untuk Pergerakan (Term of Reference) -->
                                     <div id="pergerakan_files" style="display: none;">
                                         <div class="mb-3">
                                             <label for="dokumen2" class="form-label">Term of Reference</label>
@@ -231,7 +316,6 @@
                                         </div>
                                     </div>
 
-                                    <!-- File upload fields yang sama untuk kedua jenis kegiatan -->
                                     <div id="common_files" style="display: none;">
                                         <div class="mb-3">
                                             <label for="dokumen3" class="form-label">Surat Peminjaman Sarana Prasarana</label>
@@ -260,12 +344,11 @@
                                         <input type="url" name="link_gdrive" id="link_gdrive" class="form-control" placeholder="https://drive.google.com/drive/folders/surat_izin_orang_tua">
                                     </div>
 
-                                    <!-- Submit and Cancel buttons -->
                                     <div class="flex justify-center mt-6 space-x-4">
                                         <button type="submit" class="bg-blue-600 text-white py-2 px-6 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500" style="background-color: #2563eb !important;">Simpan</button>
                                         <button type="button" class="bg-gray-600 text-white py-2 px-6 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400" onclick="window.location.href='{{ route('pengajuan.index') }}'">Batal</button>
                                     </div>
-                                    <!-- Setelah form pengajuan -->
+
                                     @if ($errors->any())
                                         <div class="alert alert-danger">
                                             <ul>
@@ -281,10 +364,12 @@
                     </div>
                 </div>
             </div>
+        </div>
+
 
             <!-- Card Riwayat -->
-            <div id="riwayatCard" class="bg-white shadow-md rounded-lg p-6 -mt-1 relative hidden">
-                
+            <div id="riwayatCard" class="bg-white shadow-md rounded-lg p-6 -mt-1 relative hidden ? {{ ($activeTab ?? '') === 'riwayat' }}">
+
                 <!-- Sorting dan Pencarian -->
                 <div class="relative">
                     <div class="bg-orange-500 p-4 border-b border-orange-500 mt-4"></div>
@@ -295,11 +380,11 @@
                             <!-- Sort Dropdown -->
                             <div class="w-1/4">
                                 <div class="relative">
-                                    <select name="status_filter" class="appearance-none border border-gray-300 rounded-md p-2 w-full pr-10" onchange="this.form.submit()">
-                                        <option value=""> Pilih Status </option>
-                                        <option value="diterima">Diterima</option>
-                                        <option value="ditolak">Ditolak</option>
-                                    </select>
+                                <select name="riwayat_sort_status" class="appearance-none border border-gray-300 rounded-md p-2 w-full pr-10" onchange="this.form.submit()">
+                                    <option value=""> Pilih Status </option>
+                                    <option value="selesai" {{ request('riwayat_sort_status') == 'selesai' ? 'selected' : '' }}>Diterima</option>
+                                    <option value="ditolak" {{ request('riwayat_sort_status') == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
+                                </select>
 
                                     <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
@@ -314,9 +399,9 @@
                                 <span class="text-sm flex items-center px-2 text-gray-500">
                                     <i class="fas fa-search"></i>
                                 </span>
-                                <input type="text" name="search" value="{{ request('search') }}" class="pl-8.75 text-sm border border-gray-300 rounded-md p-2 w-full" placeholder=" Cari">
-                                @if(request('search') || request('sort_status'))
-                                    <a href="{{ route('pengajuan.index') }}" class="bg-gray-600 text-white py-2 px-4 rounded-md ml-4">Reset</a>
+                                <input type="text" name="riwayat_search" value="{{ request('riwayat_search') }}" class="pl-8.75 text-sm border border-gray-300 rounded-md p-2 w-full" placeholder=" Cari">
+                                @if(request('riwayat_search') || request('riwayat_sort_status'))
+                                    <a href="{{ route('pengajuan.index', ['active_tab' => 'riwayat']) }}" class="bg-gray-600 text-white py-2 px-4 rounded-md ml-4">Reset</a>
                                 @endif
                             </div>
                         </form>
@@ -337,29 +422,38 @@
                                 </tr>
                             </thead>
                             <tbody>
-                            @foreach ($pengajuanRiwayat as $pengajuan)
-                                <tr>
-                                    <td class="py-3 px-4 border">{{ $loop->iteration }}</td>
-                                    <td class="py-3 px-4 border">{{ $pengajuan->tanggal_pengajuan }}</td>
-                                    <td class="py-3 px-4 border">{{ $pengajuan->nama_kegiatan }}</td>
-                                    <td class="py-3 px-4 border">{{ $pengajuan->pengaju->ormawa->nama_ormawa ?? '-' }}</td>
-                                    <td class="py-3 px-4 border 
-                                        @if($pengajuan->status == 'diterima')
-                                            bg-green-200 text-green-800
-                                        @elseif($pengajuan->status == 'ditolak')
-                                            bg-red-200 text-red-800
-                                        @else
-                                            bg-gray-200 text-gray-800
-                                        @endif
-                                        rounded-lg">{{ ucfirst($pengajuan->status) }}</td>
-                                    <td class="py-3 px-4 border">{{ $pengajuan->keterangan }}</td>
-                                    <td class="py-3 px-4 border">
-                                        <button onclick="window.location='{{ route('pengajuan.show', ['id_pengajuan' => $pengajuan->id_pengajuan]) }}'" class="bg-blue-600 text-white px-4 py-2 rounded-lg">Detail</button>
-                                    </td>
-                                </tr>
-                            @endforeach
+                                @foreach ($pengajuanRiwayat as $key => $pengajuan)
+                                    <tr>
+                                        <td class="py-3 px-4 border">{{ $pengajuanRiwayat->firstItem() + $key }}</td>
+                                        <td class="py-3 px-4 border">{{ $pengajuan->tanggal_pengajuan }}</td>
+                                        <td class="py-3 px-4 border">{{ $pengajuan->nama_kegiatan }}</td>
+                                        <td class="py-3 px-4 border">{{ $pengajuan->pengaju->ormawa->nama_ormawa ?? '-' }}</td>
+                                        <td class="py-3 px-4 border">
+                                            <span class="inline-block py-1 px-3 rounded-lg 
+                                                @if($pengajuan->status == 'selesai')
+                                                bg-green-200 text-green-800
+                                                @elseif($pengajuan->status == 'ditolak')
+                                                bg-red-200 text-red-800
+                                                @else
+                                                bg-gray-200 text-gray-800
+                                                @endif">{{ ucfirst($pengajuan->status) }}
+                                            </span>   
+                                        </td>
+                                        <td class="py-3 px-4 border">{{ $pengajuan->keterangan }}</td>
+                                        <td class="py-3 px-4 border">
+                                            <button onclick="window.location='{{ route('pengajuan.show', ['id_pengajuan' => $pengajuan->id_pengajuan]) }}'" class="bg-blue-600 text-white px-4 py-2 rounded-lg">Detail</button>
+                                        </td>
+                                    </tr>
+                                @endforeach
+
+                                @if($pengajuanRiwayat->isEmpty())
+                                    <tr>
+                                        <td colspan="7" class="text-center">Tidak ada data pengajuan</td>
+                                    </tr>
+                                @endif
                             </tbody>
                         </table>
+
                         <div class="mt-4 flex justify-center items-center">
                             @if ($pengajuanRiwayat->currentPage() > 1)
                                 <a href="{{ $pengajuanRiwayat->appends(request()->except('riwayat_page'))->previousPageUrl() }}" 
@@ -396,6 +490,7 @@
                                 </a>
                             @endif
                         </div>
+                        
                         </table>
                     </div>
                 </div>
@@ -419,48 +514,87 @@
 
 
 <script>
-    $(document).ready(function() {
-        $('#ormawa').select2({
-            placeholder: "Pilih Organisasi Mahasiswa"
+    document.addEventListener("DOMContentLoaded", function () {
+        const namaKegiatanInput = document.getElementById("nama_kegiatan");
+
+        namaKegiatanInput.addEventListener("input", function () {
+            const maxLength = 100; // Batas maksimal karakter
+            const errorMessage = document.getElementById("error_nama_kegiatan");
+
+            if (namaKegiatanInput.value.length > maxLength) {
+                if (!errorMessage) {
+                    const errorDiv = document.createElement("div");
+                    errorDiv.id = "error_nama_kegiatan";
+                    errorDiv.style.color = "red";
+                    errorDiv.textContent = "Nama kegiatan tidak boleh lebih dari 100 karakter.";
+                    namaKegiatanInput.parentNode.appendChild(errorDiv);
+                }
+            } else {
+                if (errorMessage) {
+                    errorMessage.remove();
+                }
+            }
         });
     });
+    
+    function checkFileSize(inputId) {
+        const input = document.getElementById(inputId);
+        input.addEventListener("change", function () {
+            const file = input.files[0];
+            if (file) {
+                const maxSize = 2 * 1024 * 1024; // 2MB
+                if (file.size > maxSize) {
+                    alert("File yang diunggah tidak boleh lebih dari 2MB!");
+                    input.value = "";
+                }
+            }
+        });
+    }
 
-    document.getElementById("link").addEventListener("blur", function() {
-        // Ambil nilai link dari form
-        var linkValue = document.getElementById("link").value;
-
-        // Validasi apakah input adalah URL yang benar
-        if (!linkValue.startsWith("http://") && !linkValue.startsWith("https://")) {
-            alert("Harap masukkan URL yang valid (dimulai dengan http:// atau https://)");
-        } else {
-            // Jika valid, otomatis submit form
-            alert("Link berhasil disubmit: " + linkValue);
-            document.getElementById("linkForm").submit(); // Kirim form secara otomatis
-        }
+    document.addEventListener("DOMContentLoaded", function () {
+        checkFileSize("dokumen1");
+        checkFileSize("dokumen2");
+        checkFileSize("dokumen3");
+        checkFileSize("dokumen4");
+        checkFileSize("dokumen5");
+        checkFileSize("dokumen6");
+        checkFileSize("dokumen7");
     });
 
-    function showCard(card) {
-        // Sembunyikan kedua card terlebih dahulu
-        document.getElementById('diajukanCard').classList.add('hidden');
-        document.getElementById('riwayatCard').classList.add('hidden');
-        
-        // Atur ulang button style
-        document.getElementById('diajukanBtn').classList.remove('bg-white', 'text-gray-800', 'shadow-md');
-        document.getElementById('diajukanBtn').classList.add('bg-gray-200', 'text-gray-400');
-        document.getElementById('riwayatBtn').classList.remove('bg-white', 'text-gray-800', 'shadow-md');
-        document.getElementById('riwayatBtn').classList.add('bg-gray-200', 'text-gray-400');
-        
-        // Tampilkan card sesuai tombol yang diklik
-        if (card === 'diajukan') {
-            document.getElementById('diajukanCard').classList.remove('hidden');
+    function showCard(activeTab) {
+        const url = new URL(window.location.href);
+        url.searchParams.set('active_tab', activeTab); 
+        window.history.pushState({}, '', url); 
+
+        const diajukanCard = document.getElementById('diajukanCard');
+        const riwayatCard = document.getElementById('riwayatCard');
+
+        if (activeTab === 'diajukan') {
+            diajukanCard.classList.remove('hidden');
+            riwayatCard.classList.add('hidden');
+            
             document.getElementById('diajukanBtn').classList.add('bg-white', 'text-gray-800', 'shadow-md');
             document.getElementById('diajukanBtn').classList.remove('bg-gray-200', 'text-gray-400');
-        } else if (card === 'riwayat') {
-            document.getElementById('riwayatCard').classList.remove('hidden');
+            
+            document.getElementById('riwayatBtn').classList.add('bg-gray-200', 'text-gray-400');
+            document.getElementById('riwayatBtn').classList.remoave('bg-white', 'text-gray-800', 'shadow-md');
+        } else if (activeTab === 'riwayat') {
+            riwayatCard.classList.remove('hidden');
+            diajukanCard.classList.add('hidden');
+            
             document.getElementById('riwayatBtn').classList.add('bg-white', 'text-gray-800', 'shadow-md');
             document.getElementById('riwayatBtn').classList.remove('bg-gray-200', 'text-gray-400');
+            
+            document.getElementById('diajukanBtn').classList.add('bg-gray-200', 'text-gray-400');
+            document.getElementById('diajukanBtn').classList.remove('bg-white', 'text-gray-800', 'shadow-md');
         }
     }
+
+    window.onload = function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const activeTab = urlParams.get('active_tab') || 'diajukan'; 
+        showCard(activeTab); b
+    };
 
     function showFileInputs() {
         const activityType = document.getElementById("activity_type").value;
@@ -479,10 +613,27 @@
             pergerakanFiles.style.display = "block";
         }
     }
-
-    // Trigger initial check on page load if activity type is preselected
     document.addEventListener("DOMContentLoaded", function () {
         showFileInputs();
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const deleteButtons = document.querySelectorAll('[data-bs-toggle="modal"]');
+        const cancelButton = document.getElementById('cancelButton');
+        const deleteModal = document.getElementById('deleteModal');
+
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const id = button.getAttribute('data-id');
+                const form = document.getElementById('deleteForm');
+                form.setAttribute('action', `/pengajuan/${id}`);
+                deleteModal.classList.remove('hidden');
+            });
+        });
+
+        cancelButton.addEventListener('click', () => {
+            deleteModal.classList.add('hidden');
+        });
     });
 </script>
 
