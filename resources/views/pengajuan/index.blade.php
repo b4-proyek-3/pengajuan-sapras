@@ -104,7 +104,7 @@
                                     <td class="py-3 px-4 border">
                                         <button
                                             onclick="window.location='{{ route('pengajuan.show', ['id_pengajuan' => $pengajuan->id_pengajuan]) }}'"
-                                            class="bg-blue-600 text-white px-4 py-2 rounded-lg">Detail</button>
+                                            class="bg-blue-600 text-white px-2 py-1 rounded-lg">Detail</button>
                                     </td>
                                 </tr>
                             @endforeach
@@ -113,7 +113,7 @@
                 </div>
 
                 <!-- Modal -->
-                <div class="modal fade" id="pengajuanModal" tabindex="-1" aria-labelledby="pengajuanModalLabel"
+                <div class="modal fade overflow-y-auto" id="pengajuanModal" tabindex="-1" aria-labelledby="pengajuanModalLabel"
                     aria-hidden="true">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
@@ -424,7 +424,7 @@
             pergerakanFiles.style.display = "none";
             commonFiles.style.display = "block"; // Show common files for both types
 
-            if (activityType === "program_kerja") {
+            if (activityType === "proker") {
                 programKerjaFiles.style.display = "block";
             } else if (activityType === "pergerakan") {
                 pergerakanFiles.style.display = "block";
