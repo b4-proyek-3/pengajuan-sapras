@@ -99,7 +99,20 @@
                                     <td class="py-3 px-4 border">{{ $pengajuan->tanggal_pengajuan }}</td>
                                     <td class="py-3 px-4 border">{{ $pengajuan->nama_kegiatan }}</td>
                                     <td class="py-3 px-4 border">{{ $pengajuan->pengaju->ormawa->nama_ormawa ?? '-' }}</td>
-                                    <td class="py-3 px-4 border">{{ ucfirst($pengajuan->status) }}</td>
+                                    <td class="py-3 px-4 border">
+                                        <span class="inline-block py-1 px-3 rounded-lg 
+                                                @if($pengajuan->status == 'diajukan' || $pengajuan->status == 'diedit')
+                                                    bg-blue-200 text-blue-800
+                                                @elseif($pengajuan->status == 'direview')
+                                                    bg-yellow-200 text-yellow-800
+                                                @elseif($pengajuan->status == 'direvisi')
+                                                    bg-orange-200 text-orange-800
+                                                @else
+                                                    bg-gray-200 text-gray-800
+                                                @endif">
+                                            {{ ucfirst($pengajuan->status) }}
+                                        </span>
+                                    </td>
                                     <td class="py-3 px-4 border">{{ $pengajuan->keterangan }}</td>
                                     <td class="py-3 px-4 border">
                                         <button
