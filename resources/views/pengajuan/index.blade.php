@@ -268,13 +268,13 @@
                                     </div>
 
                                     <div class="mb-3">
-                                        <label for="tanggal_peminjaman" class="form-label">Tanggal Peminjaman</label>
-                                        <input type="date" name="tanggal_pinjam" id="tanggal_pinjam" class="form-control" required>
+                                        <label for="tanggal_pinjam" class="form-label">Tanggal Peminjaman</label>
+                                        <input type="date" name="tanggal_pinjam" id="tanggal_pinjam" class="form-control" value="{{ old('tanggal_pinjam') }}" required>
                                     </div>
 
                                     <div class="mb-3">
-                                        <label for="tanggal_berakhir" class="form-label">Tanggal Berakhir</label>
-                                        <input type="date" name="tanggal_akhir" id="tanggal_akhir" class="form-control" required>
+                                        <label for="tanggal_akhir" class="form-label">Tanggal Berakhir</label>
+                                        <input type="date" name="tanggal_akhir" id="tanggal_akhir" class="form-control" value="{{ old('tanggal_akhir') }}" required>
                                     </div>
 
                                     <div class="mb-3">
@@ -382,7 +382,7 @@
                                 <div class="relative">
                                 <select name="riwayat_sort_status" class="appearance-none border border-gray-300 rounded-md p-2 w-full pr-10" onchange="this.form.submit()">
                                     <option value=""> Pilih Status </option>
-                                    <option value="selesai" {{ request('riwayat_sort_status') == 'selesai' ? 'selected' : '' }}>Diterima</option>
+                                    <option value="selesai" {{ request('riwayat_sort_status') == 'selesai' ? 'selected' : '' }}>Selesai</option>
                                     <option value="ditolak" {{ request('riwayat_sort_status') == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
                                 </select>
 
@@ -536,7 +536,14 @@
             }
         });
     });
-    
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const alertMessage = "{{ session('alert') }}";
+        if (alertMessage) {
+            alert(alertMessage);
+        }
+    });
+
     function checkFileSize(inputId) {
         const input = document.getElementById(inputId);
         input.addEventListener("change", function () {
@@ -605,7 +612,7 @@
         // Reset display styles
         programKerjaFiles.style.display = "none";
         pergerakanFiles.style.display = "none";
-        commonFiles.style.display = "block"; // Show common files for both types
+        commonFiles.style.display = "block"; 
 
         if (activityType === "program_kerja") {
             programKerjaFiles.style.display = "block";

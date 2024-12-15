@@ -7,6 +7,7 @@ use App\Models\Tempat;
 use App\Models\Ormawa;
 use App\Models\Dokumen;
 use App\Models\Pengaju;
+use App\Models\JadwalUjian;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -85,22 +86,48 @@ class PengajuanController extends Controller
         }
     }
 
+    private function validateTanggalUjian($tanggal, $fail, $label)
+    {
+        $jadwalUjian = JadwalUjian::all();
+        $tanggalInput = Carbon::parse($tanggal);
+    
+        foreach ($jadwalUjian as $ujian) {
+            $mulaiUjian = Carbon::parse($ujian->mulai_ujian);
+            $akhirUjian = Carbon::parse($ujian->akhir_ujian);
+    
+            if ($tanggalInput->between($mulaiUjian->subDays(7), $akhirUjian->addDays(7))) {
+                session()->flash('alert', "$label tidak boleh berada dalam H-7 hingga H+7 dari tanggal ujian.");
+                $fail("$label tidak boleh berada dalam H-7 hingga H+7 dari tanggal ujian.");
+            }
+        }
+    }    
+
     public function store(Request $request)
     {
         $user = Auth::user(); 
         $pengaju = $user->pengaju;
-
         $existingCount = Pengajuan::count();
 
         $request->validate([
-            'tanggal_pinjam' => 'required|date',
-            'tanggal_akhir' => 'required|date|after_or_equal:tanggal_pinjam',
+            'tanggal_pinjam' => [
+            'required',
+            'date',
+            function ($attribute, $value, $fail) {
+                $this->validateTanggalUjian($value, $fail, 'Tanggal pinjam');
+            }
+        ],
+        'tanggal_akhir' => [
+            'required',
+            'date',
+            function ($attribute, $value, $fail) {
+                $this->validateTanggalUjian($value, $fail, 'Tanggal berakhir');
+            }
+        ],
             'waktu_pinjam' => 'required',
             'id_tempat' => 'required|exists:tempat,id_tempat',
             'nama_kegiatan' => 'required|string|max:100',
             'link_gdrive' => 'nullable|url',
             'activity_type' => 'required|string|in:proker,pergerakan',
-            
             'dokumen1' => 'nullable|file|mimes:pdf|max:2048',
             'dokumen2' => 'nullable|file|mimes:pdf|max:2048',
             'dokumen3' => 'nullable|file|mimes:pdf|max:2048',
@@ -111,7 +138,9 @@ class PengajuanController extends Controller
         ]);
 
         // Membuat ID pengajuan unik
-        $id_pengajuan = 'P' . str_pad($existingCount + 1, 5, '0', STR_PAD_LEFT);
+        $lastPengajuan = Pengajuan::orderBy('id_pengajuan', 'desc')->first();
+        $lastId = $lastPengajuan ? (int) substr($lastPengajuan->id_pengajuan, 1) : 0;
+        $id_pengajuan = 'P' . str_pad($lastId + 1, 5, '0', STR_PAD_LEFT);
 
         // Menyimpan data pengajuan
         $pengajuan = Pengajuan::create([

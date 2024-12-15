@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pengajuan', function (Blueprint $table) {
-            $table->string('id_pengajuan', length: 6)->primary(); // id_pengajuan sebagai primary key
-            $table->char('nim', 9)->nullable(); // nim sebagai foreign key dari tabel pengaju
+            $table->string('id_pengajuan', length: 6)->primary();
+            $table->char('nim', 9)->nullable();
             $table->foreign('nim')->references('nim')->on('pengaju')->onDelete('cascade');
-            $table->dateTime('tanggal_pengajuan', precision: 0); // otomatis mengisi tanggal saat pengajuan dibuat
+            $table->dateTime('tanggal_pengajuan', precision: 0); 
             $table->id('id_tempat');
             $table->foreign('id_tempat')->references('id_tempat')->on('tempat')->onDelete('cascade');
             $table->date('tanggal_pinjam');
@@ -27,6 +27,7 @@ return new class extends Migration
             $table->string('link_drive');
             $table->boolean('edited')->default(false);
             $table->dateTime('updated_at', precision: 0);
+            $table->foreign('foreign_key_column')->references('id')->on('related_table')->onDelete('cascade');
         });
     }
 

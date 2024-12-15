@@ -78,13 +78,6 @@ class ReviewController extends Controller
                   ->whereIn('reviews.status', ['diterima', 'ditolak']);
         })->get();
 
-        $queryRiwayat = Pengajuan::with(['pengaju.ormawa', 'reviewers' => function ($query) use ($id_reviewer) {
-                $query->where('reviewers.id_reviewer', $id_reviewer)->withPivot('status');
-            }])
-            ->whereHas('reviewers', function ($query) use ($id_reviewer) {
-                $query->where('reviewers.id_reviewer', $id_reviewer);
-            });
-
         $tempatList = Tempat::all();
 
         return view('reviewer.index', compact('tempatList', 'reviewer', 'pengajuanRiwayat', 'pengajuanDiajukan', 'activeTab'));
