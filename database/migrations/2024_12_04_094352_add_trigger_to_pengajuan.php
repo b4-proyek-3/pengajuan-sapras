@@ -64,10 +64,10 @@ class AddTriggerToPengajuan extends Migration
                     next_status := 'unknown'; -- Pastikan status yang tidak terduga ditangani dengan benar
                 END IF;
 
-                -- Memperbarui status pengajuan jika perlu
-                UPDATE pengajuan
-                SET status = next_status, updated_at = CURRENT_TIMESTAMP
-                WHERE id_pengajuan = NEW.id_pengajuan;
+            -- Memperbarui status pengajuan jika perlu
+            UPDATE pengajuan
+            SET status = next_status, updated_at = CURRENT_TIMESTAMP
+            WHERE id_pengajuan = NEW.id_pengajuan;
 
                 RETURN NEW;
             END;

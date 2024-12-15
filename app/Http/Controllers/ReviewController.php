@@ -14,11 +14,12 @@ class ReviewController extends Controller
 {
     public function index(Request $request)
     {
-        $search = $request->input('search');
-        $sortStatus = $request->input('sort_status');
         $reviewer = auth()->user()->reviewer;
         $id_reviewer = $reviewer->id_reviewer;
         $role = $reviewer->role;
+        $diajukanSortStatus = $request->input('diajukan_sort_status');
+        $riwayatSortStatus = $request->input('riwayat_sort_status');
+        $activeTab = $request->input('active_tab', 'diajukan');
 
         $queryDiajukan = Pengajuan::with(['pengaju.ormawa', 'reviewers'])
             ->where(function ($query) use ($role) {
@@ -51,8 +52,7 @@ class ReviewController extends Controller
                     $subQuery->where('reviewers.id_reviewer', $id_reviewer)
                             ->where('reviews.status', 'direvisi');
                 });
-            })
-            ->get();
+            });
 
         $queryRiwayat = Pengajuan::with(['pengaju.ormawa', 'reviewers' => function ($query) use ($id_reviewer) {
                 $query->where('reviewers.id_reviewer', $id_reviewer)->withPivot('status');
@@ -63,31 +63,36 @@ class ReviewController extends Controller
             ->where('status', '!=', 'diedit')  // Menambahkan kondisi status bukan 'diedit'
             ->get();
         
-        if ($sortStatus) {
-            $queryDiajukan->where('status', $sortStatus);
-        }
+        $pengajuanRiwayat = $queryRiwayat
+            ->when($request->input('riwayat_sort_status'), function ($query, $status) {
+                return $query->where('status', $status);
+            })
+            ->when($request->input('riwayat_search'), function ($query, $search) { 
+                return $query->where(function($q) use ($search) {
+                    $q->where('nama_kegiatan', 'like', "%{$search}%")
+                    ->orWhereHas('pengaju.ormawa', function($subQuery) use ($search) {
+                        $subQuery->where('nama_ormawa', 'like', "%{$search}%");
+                    });
+                });
+            })
+            ->paginate(10, ['*'], 'riwayat_page');
+        $pengajuanDiajukan = $queryDiajukan
+            ->when($request->input('diajukan_sort_status'), function ($query, $status) {
+                return $query->where('status', $status);
+            })
+            ->when($request->input('search'), function ($query, $search) {
+                return $query->where(function($q) use ($search) {
+                    $q->where('nama_kegiatan', 'like', "%{$search}%")
+                    ->orWhereHas('pengaju.ormawa', function($subQuery) use ($search) {
+                        $subQuery->where('nama_ormawa', 'like', "%{$search}%");
+                    });
+                });
+            })
+            ->paginate(10, ['*'], 'diajukan_page');
 
-        if ($search) {
-            $queryDiajukan->where(function ($query) use ($search) {
-                $query->where('nama_kegiatan', 'like', '%' . $search . '%')
-                        ->orWhereHas('pengaju.ormawa', function ($query) use ($search) {
-                            $query->where('nama_ormawa', 'like', '%' . $search . '%');
-                        });
-            });
-        }
-
-        if ($search) {
-            $queryRiwayat->where(function ($query) use ($search) {
-                $query->where('nama_kegiatan', 'like', '%' . $search . '%')
-                      ->orWhereHas('pengaju.ormawa', function ($query) use ($search) {
-                          $query->where('nama_ormawa', 'like', '%' . $search . '%');
-                      });
-            });
-        }
-        $pengajuanRiwayat = $queryRiwayat;
-        $pengajuanDiajukan = $queryDiajukan;
         $tempatList = Tempat::all();
-        return view('reviewer.index', compact('tempatList', 'reviewer', 'pengajuanRiwayat', 'pengajuanDiajukan'));
+
+        return view('reviewer.index', compact('tempatList', 'reviewer', 'pengajuanRiwayat', 'pengajuanDiajukan', 'activeTab'));
     }
 
     public function detailReviewer($id_pengajuan, $id_reviewer)
@@ -110,6 +115,7 @@ class ReviewController extends Controller
         ]);
 
         $pengajuan = Pengajuan::findOrFail($id_pengajuan);
+        $reviewer = Reviewer::findOrFail($id_reviewer);
 
         try {
             $existingReview = $pengajuan->reviewers()->wherePivot('id_reviewer', $id_reviewer)->first();
