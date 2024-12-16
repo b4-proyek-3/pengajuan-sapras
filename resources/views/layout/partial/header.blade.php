@@ -6,8 +6,8 @@
             sidenav-close></i>
         <a class="flex items-center px-8 py-4 m-0 text-sm whitespace-nowrap text-slate-700" href="javascript:;"
             target="_blank">
-            <img src={{ asset('assets/img/polban.png') }}
-                class="inline h-full max-w-full transition-all duration-200 ease-nav-brand max-h-10 w-10"
+            <img src={{ asset('assets/img/logo-polban.png') }}
+                class="inline h-full max-w-full transition-all duration-200 ease-nav-brand max-h-15 w-10"
                 alt="main_logo" />
             <div class="ml-2">
                 <span class="block font-semibold transition-all duration-200 ease-nav-brand">Pengajuan</span>

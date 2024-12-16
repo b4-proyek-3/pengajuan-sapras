@@ -4,7 +4,7 @@
 <main class="flex items-center justify-center h-screen bg-gray-100">
     <section class="relative flex flex-col lg:flex-row w-full max-w-4xl h-auto lg:h-[30rem] rounded-3xl overflow-hidden shadow-lg">
         <!-- First Column (App Name + Background Image + Overlay) -->
-        <div class="relative lg:w-1/2 w-full h-64 lg:h-full bg-cover bg-center flex items-start justify-center" style="background-image: url('{{ asset('assets/img/login/login-bg.png') }}');">
+        <div class="relative lg:w-1/2 w-full h-64 lg:h-full bg-cover bg-center flex items-start justify-center" style="background-image: url('{{ asset('assets/img/polban.jpg') }}');">
             <div class="absolute inset-0 bg-black opacity-30"></div>
             <div class="relative z-10 p-8">
                 <h1 class="text-3xl font-bold text-white">

@@ -4,8 +4,8 @@
 <head>
 <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="logo-polban" sizes="16x16" href="{{ asset('assets/img/polban.png') }}" />
-    <link rel="icon" type="image/png" href="{{ asset('assets/img/polban.png') }}" />
+    <link rel="logo-polban" sizes="16x16" href="{{ asset('assets/img/logo-polban.png') }}" />
+    <link rel="icon" type="image/png" href="{{ asset('assets/img/logo-polban.png') }}" />
     <title>Pengajuan Sarana dan Prasarana</title>
 
     <!-- Fonts and Icons -->
