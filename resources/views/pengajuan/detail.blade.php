@@ -132,7 +132,7 @@
                         <td class="p-2 align-middle bg-transparent whitespace-nowrap">
                             <div class="flex px-4 py-1">
                                 <div class="flex flex-col justify-center" style="min-width: 150px;">
-                                    <h6 class="mb-0 text-sm leading-normal">Waktu Kegiatan</h6> <!-- Replace 'tempat' with the correct field -->
+                                    <h6 class="mb-0 text-sm leading-normal">Waktu Kegiatan</h6>
                                 </div>
                                 <div class="flex flex-col justify-center" style="min-width: 10px; text-align: right;">
                                   <h6 class="mb-0 text-sm leading-normal">:</h6>
@@ -147,13 +147,15 @@
                         <td class="p-2 align-middle bg-transparent whitespace-nowrap">
                             <div class="flex px-4 py-1">
                                 <div class="flex flex-col justify-center" style="min-width: 150px;">
-                                    <h6 class="mb-0 text-sm leading-normal">Tempat</h6> <!-- Replace 'tempat' with the correct field -->
+                                    <h6 class="mb-0 text-sm leading-normal">Tempat</h6>
                                 </div>
                                 <div class="flex flex-col justify-center" style="min-width: 10px; text-align: right;">
                                   <h6 class="mb-0 text-sm leading-normal">:</h6>
                                 </div>
                                 <div class="flex flex-col justify-center pl-2">
-                                    <h6 class="mb-0 text-sm leading-normal">{{ $pengajuans->tempat->nama_ruangan ?? 'N/A' }}</h6>
+                                  @foreach ($pengajuans->ruangan as $ruangan)
+                                    <h6 class="mb-0 text-sm leading-normal">{{ $ruangan->nama_ruangan ?? 'N/A' }}, {{ $ruangan->gedung->nama_gedung }}</h6>
+                                  @endforeach
                                 </div>
                             </div>
                         </td>
@@ -245,7 +247,6 @@
                         <td class="p-2 align-middle bg-transparent whitespace-nowrap">
                           <div class="flex px-4 py-1">
                             <div class="flex flex-col justify-center">
-                              <!-- Link dokumen untuk Card 1 -->
                               <h6 class="mb-0 text-sm leading-normal">
                                 <a href="javascript:void(0);" class="dokumen-link" data-file="{{ asset('storage/' . $dokumen->path ?? 'N/A') }}">
                                   {{ $dokumen->nama_dokumen }}
@@ -281,7 +282,7 @@
             <div class="border-black/12.5 shadow-soft-xl relative flex h-full min-w-0 flex-col break-words rounded-2xl border-0 border-solid bg-white bg-clip-border">
               <div class="flex-auto p-2">
                 <div class="before:border-r-solid relative before:absolute before:top-0 before:left-4 before:h-full before:border-r-2 before:border-r-slate-100 before:content-[''] before:lg:-ml-px">
-                  <iframe id="dokumen-frame" src="{{ asset('storage/' . $pengajuans->dokumen->first()->path  ?? 'N/A' ) }}" style="width:100%; height:500px;" frameborder="0"></iframe>
+                  <iframe id="dokumen-frame" src="{{ asset('storage/' . $pengajuans->dokumen->first()?->path  ?? 'N/A' ) }}" style="width:100%; height:500px;" frameborder="0"></iframe>
                 </div>
               </div>
             </div>

@@ -16,13 +16,13 @@
             <div class="flex flex-col">
               <label for="nama-pengaju" class="block text-sm font-medium text-gray-900">Nama Pengaju</label>
               <input id="nama-pengaju" value="{{ $pengajuans->pengaju->user->name }}" 
-                class="bg-gray-50 px-3 py-2 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full" 
+                class="bg-gray-50 px-3 py-2 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full"
                 readonly />
             </div>
             <div class="flex flex-col">
               <label for="ormawa" class="block text-sm font-medium text-gray-900">Ormawa</label>
               <input id="ormawa" value="{{ $pengajuans->pengaju->ormawa->nama_ormawa }}" 
-                class="bg-gray-50 px-3 py-2 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full" 
+                class="bg-gray-50 px-3 py-2 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full"
                 readonly />
             </div>
             <div class="flex flex-col">
@@ -32,26 +32,26 @@
             </div>
             <div class="flex flex-col">
                 <label for="tanggal-kegiatan" class="block text-sm font-medium text-gray-900">Tanggal Kegiatan</label>
-                <input type="date" id="tanggal-kegiatan" name ="tanggal_pinjam" value="{{ $pengajuans->tanggal_pinjam }}" 
+                <input type="date" id="tanggal-kegiatan" name ="tanggal_pinjam" value="{{ $pengajuans->tanggal_pinjam }}"
                 class="bg-gray-50 px-3 py-2 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full"/>
             </div>
             <div class="flex flex-col">
                 <label for="tanggal-kegiatan" class="block text-sm font-medium text-gray-900">Tanggal Berakhir</label>
-                <input type="date" id="tanggal-akhir" name ="tanggal_akhir" value="{{ $pengajuans->tanggal_akhir }}" 
+                <input type="date" id="tanggal-akhir" name ="tanggal_akhir" value="{{ $pengajuans->tanggal_akhir }}"
                 class="bg-gray-50 px-3 py-2 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full"/>
             </div>
             <div class="flex flex-col">
                 <label for="tanggal-kegiatan" class="block text-sm font-medium text-gray-900">Waktu Kegiatan</label>
-                <input type="time" id="waktu-kegiatan" name ="waktu_pengajuan" value="{{ $pengajuans->waktu_pinjam }}" 
+                <input type="time" id="waktu-kegiatan" name ="waktu_pengajuan" value="{{ $pengajuans->waktu_pinjam }}"
                 class="bg-gray-50 px-3 py-2 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full"/>
             </div>
             <div class="flex flex-col">
                 <label for="tempat-kegiatan" class="block text-sm font-medium text-gray-900">Tempat Kegiatan</label>
-                <select name="id_tempat" 
-                class="bg-gray-50 px-3 py-2 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full"/>
+                <select name="id_ruangan"
+                class="bg-gray-50 px-3 py-2 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full">
                     @foreach ($tempatList as $tempat)
-                        <option value="{{ $tempat->id_tempat }}" {{ $tempat->id_tempat == $pengajuans->id_tempat ? 'selected' : '' }}>
-                            {{ $tempat->nama_gedung }}
+                        <option value="{{ $tempat->id_ruangan }}" {{ $tempat->id_ruangan == $pengajuans->id_ruangan ? 'selected' : '' }}>
+                            {{ $tempat->nama_ruangan }}, {{ $tempat->gedung->nama_gedung }}
                         </option>
                     @endforeach
                 </select>

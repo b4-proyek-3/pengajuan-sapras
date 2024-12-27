@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pengajuan;
-use App\Models\Tempat;
+use App\Models\Ruangan;
+use App\Models\Gedung;
 use App\Models\Ormawa;
 use App\Models\Dokumen;
 use App\Models\Pengaju;
@@ -20,7 +21,7 @@ class PengajuanController extends Controller
     {
         $pengaju = auth()->user()->pengaju;
 
-        $activeTab = $request->input('active_tab', 'diajukan'); 
+        $activeTab = $request->input('active_tab', 'diajukan');
 
         $pengajuanDiajukan = Pengajuan::whereIn('status', ['diajukan', 'direview', 'direvisi', 'diedit'])
             ->where('nim', $pengaju->nim)
@@ -42,7 +43,7 @@ class PengajuanController extends Controller
             ->when($request->input('riwayat_sort_status'), function ($query, $status) {
                 return $query->where('status', $status);
             })
-            ->when($request->input('search'), function ($query, $search) { 
+            ->when($request->input('search'), function ($query, $search) {
                 return $query->where(function($q) use ($search) {
                     $q->where('nama_kegiatan', 'like', "%{$search}%")
                       ->orWhereHas('pengaju.ormawa', function($subQuery) use ($search) {
@@ -52,16 +53,15 @@ class PengajuanController extends Controller
             })
             ->paginate(10, ['*'], 'riwayat_page');
     
-        $tempatList = Tempat::all();
+        $tempatList = Ruangan::all();
     
-        return view('pengajuan.index', compact('pengajuanDiajukan', 'pengajuanRiwayat', 'tempatList', 'activeTab'));        
+        return view('pengajuan.index', compact('pengajuanDiajukan', 'pengajuanRiwayat', 'tempatList', 'activeTab'));
     }
 
     public function show(string $id_pengajuan)
     {
-        $pengajuans = Pengajuan::with(['pengaju', 'reviewers', 'latestReview', 'dokumen'])
-                            ->findOrFail($id_pengajuan);
-        $tempatList = Tempat::all();
+        $pengajuans = Pengajuan::with(['pengaju', 'reviewers', 'latestReview', 'dokumen', 'ruangan'])->findOrFail($id_pengajuan);
+        $tempatList = Ruangan::all();
         $pengajuans->waktu_pinjam = Carbon::createFromFormat('H:i:s', $pengajuans->waktu_pinjam)->format('H:i');
         return view('pengajuan.detail', compact('pengajuans', 'tempatList'));
     }
@@ -69,7 +69,7 @@ class PengajuanController extends Controller
     public function create()
     {
         $ormawaList = Ormawa::all();
-        $tempatList = Tempat::all();
+        $tempatList = Ruangan::all();
 
         return view('pengajuan.index', compact('ormawaList', 'tempatList'));
     }
@@ -100,67 +100,77 @@ class PengajuanController extends Controller
                 $fail("$label tidak boleh berada dalam H-7 hingga H+7 dari tanggal ujian.");
             }
         }
-    }    
+    }
 
     public function store(Request $request)
     {
-        $user = Auth::user();
-        $pengaju = $user->pengaju;
-        $existingCount = Pengajuan::count();
+        try {
+            $user = Auth::user();
+            $pengaju = $user->pengaju;
+            $existingCount = Pengajuan::count();
 
-        $request->validate([
-            'tanggal_pinjam' => [
-            'required',
-            'date',
-            function ($attribute, $value, $fail) {
-                $this->validateTanggalUjian($value, $fail, 'Tanggal pinjam');
-            }
-        ],
-        'tanggal_akhir' => [
-            'required',
-            'date',
-            function ($attribute, $value, $fail) {
-                $this->validateTanggalUjian($value, $fail, 'Tanggal berakhir');
-            }
-        ],
-            'waktu_pinjam' => 'required',
-            'id_tempat' => 'required|exists:tempat,id_tempat',
-            'nama_kegiatan' => 'required|string|max:100',
-            'link_gdrive' => 'nullable|url',
-            'activity_type' => 'required|string|in:proker,pergerakan',
-            'dokumen1' => 'nullable|file|mimes:pdf|max:2048',
-            'dokumen2' => 'nullable|file|mimes:pdf|max:2048',
-            'dokumen3' => 'nullable|file|mimes:pdf|max:2048',
-            'dokumen4' => 'nullable|file|mimes:pdf|max:2048',
-            'dokumen5' => 'nullable|file|mimes:pdf|max:2048',
-            'dokumen6' => 'nullable|file|mimes:pdf|max:2048',
-            'dokumen7' => 'nullable|file|mimes:pdf|max:2048',
-        ]);
+            $request->validate([
+                'tanggal_pinjam' => [
+                'required',
+                'date',
+                function ($attribute, $value, $fail) {
+                    $this->validateTanggalUjian($value, $fail, 'Tanggal pinjam');
+                }
+            ],
+            'tanggal_akhir' => [
+                'required',
+                'date',
+                function ($attribute, $value, $fail) {
+                    $this->validateTanggalUjian($value, $fail, 'Tanggal berakhir');
+                }
+            ],
+                'waktu_pinjam' => 'required',
+                'ruangan' => 'required|array|min:1',
+                'ruangan.*' => 'exists:ruangan,id_ruangan',
+                'nama_kegiatan' => 'required|string|max:100',
+                'link_gdrive' => 'nullable|url',
+                'activity_type' => 'required|string|in:proker,pergerakan',
+                'dokumen1' => 'nullable|file|mimes:pdf|max:2048',
+                'dokumen2' => 'nullable|file|mimes:pdf|max:2048',
+                'dokumen3' => 'nullable|file|mimes:pdf|max:2048',
+                'dokumen4' => 'nullable|file|mimes:pdf|max:2048',
+                'dokumen5' => 'nullable|file|mimes:pdf|max:2048',
+                'dokumen6' => 'nullable|file|mimes:pdf|max:2048',
+                'dokumen7' => 'nullable|file|mimes:pdf|max:2048',
+            ]);
 
-        // Membuat ID pengajuan unik
-        $lastPengajuan = Pengajuan::orderBy('id_pengajuan', 'desc')->first();
-        $lastId = $lastPengajuan ? (int) substr($lastPengajuan->id_pengajuan, 1) : 0;
-        $id_pengajuan = 'P' . str_pad($lastId + 1, 5, '0', STR_PAD_LEFT);
+            // Membuat ID pengajuan unik
+            $lastPengajuan = Pengajuan::orderBy('id_pengajuan', 'desc')->first();
+            $lastId = $lastPengajuan ? (int) substr($lastPengajuan->id_pengajuan, 1) : 0;
+            $id_pengajuan = 'P' . str_pad($lastId + 1, 5, '0', STR_PAD_LEFT);
 
-        // Menyimpan data pengajuan
-        $pengajuan = Pengajuan::create([
-            'id_pengajuan' => $id_pengajuan,
-            'nim' => $pengaju->nim,
-            'tanggal_pengajuan' => now(),
-            'id_tempat' => $request->id_tempat,
-            'tanggal_pinjam' => $request->tanggal_pinjam,
-            'tanggal_akhir' => $request->tanggal_akhir,
-            'waktu_pinjam' => $request->waktu_pinjam,
-            'nama_kegiatan' => $request->nama_kegiatan,
-            'jenis_kegiatan' => $request->activity_type,
-            'link_drive' => $request->link_gdrive,
-            'updated_at' => now(),
-         ]);
+            // Menyimpan data pengajuan
+            $pengajuan = Pengajuan::create([
+                'id_pengajuan' => $id_pengajuan,
+                'nim' => $pengaju->nim,
+                'tanggal_pengajuan' => now(),
+                'tanggal_pinjam' => $request->tanggal_pinjam,
+                'tanggal_akhir' => $request->tanggal_akhir,
+                'waktu_pinjam' => $request->waktu_pinjam,
+                'nama_kegiatan' => $request->nama_kegiatan,
+                'jenis_kegiatan' => $request->activity_type,
+                'link_drive' => $request->link_gdrive,
+                'updated_at' => now(),
+            ]);
 
-        // Simpan setiap dokumen yang diunggah
-        $this->simpanDokumen($request, $id_pengajuan);
+            $pengajuan->ruangan()->sync($request->ruangan);
 
-        return redirect()->route('pengajuan.index')->with('success', 'Pengajuan berhasil ditambahkan!');
+            // Simpan setiap dokumen yang diunggah
+            $this->simpanDokumen($request, $id_pengajuan);
+
+            return redirect()->route('pengajuan.index')->with('success', 'Pengajuan berhasil ditambahkan!');
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            // Ketika tabel ujian tidak memiliki data
+            return redirect()->route('pengajuan.index')->with('error', 'Gagal menambahkan pengajuan. Data ujian tidak ditemukan.');
+        } catch (\Exception $e) {
+            // Penanganan general error lainnya
+            return redirect()->route('pengajuan.index')->with('error', 'Terjadi kesalahan saat menambahkan pengajuan.');
+        }
     }
 
     private function simpanDokumen(Request $request, $id_pengajuan)
@@ -204,7 +214,8 @@ class PengajuanController extends Controller
             $validatedData = $request->validate([
                 'tanggal_pinjam' => 'nullable|date',
                 'tanggal_akhir' => 'nullable|date|after_or_equal:tanggal_pinjam',
-                'id_tempat' => 'nullable|exists:tempat,id_tempat',
+                'ruangan' => 'required|array|min:1',
+                'ruangan.*' => 'exists:ruangan,id_ruangan',
                 'nama_kegiatan' => 'nullable|string',
                 'nama_tempat' => 'nullable|string',
                 'waktu_pengajuan' => 'nullable|date_format:H:i',
@@ -215,7 +226,6 @@ class PengajuanController extends Controller
             $updateData = array_filter([
                 'tanggal_pinjam' => $request->tanggal_pinjam,
                 'tanggal_akhir' => $request->tanggal_akhir,
-                'id_tempat' => $request->filled('id_tempat') ? $request->id_tempat : $pengajuan->id_tempat,
                 'nama_kegiatan' => $request->nama_kegiatan,
                 'waktu_pinjam' => $request->waktu_pengajuan,
             ], function ($value) {
@@ -223,16 +233,8 @@ class PengajuanController extends Controller
             });
 
             $pengajuan->update($updateData);
-    
-            // Update tabel tempat jika nama_tempat disertakan dan id_tempat ada
-            if (isset($validatedData['nama_tempat']) && $pengajuan->id_tempat) {
-                $tempat = $pengajuan->tempat;
-    
-                if ($tempat) {
-                    $tempat->nama_gedung = $validatedData['nama_tempat'];
-                    $tempat->save();
-                }
-            }
+            $pengajuan->ruangan()->sync($request->ruangan);
+
             return redirect()->route('pengajuan.show', $pengajuan->id_pengajuan)->with('success', 'Informasi pengajuan berhasil diperbarui.');
         } catch (\Exception $e) {
             dd($e->getMessage());

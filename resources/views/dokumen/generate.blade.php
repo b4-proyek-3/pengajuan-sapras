@@ -7,7 +7,7 @@
     <title>Surat Peminjaman Sarana dan Prasarana</title>
     <style>
         body {
-            font-family: "Times New Roman", Times, serif;
+            font-family: Arial, sans-serif;
             line-height: 1.4;
             margin: 0 auto;
             max-width: 800px;
@@ -173,7 +173,13 @@
             </tr>
             <tr>
                 <th>Tempat:</th>
-                <td>{{ $nama_gedung }} - {{ $nama_ruangan }}</td>
+                @if($ruangans->isEmpty())
+                    <td>Ruangan tidak ditemukan.</td>
+                @else
+                    @foreach($ruangans as $ruangan)
+                        <td>{{ $ruangan->nama_ruangan ?? 'Ruangan tidak ditemukan' }} - {{ $ruangan->gedung->nama_gedung ?? 'Gedung tidak ditemukan' }}</td>
+                    @endforeach
+                @endif
                 <td></td>
             </tr>
             <tr>
@@ -215,9 +221,7 @@
                 <p>Bandung, {{ \Carbon\Carbon::now()->isoFormat('D MMMM Y') }}</p>
                 <p>Bukti Validasi</p>
                 <p style="margin-top: 10px;">
-                    <a href="{{ $validation_url }}" style="color: #0066cc; text-decoration: underline;">
-                        Klik disini untuk memvalidasi dokumen
-                    </a>
+                <img src="{{ $qr_code_path }}" alt="QR Code" width="100" height="100" />
                 </p>
                 <br>
             </div>

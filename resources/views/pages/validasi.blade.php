@@ -57,8 +57,9 @@
                                     <tr class="border-b border-gray-200">
                                         <td class="py-2 font-medium text-gray-700">Tempat</td>
                                         <td class="py-2 text-right">
-                                            {{ $pengajuan->tempat->nama_ruangan }}
-                                            {{ $pengajuan->tempat->nama_gedung }}
+                                        @foreach ($pengajuan->ruangan as $ruangan)
+                                            {{ $ruangan->nama_ruangan }}, {{ $ruangan->gedung->nama_gedung }}
+                                        @endforeach
                                         </td>
                                     </tr>
 
@@ -86,7 +87,7 @@
 
                                     {{-- BEM Secretary --}}
                                     <tr class="border-b border-gray-200">
-                                        <td class="py-2 font-medium text-gray-700">Sekretaris BEM</td>
+                                        <td class="py-2 font-medium text-gray-700">BEM</td>
                                         <td class="py-2 text-right">
                                             {{ $sekum->user->name }}
                                         </td>
