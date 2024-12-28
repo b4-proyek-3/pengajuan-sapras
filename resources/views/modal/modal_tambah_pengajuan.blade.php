@@ -52,6 +52,7 @@
                             <p class="text-gray-500 text-sm mt-1">File maksimal 2 MB</p>
                         </div>
 
+                        <!-- File upload field khusus untuk Program Kerja (Proposal) -->
                         <div id="program_kerja_files" style="display: none;">
                             <div class="mb-3">
                                 <label for="dokumen1" class="form-label">Proposal</label>
@@ -59,6 +60,7 @@
                             </div>
                         </div>
 
+                        <!-- File upload field khusus untuk Pergerakan (Term of Reference) -->
                         <div id="pergerakan_files" style="display: none;">
                             <div class="mb-3">
                                 <label for="dokumen2" class="form-label">Term of Reference</label>
@@ -66,6 +68,7 @@
                             </div>
                         </div>
 
+                        <!-- File upload fields yang sama untuk kedua jenis kegiatan -->
                         <div id="common_files" style="display: none;">
                             <div class="mb-3">
                                 <label for="dokumen3" class="form-label">Surat Peminjaman Sarana Prasarana</label>
