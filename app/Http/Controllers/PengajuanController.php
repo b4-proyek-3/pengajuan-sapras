@@ -166,10 +166,10 @@ class PengajuanController extends Controller
             return redirect()->route('pengajuan.index')->with('success', 'Pengajuan berhasil ditambahkan!');
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             // Ketika tabel ujian tidak memiliki data
-            return redirect()->route('pengajuan.index')->with('error', 'Gagal menambahkan pengajuan. Data ujian tidak ditemukan.');
+            return redirect()->route('pengajuan.index')->with('error', 'Gagal'. $e->getMessage());
         } catch (\Exception $e) {
             // Penanganan general error lainnya
-            return redirect()->route('pengajuan.index')->with('error', 'Terjadi kesalahan saat menambahkan pengajuan.');
+            return redirect()->route('pengajuan.index')->with('error', 'Gagal'. $e->getMessage());
         }
     }
 
@@ -191,7 +191,7 @@ class PengajuanController extends Controller
             if ($request->hasFile($field)) {
                 $file = $request->file($field);
                 $filename = time() . '_' . $file->getClientOriginalName();
-                $path = $file->storeAs('dokumen/' . $id_pengajuan, $filename, 'public');
+                $path = $file->storeAs('file/' . $id_pengajuan, $filename, 'public');
 
                 Dokumen::create([
                     'id_pengajuan' => $id_pengajuan,

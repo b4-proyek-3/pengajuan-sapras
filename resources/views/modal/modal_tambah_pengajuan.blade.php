@@ -33,17 +33,13 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="ruangan">Tempat</label>
+                            <label for="ruangan" class="form-label">Tempat</label>
                             <select name="ruangan[]" id="ruangan" class="form-control" required>
                                 <option value=""> Pilih Tempat </option>
                                 @foreach($tempatList as $tempat)
                                     <option value="{{ $tempat->id_ruangan }}">{{ $tempat->nama_ruangan }}, {{ $tempat->gedung->nama_gedung }}</option>
                                 @endforeach
                             </select>
-                            <button type="button"
-                                class="inline-flex items-center justify-center px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 btn-add">
-                                +
-                            </button>
                         </div>
 
                         <div class="mb-3">
@@ -59,45 +55,37 @@
                         <div id="program_kerja_files" style="display: none;">
                             <div class="mb-3">
                                 <label for="dokumen1" class="form-label">Proposal</label>
-                                <input type="file" name="dokumen1" id="dokumen1" class="form-control"
-                                    accept=".pdf">
+                                <input type="file" name="dokumen1" id="dokumen1" class="form-control" accept=".pdf">
                             </div>
                         </div>
 
                         <div id="pergerakan_files" style="display: none;">
                             <div class="mb-3">
                                 <label for="dokumen2" class="form-label">Term of Reference</label>
-                                <input type="file" name="dokumen2" id="dokumen2" class="form-control"
-                                    accept=".pdf">
+                                <input type="file" name="dokumen2" id="dokumen2" class="form-control" accept=".pdf">
                             </div>
                         </div>
 
                         <div id="common_files" style="display: none;">
                             <div class="mb-3">
-                                <label for="dokumen3" class="form-label">Surat Peminjaman Sarana
-                                    Prasarana</label>
-                                <input type="file" name="dokumen3" id="dokumen3" class="form-control"
-                                    accept=".pdf">
+                                <label for="dokumen3" class="form-label">Surat Peminjaman Sarana Prasarana</label>
+                                <input type="file" name="dokumen3" id="dokumen3" class="form-control" accept=".pdf">
                             </div>
                             <div class="mb-3">
                                 <label for="dokumen4" class="form-label">Surat Izin Berkegiatan</label>
-                                <input type="file" name="dokumen4" id="dokumen4" class="form-control"
-                                    accept=".pdf">
+                                <input type="file" name="dokumen4" id="dokumen4" class="form-control" accept=".pdf">
                             </div>
                             <div class="mb-3">
                                 <label for="dokumen5" class="form-label">Surat Pernyataan Ketua Ormawa</label>
-                                <input type="file" name="dokumen5" id="dokumen5" class="form-control"
-                                    accept=".pdf">
+                                <input type="file" name="dokumen5" id="dokumen5" class="form-control" accept=".pdf">
                             </div>
                             <div class="mb-3">
                                 <label for="dokumen6" class="form-label">Surat Pendampingan Pembina</label>
-                                <input type="file" name="dokumen6" id="dokumen6" class="form-control"
-                                    accept=".pdf">
+                                <input type="file" name="dokumen6" id="dokumen6" class="form-control" accept=".pdf">
                             </div>
                             <div class="mb-3">
                                 <label for="dokumen7" class="form-label">Lampiran Daftar Peserta</label>
-                                <input type="file" name="dokumen7" id="dokumen7" class="form-control"
-                                    accept=".pdf">
+                                <input type="file" name="dokumen7" id="dokumen7" class="form-control" accept=".pdf">
                             </div>
                         </div>
 

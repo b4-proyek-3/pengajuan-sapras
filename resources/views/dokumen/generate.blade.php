@@ -133,13 +133,12 @@
                     style="width: 100px; height: auto;">
             </td>
             <td class="kop">
-                <h3 class="kemendikbud">KEMENTERIAN PENDIDIKAN, KEBUDAYAAN,</h3>
-                <h3 class="kemendikbud">RISET, DAN TEKNOLOGI</h3>
+                <h3 class="kemendikbud">KEMENTERIAN PENDIDIKAN TINGGI, SAINS,</h3>
+                <h3 class="kemendikbud">DAN TEKNOLOGI</h3>
                 <h3 class="polban">POLITEKNIK NEGERI BANDUNG</h3>
-                <p class="address">Jln. Gegerkalong Hilir, Desa Ciwaruga, Kecamatan Parongpong,</p>
+                <p class="address">Jalan Gegerkalong Hilir, Desa Ciwaruga, Kecamatan Parongpong,</p>
                 <p class="address">Kabupaten Bandung Barat 40559, Kotak Pos 1234 Telepon: (022) 2013789,</p>
-                <p class="address">Faksimile: (022) 2013889, Laman: www.polban.ac.id, Pos elektronik:
-                    polban@polban.ac.id</p>
+                <p class="address">Faksimile: (022) 2013889, Laman: www.polban.ac.id, Pos elektronik: polban@polban.ac.id</p>
             </td>
         </tr>
     </table>
