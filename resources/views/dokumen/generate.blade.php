@@ -59,7 +59,6 @@
             /* Kurangi dari 2px */
             font-size: 12pt;
             line-height: 1.2;
-            /* Kurangi dari 1.3 */
         }
 
         .content {
