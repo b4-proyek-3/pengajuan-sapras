@@ -78,7 +78,7 @@
                                     <h6 class="mb-0 text-sm leading-normal">:</h6>
                                 </div>
                                 <div class="flex flex-col justify-center pl-2">
-                                    <h6 class="mb-0 text-sm leading-normal">{{ str_replace('proker', 'Program Kerja', $pengajuans->jenis_kegiatan ?? 'N/A') }}</h6>
+                                    <h6 class="mb-0 text-sm leading-normal">{{ str_replace('proker', 'Program Kerja', ucfirst($pengajuans->jenis_kegiatan) ?? 'N/A') }}</h6>
                                 </div>
                             </div>
                         </td>
@@ -152,14 +152,30 @@
                                 <div class="flex flex-col justify-center" style="min-width: 10px; text-align: right;">
                                   <h6 class="mb-0 text-sm leading-normal">:</h6>
                                 </div>
+                                @if($pengajuans->ruangan->isNotEmpty())
+                                    <div class="flex flex-col justify-center pl-2">
+                                        <h6 class="mb-0 text-sm leading-normal">{{ $pengajuans->ruangan->first()->nama_ruangan ?? 'N/A' }}, {{ $pengajuans->ruangan->first()->gedung->nama_gedung }}</h6>
+                                    </div>
+                                @endif
+                            </div>
+                        </td>
+                    </tr>
+                    @foreach($pengajuans->ruangan->skip(1) as $ruangan)
+                    <tr>
+                        <td class="p-2 align-middle bg-transparent whitespace-nowrap">
+                            <div class="flex px-4">
+                                <div class="flex flex-col justify-center" style="min-width: 150px;">
+                                </div>
+                                <div class="flex flex-col justify-center" style="min-width: 10px; text-align: right;">
+                                </div>
+                                
                                 <div class="flex flex-col justify-center pl-2">
-                                  @foreach ($pengajuans->ruangan as $ruangan)
-                                    <h6 class="mb-0 text-sm leading-normal">{{ $ruangan->nama_ruangan ?? 'N/A' }}, {{ $ruangan->gedung->nama_gedung }}</h6>
-                                  @endforeach
+                                    <h6 class="text-sm leading-normal">{{ $ruangan->nama_ruangan ?? 'N/A' }}, {{ $ruangan->gedung->nama_gedung }}</h6>
                                 </div>
                             </div>
                         </td>
                     </tr>
+                    @endforeach
                   </table>
                 </div>
               </div>

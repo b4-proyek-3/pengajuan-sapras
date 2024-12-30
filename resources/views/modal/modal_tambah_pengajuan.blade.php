@@ -32,14 +32,25 @@
                             <input type="time" name="waktu_pinjam" id="waktu_pinjam" class="form-control" required>
                         </div>
 
-                        <div class="mb-3">
+                        <div id="form-container">
                             <label for="ruangan" class="form-label">Tempat</label>
-                            <select name="ruangan[]" id="ruangan" class="form-control" required>
-                                <option value=""> Pilih Tempat </option>
-                                @foreach($tempatList as $tempat)
-                                    <option value="{{ $tempat->id_ruangan }}">{{ $tempat->nama_ruangan }}, {{ $tempat->gedung->nama_gedung }}</option>
-                                @endforeach
-                            </select>
+                            <div class="mb-3">
+                                <select name="ruangan[]" id="ruangan" class="form-control" required>
+                                    <option value=""> Pilih Tempat </option>
+                                    @foreach($tempatList as $tempat)
+                                        <option value="{{ $tempat->id_ruangan }}">
+                                            {{ $tempat->nama_ruangan }}, {{ $tempat->gedung->nama_gedung }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="button-group">
+                            <button type="button"
+                                class="inline-flex items-center justify-center mb-2 px-2 bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 btn-add" 
+                                style="background-color: #22C55E !important;">
+                                Tambah Tempat
+                            </button>
                         </div>
 
                         <div class="mb-3">
@@ -52,43 +63,48 @@
                             <p class="text-gray-500 text-sm mt-1">File maksimal 2 MB</p>
                         </div>
 
-                        <!-- File upload field khusus untuk Program Kerja (Proposal) -->
                         <div id="program_kerja_files" style="display: none;">
                             <div class="mb-3">
                                 <label for="dokumen1" class="form-label">Proposal</label>
-                                <input type="file" name="dokumen1" id="dokumen1" class="form-control" accept=".pdf">
+                                <input type="file" name="dokumen1" id="dokumen1" class="form-control"
+                                    accept=".pdf">
                             </div>
                         </div>
 
-                        <!-- File upload field khusus untuk Pergerakan (Term of Reference) -->
                         <div id="pergerakan_files" style="display: none;">
                             <div class="mb-3">
                                 <label for="dokumen2" class="form-label">Term of Reference</label>
-                                <input type="file" name="dokumen2" id="dokumen2" class="form-control" accept=".pdf">
+                                <input type="file" name="dokumen2" id="dokumen2" class="form-control"
+                                    accept=".pdf">
                             </div>
                         </div>
 
-                        <!-- File upload fields yang sama untuk kedua jenis kegiatan -->
                         <div id="common_files" style="display: none;">
                             <div class="mb-3">
-                                <label for="dokumen3" class="form-label">Surat Peminjaman Sarana Prasarana</label>
-                                <input type="file" name="dokumen3" id="dokumen3" class="form-control" accept=".pdf">
+                                <label for="dokumen3" class="form-label">Surat Peminjaman Sarana
+                                    Prasarana</label>
+                                <input type="file" name="dokumen3" id="dokumen3" class="form-control"
+                                    accept=".pdf">
                             </div>
                             <div class="mb-3">
                                 <label for="dokumen4" class="form-label">Surat Izin Berkegiatan</label>
-                                <input type="file" name="dokumen4" id="dokumen4" class="form-control" accept=".pdf">
+                                <input type="file" name="dokumen4" id="dokumen4" class="form-control"
+                                    accept=".pdf">
                             </div>
                             <div class="mb-3">
                                 <label for="dokumen5" class="form-label">Surat Pernyataan Ketua Ormawa</label>
-                                <input type="file" name="dokumen5" id="dokumen5" class="form-control" accept=".pdf">
+                                <input type="file" name="dokumen5" id="dokumen5" class="form-control"
+                                    accept=".pdf">
                             </div>
                             <div class="mb-3">
                                 <label for="dokumen6" class="form-label">Surat Pendampingan Pembina</label>
-                                <input type="file" name="dokumen6" id="dokumen6" class="form-control" accept=".pdf">
+                                <input type="file" name="dokumen6" id="dokumen6" class="form-control"
+                                    accept=".pdf">
                             </div>
                             <div class="mb-3">
                                 <label for="dokumen7" class="form-label">Lampiran Daftar Peserta</label>
-                                <input type="file" name="dokumen7" id="dokumen7" class="form-control" accept=".pdf">
+                                <input type="file" name="dokumen7" id="dokumen7" class="form-control"
+                                    accept=".pdf">
                             </div>
                         </div>
 
@@ -123,6 +139,122 @@
 </div>
 
 <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const formContainer = document.getElementById("form-container");
+        const buttonGroup = document.querySelector(".button-group");
+
+        // Menyimpan ruangan yang sudah dipilih
+        let selectedRooms = [];
+
+        // Fungsi untuk memperbarui tombol (tambah/hapus)
+        function updateButtons() {
+            const formInputs = formContainer.querySelectorAll(".mb-3");
+            const addButton = buttonGroup.querySelector(".btn-add");
+            let removeButton = buttonGroup.querySelector(".btn-remove");
+
+            // Menambahkan tombol hapus jika belum ada, dan dropdown lebih dari satu
+            if (formInputs.length > 1) {
+                if (!removeButton) {
+                    removeButton = document.createElement("button");
+                    removeButton.type = "button";
+                    removeButton.textContent = "Hapus";
+                    removeButton.className = "inline-flex items-center justify-center ml-1 px-2 bg-red-500 text-white rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 btn-remove";
+                    removeButton.style.backgroundColor = "#EF4444";
+                    removeButton.style.setProperty("background-color", "#EF4444", "important");
+                    removeButton.addEventListener("click", () => {
+                        const lastForm = formContainer.lastElementChild;
+                        const select = lastForm.querySelector("select");
+                        const value = select.value;
+
+                        // Menghapus nilai dari array selectedRooms jika ada
+                        if (value) {
+                            const idx = selectedRooms.indexOf(value);
+                            if (idx > -1) {
+                                selectedRooms.splice(idx, 1);
+                            }
+                        }
+
+                        lastForm.remove();
+                        updateButtons();
+                        updateRoomOptions(); // Memperbarui pilihan ruangan setelah menghapus input
+                    });
+                    buttonGroup.appendChild(removeButton);
+                }
+            } else if (removeButton) {
+                // Menghapus tombol hapus jika hanya ada satu dropdown
+                removeButton.remove();
+            }
+
+            // Tombol tambah selalu ada
+            addButton.style.display = formInputs.length > 0 ? "inline-flex" : "none";
+        }
+
+        // Fungsi untuk memperbarui pilihan ruangan yang dapat dipilih
+        function updateRoomOptions() {
+            const selects = formContainer.querySelectorAll("select");
+            selects.forEach(select => {
+                const options = select.querySelectorAll("option");
+                options.forEach(option => {
+                    const roomId = option.value;
+
+                    // Periksa apakah opsi ini sudah dipilih di dropdown lain
+                    if (selectedRooms.includes(roomId) && select.value !== roomId) {
+                        option.disabled = true; // Menonaktifkan pilihan yang sudah dipilih di dropdown lain
+                    } else {
+                        option.disabled = false; // Mengaktifkan pilihan yang belum dipilih
+                    }
+                });
+            });
+        }
+
+        // Menambahkan event untuk tombol tambah
+        buttonGroup.querySelector(".btn-add").addEventListener("click", () => {
+            const firstInput = formContainer.querySelector(".mb-3");
+            const newInput = firstInput.cloneNode(true);
+            const select = newInput.querySelector("select");
+
+            // Reset nilai select dan atribut data-previous-value
+            select.value = "";
+            select.setAttribute("data-previous-value", "");
+
+            formContainer.appendChild(newInput);
+            updateButtons();
+            updateRoomOptions(); // Memperbarui pilihan ruangan setelah menambah input
+        });
+
+        // Menambahkan event listener untuk perubahan pilihan ruangan
+        formContainer.addEventListener("change", (event) => {
+            if (event.target.tagName === "SELECT") {
+                const select = event.target;
+                const previousValue = select.getAttribute("data-previous-value");
+                const selectedValue = select.value;
+
+                // Menghapus ruangan sebelumnya dari array jika ada
+                if (previousValue) {
+                    const idx = selectedRooms.indexOf(previousValue);
+                    if (idx > -1) {
+                        selectedRooms.splice(idx, 1);
+                    }
+                }
+
+                // Menambahkan ruangan baru yang dipilih ke dalam array
+                if (selectedValue && !selectedRooms.includes(selectedValue)) {
+                    selectedRooms.push(selectedValue);
+                }
+
+                // Memperbarui atribut data-previous-value dengan nilai yang baru dipilih
+                select.setAttribute("data-previous-value", selectedValue);
+
+                // Memperbarui pilihan setelah pemilihan
+                updateRoomOptions();
+            }
+        });
+
+        // Inisialisasi pilihan ruangan saat halaman pertama kali dimuat
+        updateButtons();
+        updateRoomOptions();
+    });
+
     document.addEventListener("DOMContentLoaded", function () {
         const namaKegiatanInput = document.getElementById("nama_kegiatan");
 

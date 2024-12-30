@@ -16,45 +16,68 @@
             <div class="flex flex-col">
               <label for="nama-pengaju" class="block text-sm font-medium text-gray-900">Nama Pengaju</label>
               <input id="nama-pengaju" value="{{ $pengajuans->pengaju->user->name }}" 
-                class="bg-gray-50 px-3 py-2 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full"
+                class="form-control"
                 readonly />
             </div>
             <div class="flex flex-col">
               <label for="ormawa" class="block text-sm font-medium text-gray-900">Ormawa</label>
               <input id="ormawa" value="{{ $pengajuans->pengaju->ormawa->nama_ormawa }}" 
-                class="bg-gray-50 px-3 py-2 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full"
+                class="form-control"
                 readonly />
             </div>
             <div class="flex flex-col">
                 <label for="nama-kegiatan" class="block text-sm font-medium text-gray-900">Nama Kegiatan</label>
                 <input type="text" id="nama-kegiatan" name="nama_kegiatan" value="{{ $pengajuans->nama_kegiatan }}" 
-                class="bg-gray-50 px-3 py-2 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full"/>
+                class="form-control"/>
             </div>
             <div class="flex flex-col">
                 <label for="tanggal-kegiatan" class="block text-sm font-medium text-gray-900">Tanggal Kegiatan</label>
                 <input type="date" id="tanggal-kegiatan" name ="tanggal_pinjam" value="{{ $pengajuans->tanggal_pinjam }}"
-                class="bg-gray-50 px-3 py-2 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full"/>
+                class="form-control"/>
             </div>
             <div class="flex flex-col">
                 <label for="tanggal-kegiatan" class="block text-sm font-medium text-gray-900">Tanggal Berakhir</label>
                 <input type="date" id="tanggal-akhir" name ="tanggal_akhir" value="{{ $pengajuans->tanggal_akhir }}"
-                class="bg-gray-50 px-3 py-2 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full"/>
+                class="form-control"/>
             </div>
             <div class="flex flex-col">
                 <label for="tanggal-kegiatan" class="block text-sm font-medium text-gray-900">Waktu Kegiatan</label>
                 <input type="time" id="waktu-kegiatan" name ="waktu_pengajuan" value="{{ $pengajuans->waktu_pinjam }}"
-                class="bg-gray-50 px-3 py-2 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full"/>
+                class="form-control"/>
             </div>
             <div class="flex flex-col">
+                <!-- Label hanya muncul sekali -->
                 <label for="tempat-kegiatan" class="block text-sm font-medium text-gray-900">Tempat Kegiatan</label>
-                <select name="id_ruangan"
-                class="bg-gray-50 px-3 py-2 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full">
-                    @foreach ($tempatList as $tempat)
-                        <option value="{{ $tempat->id_ruangan }}" {{ $tempat->id_ruangan == $pengajuans->id_ruangan ? 'selected' : '' }}>
-                            {{ $tempat->nama_ruangan }}, {{ $tempat->gedung->nama_gedung }}
-                        </option>
-                    @endforeach
-                </select>
+            </div>
+            <div id="form-container">
+                <!-- Form input yang sudah ada dari database -->
+                @foreach ($pengajuans->ruangan as $ruangan)
+                    <div class="flex flex-col mb-2">
+                        <select name="ruangan[]" class="form-control">
+                            <option value="">Pilih Tempat</option>
+                            @foreach ($tempatList as $tempat)
+                                <option value="{{ $tempat->id_ruangan }}"
+                                    {{ $tempat->id_ruangan == $ruangan->id_ruangan ? 'selected' : '' }}>
+                                    {{ $tempat->nama_ruangan }}, {{ $tempat->gedung->nama_gedung }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                @endforeach
+            </div>
+
+            <div class="button-group flex space-x-2">
+                <!-- Button untuk tambah form -->
+                <button type="button" class="inline-flex items-center justify-center mb-2 px-2 bg-green-500 text-white text-sm rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 btn-add"
+                style="background-color: #22C55E !important;">
+                    Tambah Tempat
+                </button>
+
+                <!-- Button untuk hapus form (akan muncul hanya jika ada lebih dari satu form input) -->
+                <button type="button" class="inline-flex items-center justify-center mb-2 px-2 bg-red-500 text-white text-sm rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 btn-remove"
+                style="background-color: #EF4444 !important;">
+                    Hapus
+                </button>
             </div>
             
             <div class="flex justify-end">
@@ -66,13 +89,61 @@
                 </button>
             </div>
           </form>
-        </div>  
+        </div>
       </div>
     </div>
   </div>
 </div>
 
 <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const formContainer = document.getElementById("form-container");
+        const addButton = document.querySelector(".btn-add");
+        const removeButton = document.querySelector(".btn-remove");
+
+        // Fungsi untuk menambah form baru
+        addButton.addEventListener("click", function() {
+            // Clone form input pertama (form yang sudah ada)
+            const firstForm = formContainer.querySelector('.flex.flex-col'); 
+            const newForm = firstForm.cloneNode(true); 
+            
+            // Mengatur ulang value select pada form baru
+            const selectElement = newForm.querySelector('select');
+            selectElement.value = ''; // Mengosongkan pilihan
+            
+            // Menambahkan pilihan default "Pilih Tempat"
+            const defaultOption = newForm.querySelector('option');
+            defaultOption.selected = true;
+
+            // Menambahkan form baru ke dalam container
+            formContainer.appendChild(newForm);
+
+            // Menampilkan tombol "Hapus" jika ada lebih dari satu form
+            updateRemoveButtonVisibility();
+        });
+
+        // Fungsi untuk menampilkan atau menyembunyikan tombol "Hapus"
+        function updateRemoveButtonVisibility() {
+            const formInputs = formContainer.querySelectorAll('.flex.flex-col');
+            if (formInputs.length > 1) {
+                removeButton.style.display = "inline-flex"; // Menampilkan tombol Hapus
+            } else {
+                removeButton.style.display = "none"; // Menyembunyikan tombol Hapus jika hanya ada satu form
+            }
+        }
+
+        // Tombol "Hapus" untuk menghapus form yang terakhir ditambahkan
+        removeButton.addEventListener("click", function() {
+            const lastForm = formContainer.querySelector('.flex.flex-col:last-child');
+            if (lastForm) {
+                lastForm.remove(); // Menghapus form yang terakhir ditambahkan
+            }
+            updateRemoveButtonVisibility(); // Update visibilitas tombol "Hapus"
+        });
+
+        updateRemoveButtonVisibility();
+    });
+
     function openPengajuanModal() {
         document.getElementById('editPengajuanModal').classList.remove('hidden');
     }

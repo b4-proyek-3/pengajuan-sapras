@@ -146,7 +146,7 @@
     <div class="content">
         <p class="berita-acara-title">BERITA ACARA PEMINJAMAN SARANA DAN PRASARANA</p>
         <p>Pada tanggal {{ \Carbon\Carbon::now()->isoFormat('D MMMM Y') }}, pukul
-            {{ \Carbon\Carbon::now()->addHours(7)->format('H:i') }} WIB, yang bertanda tangan dibawah ini. Saya selaku
+            {{ \Carbon\Carbon::now()->format('H:i') }} WIB, yang bertanda tangan dibawah ini. Saya selaku
             ketua pelaksana kegiatan {{ $nama_kegiatan }}, meminjam sarana dengan detail sebagai berikut:</p>
 
         <table class="table">

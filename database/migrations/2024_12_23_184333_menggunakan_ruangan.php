@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('menggunakan_ruangan', function (Blueprint $table) {
             $table->string('id_pengajuan', length: 6);
             $table->foreign('id_pengajuan')->references('id_pengajuan')->on('pengajuan')->onDelete('cascade');
-            $table->id('id_ruangan');
+            $table->unsignedBigInteger('id_ruangan');
             $table->foreign('id_ruangan')->references('id_ruangan')->on('ruangan')->onDelete('cascade');
             $table->timestamps();
         });

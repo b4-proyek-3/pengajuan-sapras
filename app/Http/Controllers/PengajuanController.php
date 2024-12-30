@@ -70,8 +70,13 @@ class PengajuanController extends Controller
     {
         $ormawaList = Ormawa::all();
         $tempatList = Ruangan::all();
+        $selectedRuangan = [];
 
-        return view('pengajuan.index', compact('ormawaList', 'tempatList'));
+        if ($pengajuan) {
+            $selectedRuangan = $pengajuan->ruangan->pluck('id_ruangan')->toArray();
+        }
+
+        return view('pengajuan.index', compact('ormawaList', 'tempatList', 'selectedRuangan'));
     }
 
     public function destroy($id_pengajuan)
@@ -158,18 +163,17 @@ class PengajuanController extends Controller
                 'updated_at' => now(),
             ]);
 
-            $pengajuan->ruangan()->sync($request->ruangan);
+            foreach ($request->ruangan as $ruanganId) {
+                $pengajuan->ruangan()->attach($ruanganId);
+            }
 
-            // Simpan setiap dokumen yang diunggah
             $this->simpanDokumen($request, $id_pengajuan);
 
             return redirect()->route('pengajuan.index')->with('success', 'Pengajuan berhasil ditambahkan!');
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            // Ketika tabel ujian tidak memiliki data
-            return redirect()->route('pengajuan.index')->with('error', 'Gagal'. $e->getMessage());
+            return redirect()->route('pengajuan.index')->with('error', 'Gagal menambahkan pengajuan. Data ujian tidak ditemukan.');
         } catch (\Exception $e) {
-            // Penanganan general error lainnya
-            return redirect()->route('pengajuan.index')->with('error', 'Gagal'. $e->getMessage());
+            return redirect()->route('pengajuan.index')->with('error', 'Terjadi kesalahan saat menambahkan pengajuan.' . $e->getMessage());
         }
     }
 
@@ -191,7 +195,7 @@ class PengajuanController extends Controller
             if ($request->hasFile($field)) {
                 $file = $request->file($field);
                 $filename = time() . '_' . $file->getClientOriginalName();
-                $path = $file->storeAs('file/' . $id_pengajuan, $filename, 'public');
+                $path = $file->storeAs('dokumen/' . $id_pengajuan, $filename, 'public');
 
                 Dokumen::create([
                     'id_pengajuan' => $id_pengajuan,
@@ -244,27 +248,20 @@ class PengajuanController extends Controller
 
     public function submitPengajuan(Request $request, $id_pengajuan)
     {
-        // Validasi status yang diterima
         $request->validate([
             'status' => 'required|string',
         ]);
 
-        // Cari pengajuan berdasarkan ID
         $pengajuan = Pengajuan::find($id_pengajuan);
 
-        // Pastikan pengajuan ditemukan
         if (!$pengajuan) {
             return redirect()->back()->with('error', 'Pengajuan tidak ditemukan');
         }
 
         $pengajuan->edited = true;
         $pengajuan->status = 'diedit';
-
-        // Simpan perubahan ke database
         $pengajuan->save();
 
-        // Kembali ke halaman pengajuan dengan pesan sukses
-        return redirect()->route('pengajuan.show', $id_pengajuan)
-                        ->with('success', 'Pengajuan berhasil diedit');
+        return redirect()->route('pengajuan.show', $id_pengajuan)->with('success', 'Pengajuan berhasil diedit');
     }
 }

@@ -13,6 +13,7 @@ use App\Http\Controllers\ValidasiController;
 use App\Http\Controllers\RuanganController;
 use App\Http\Controllers\GedungController;
 use App\Http\Controllers\JadwalUjianController;
+use App\Http\Controllers\CalendarController;
 use App\Models\Dokumen;
 
 Route::get('/', [DashboardController::class, 'getDashboardStatistics'])->name('dashboard');
@@ -77,6 +78,10 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/{id}', [JadwalUjianController::class, 'update'])->name('jadwal.update');
         Route::delete('/{id}', [JadwalUjianController::class, 'destroy'])->name('jadwal.destroy');
     });
+
+    Route::get('/calendar', [CalendarController::class, 'showCalendar'])->name('calendar');
+    Route::get('/get-calendar-data', [CalendarController::class, 'getCalendarData']);
+
 });
 
 Route::get('/validasi/{id_pengajuan}', [ValidasiController::class, 'show'])->name('validasi.show');
