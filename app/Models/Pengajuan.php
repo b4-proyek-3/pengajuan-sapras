@@ -9,22 +9,21 @@ class Pengajuan extends Model
 {
     use HasFactory;
     
-    protected $table = 'pengajuan'; 
+    protected $table = 'pengajuan';
     protected $primaryKey = 'id_pengajuan';
     public $keyType = 'string';
     protected $fillable = [
         'id_pengajuan',
         'nim',
         'tanggal_pengajuan',
-        'id_tempat',
         'tanggal_pinjam',
         'tanggal_akhir',
         'waktu_pinjam',
         'nama_kegiatan',
         'jenis_kegiatan',
         'link_drive',
-        'status', 
-        'edited', 
+        'status',
+        'edited',
         'updated_at',
     ];
     
@@ -54,9 +53,9 @@ class Pengajuan extends Model
         return $this->hasMany(Dokumen::class, 'id_pengajuan', 'id_pengajuan');
     }
 
-    public function tempat()
+    public function ruangan()
     {
-        return $this->belongsTo(Tempat::class, 'id_tempat', 'id_tempat');
+        return $this->belongsToMany(Ruangan::class, 'menggunakan_ruangan', 'id_pengajuan', 'id_ruangan');
     }
 
     public function statusHistory()

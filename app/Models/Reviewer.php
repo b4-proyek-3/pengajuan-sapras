@@ -51,7 +51,7 @@ class Reviewer extends Authenticatable
     {
         return match ($this->role) {
             'kli' => 'KLI',
-            'sekum-bem' => 'Sekretaris Umum BEM',
+            'sekum-bem' => 'BEM',
             'wd-3' => 'WD3',
             default => $this->role,
         };

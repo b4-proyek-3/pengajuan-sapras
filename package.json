@@ -14,7 +14,12 @@
         "vite": "^5.4.11"
     },
     "dependencies": {
+        "@fullcalendar/core": "^6.1.15",
+        "@fullcalendar/daygrid": "^6.1.15",
+        "@fullcalendar/interaction": "^6.1.15",
+        "@fullcalendar/timegrid": "^6.1.15",
         "@preline/overlay": "^2.5.0",
+        "fullcalendar": "^6.1.15",
         "pg": "^8.13.0",
         "sweetalert2": "^11.15.0"
     }

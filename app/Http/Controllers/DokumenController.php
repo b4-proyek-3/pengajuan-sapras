@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use App\Models\Dokumen;
 use App\Models\Pengajuan;
 use Carbon\Carbon;
+use GuzzleHttp\Client;
 use PDF;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
@@ -72,22 +73,54 @@ class DokumenController extends Controller
         // Redirect dengan pesan sukses
         return redirect()->back()->with('success', 'Dokumen berhasil diperbarui.');
     }
+
+    public function generateQRCode($id_pengajuan)
+    {
+        $url = "http://127.0.0.1:8000/validasi/{$id_pengajuan}";
+
+        $client = new Client();
+        $response = $client->post('https://plbsh.polban.dev/tes/send', [
+            'json' => ['url' => $url],
+            'verify' => false,
+        ]);
+
+        $data = json_decode($response->getBody()->getContents(), true);
+
+        if (isset($data['url'])) {
+            $qr_code_url = $data['url'];
+    
+            $qr_image = file_get_contents($qr_code_url);
+
+            $qr_image_path = storage_path('app/public/qr_codes/qrcode_' . $id_pengajuan . '.png');
+            
+            file_put_contents($qr_image_path, $qr_image);
+            
+            return $qr_image_path;
+        }
+
+        return null;
+    }
     
     public function generate(string $id_pengajuan)
     {
         try {
+            $qr_image_path = $this->generateQRCode($id_pengajuan);
+
             // Get pengajuan data with all necessary relationships
             $pengajuan = Pengajuan::with([
-                'tempat',
+                'ruangan.gedung',
                 'pengaju.user',
                 'pengaju.ormawa',
                 'reviewers.user'
             ])->findOrFail($id_pengajuan);
             
             // Extract details
-            $tempat = $pengajuan->tempat;
-            $nama_gedung = $tempat ? $tempat->nama_gedung : 'Gedung tidak ditemukan';
-            $nama_ruangan = $tempat ? $tempat->nama_ruangan : 'Ruangan tidak ditemukan';
+            $ruangans = $pengajuan->ruangan;
+            $gedung = $ruangans->map(function ($ruangan) {
+                return $ruangan->gedung;
+            });
+
+            $nama_gedung = $gedung->isEmpty() ? 'Gedung tidak ditemukan' : $gedung->first()->nama_gedung;
             
             // Get ketua pelaksana details
             $ketua_pelaksana = $pengajuan->pengaju->user->name ?? 'Ketua Pelaksana tidak ditemukan';
@@ -108,13 +141,14 @@ class DokumenController extends Controller
                 'nama_ketua_pelaksana' => $ketua_pelaksana,
                 'nama_ormawa' => $nama_ormawa,
                 'nama_gedung' => $nama_gedung,
-                'nama_ruangan' => $nama_ruangan,
+                'ruangans' => $ruangans,
                 'tanggal_mulai' => Carbon::parse($pengajuan->tanggal_pinjam)->isoFormat('D MMMM Y'),
                 'tanggal_akhir' => Carbon::parse($pengajuan->tanggal_akhir)->isoFormat('D MMMM Y'),
                 'waktu_kegiatan' => Carbon::parse($pengajuan->waktu_pinjam)->format('H:i') . ' WIB',
                 'sekum_bem' => $sekum_bem,
                 'kli' => $kli,
                 'wd3' => $wd3,
+                'qr_code_path' => $qr_image_path,
                 'validation_url' => $validationUrl // Pass the validation URL to the view
             ]);
 

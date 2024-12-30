@@ -7,7 +7,7 @@
     <title>Surat Peminjaman Sarana dan Prasarana</title>
     <style>
         body {
-            font-family: "Times New Roman", Times, serif;
+            font-family: Arial, sans-serif;
             line-height: 1.4;
             margin: 0 auto;
             max-width: 800px;
@@ -132,13 +132,12 @@
                     style="width: 100px; height: auto;">
             </td>
             <td class="kop">
-                <h3 class="kemendikbud">KEMENTERIAN PENDIDIKAN, KEBUDAYAAN,</h3>
-                <h3 class="kemendikbud">RISET, DAN TEKNOLOGI</h3>
+                <h3 class="kemendikbud">KEMENTERIAN PENDIDIKAN TINGGI, SAINS,</h3>
+                <h3 class="kemendikbud">DAN TEKNOLOGI</h3>
                 <h3 class="polban">POLITEKNIK NEGERI BANDUNG</h3>
-                <p class="address">Jln. Gegerkalong Hilir, Desa Ciwaruga, Kecamatan Parongpong,</p>
+                <p class="address">Jalan Gegerkalong Hilir, Desa Ciwaruga, Kecamatan Parongpong,</p>
                 <p class="address">Kabupaten Bandung Barat 40559, Kotak Pos 1234 Telepon: (022) 2013789,</p>
-                <p class="address">Faksimile: (022) 2013889, Laman: www.polban.ac.id, Pos elektronik:
-                    polban@polban.ac.id</p>
+                <p class="address">Faksimile: (022) 2013889, Laman: www.polban.ac.id, Pos elektronik: polban@polban.ac.id</p>
             </td>
         </tr>
     </table>
@@ -146,7 +145,7 @@
     <div class="content">
         <p class="berita-acara-title">BERITA ACARA PEMINJAMAN SARANA DAN PRASARANA</p>
         <p>Pada tanggal {{ \Carbon\Carbon::now()->isoFormat('D MMMM Y') }}, pukul
-            {{ \Carbon\Carbon::now()->addHours(7)->format('H:i') }} WIB, yang bertanda tangan dibawah ini. Saya selaku
+            {{ \Carbon\Carbon::now()->format('H:i') }} WIB, yang bertanda tangan dibawah ini. Saya selaku
             ketua pelaksana kegiatan {{ $nama_kegiatan }}, meminjam sarana dengan detail sebagai berikut:</p>
 
         <table class="table">
@@ -172,7 +171,13 @@
             </tr>
             <tr>
                 <th>Tempat:</th>
-                <td>{{ $nama_gedung }} - {{ $nama_ruangan }}</td>
+                @if($ruangans->isEmpty())
+                    <td>Ruangan tidak ditemukan.</td>
+                @else
+                    @foreach($ruangans as $ruangan)
+                        <td>{{ $ruangan->nama_ruangan ?? 'Ruangan tidak ditemukan' }} - {{ $ruangan->gedung->nama_gedung ?? 'Gedung tidak ditemukan' }}</td>
+                    @endforeach
+                @endif
                 <td></td>
             </tr>
             <tr>
@@ -214,9 +219,7 @@
                 <p>Bandung, {{ \Carbon\Carbon::now()->isoFormat('D MMMM Y') }}</p>
                 <p>Bukti Validasi</p>
                 <p style="margin-top: 10px;">
-                    <a href="{{ $validation_url }}" style="color: #0066cc; text-decoration: underline;">
-                        Klik disini untuk memvalidasi dokumen
-                    </a>
+                <img src="{{ $qr_code_path }}" alt="QR Code" width="100" height="100" />
                 </p>
                 <br>
             </div>
