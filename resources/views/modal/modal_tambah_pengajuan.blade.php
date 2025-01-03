@@ -18,40 +18,64 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="tanggal_pinjam" class="form-label">Tanggal Peminjaman</label>
-                            <input type="date" name="tanggal_pinjam" id="tanggal_pinjam" class="form-control" value="{{ old('tanggal_pinjam') }}" required>
+                            <label for="nama_ketuplak" class="form-label">Nama Ketuplak</label>
+                            <input type="text" name="nama_ketuplak" id="nama_ketuplak" class="form-control" required>
                         </div>
 
                         <div class="mb-3">
-                            <label for="tanggal_akhir" class="form-label">Tanggal Berakhir</label>
-                            <input type="date" name="tanggal_akhir" id="tanggal_akhir" class="form-control" value="{{ old('tanggal_akhir') }}" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="waktu" class="form-label">Waktu Kegiatan</label>
-                            <input type="time" name="waktu_pinjam" id="waktu_pinjam" class="form-control" required>
+                            <label for="notelp" class="form-label">Nomor Telepon</label>
+                            <input type="text" name="notelp" id="notelp" class="form-control" required>
                         </div>
 
                         <div id="form-container">
                             <label for="ruangan" class="form-label">Tempat</label>
                             <div class="mb-3">
-                                <select name="ruangan[]" id="ruangan" class="form-control" required>
-                                    <option value=""> Pilih Tempat </option>
+                                <select name="ruangan[]" id="ruangan" class="form-control tempat-dropdown" required>
+                                    <option value="">Pilih Tempat</option>
                                     @foreach($tempatList as $tempat)
                                         <option value="{{ $tempat->id_ruangan }}">
-                                            {{ $tempat->nama_ruangan }}, {{ $tempat->gedung->nama_gedung }}
+                                            {{ $tempat->nama_ruangan }} - {{ $tempat->gedung->nama_gedung }}
                                         </option>
                                     @endforeach
                                 </select>
                             </div>
                         </div>
+
+                        <!-- Elemen untuk Tanggal dan Waktu -->
+                        <div id="time-date-container" class="hidden">
+                            <div class="mb-3">
+                                <label for="tanggal_mulai" class="form-label">Tanggal Peminjaman</label>
+                                <input type="date" name="tanggal_mulai[]" id="tanggal_mulai" class="form-control" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="tanggal_selesai" class="form-label">Tanggal Berakhir</label>
+                                <input type="date" name="tanggal_selesai[]" id="tanggal_selesai" class="form-control" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="waktu_mulai" class="form-label">Waktu Mulai Kegiatan</label>
+                                <input type="time" name="waktu_mulai[]" id="waktu_mulai" class="form-control" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="waktu_selesai" class="form-label">Waktu Selesai Kegiatan</label>
+                                <input type="time" name="waktu_selesai[]" id="waktu_selesai" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <!-- Tombol Tambah Tempat -->
                         <div class="button-group">
                             <button type="button"
-                                class="inline-flex items-center justify-center mb-2 px-2 bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 btn-add" 
+                                class="inline-flex items-center justify-center mb-2 px-2 bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 btn-add"
+                                id="add-place-btn"
                                 style="background-color: #22C55E !important;">
                                 Tambah Tempat
                             </button>
                         </div>
+
+                        <!-- Kontainer Tempat Dinamis -->
+                        <div id="dynamic-place-container"></div>
 
                         <div class="mb-3">
                             <label for="activity_type" class="form-label">Jenis Kegiatan</label>
@@ -148,19 +172,17 @@
 
         // Fungsi untuk memperbarui tombol (tambah/hapus)
         function updateButtons() {
-            const formInputs = formContainer.querySelectorAll(".mb-3");
+            const formInputs = formContainer.querySelectorAll(".form-row");
             const addButton = buttonGroup.querySelector(".btn-add");
             let removeButton = buttonGroup.querySelector(".btn-remove");
 
-            // Menambahkan tombol hapus jika belum ada, dan dropdown lebih dari satu
+            // Menambahkan tombol hapus jika belum ada, dan form lebih dari satu
             if (formInputs.length > 1) {
                 if (!removeButton) {
                     removeButton = document.createElement("button");
                     removeButton.type = "button";
                     removeButton.textContent = "Hapus";
                     removeButton.className = "inline-flex items-center justify-center ml-1 px-2 bg-red-500 text-white rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 btn-remove";
-                    removeButton.style.backgroundColor = "#EF4444";
-                    removeButton.style.setProperty("background-color", "#EF4444", "important");
                     removeButton.addEventListener("click", () => {
                         const lastForm = formContainer.lastElementChild;
                         const select = lastForm.querySelector("select");
@@ -176,17 +198,13 @@
 
                         lastForm.remove();
                         updateButtons();
-                        updateRoomOptions(); // Memperbarui pilihan ruangan setelah menghapus input
+                        updateRoomOptions();
                     });
                     buttonGroup.appendChild(removeButton);
                 }
             } else if (removeButton) {
-                // Menghapus tombol hapus jika hanya ada satu dropdown
                 removeButton.remove();
             }
-
-            // Tombol tambah selalu ada
-            addButton.style.display = formInputs.length > 0 ? "inline-flex" : "none";
         }
 
         // Fungsi untuk memperbarui pilihan ruangan yang dapat dipilih
@@ -199,27 +217,55 @@
 
                     // Periksa apakah opsi ini sudah dipilih di dropdown lain
                     if (selectedRooms.includes(roomId) && select.value !== roomId) {
-                        option.disabled = true; // Menonaktifkan pilihan yang sudah dipilih di dropdown lain
+                        option.disabled = true;
                     } else {
-                        option.disabled = false; // Mengaktifkan pilihan yang belum dipilih
+                        option.disabled = false;
                     }
                 });
             });
         }
 
+        // Fungsi untuk membuat form tambahan
+        function createAdditionalFields() {
+            return `
+                <div class="additional-fields">
+                    <div class="mb-3">
+                        <label for="tanggal_mulai" class="form-label">Tanggal Mulai</label>
+                        <input type="date" name="tanggal_mulai[]" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="tanggal_selesai" class="form-label">Tanggal Selesai</label>
+                        <input type="date" name="tanggal_selesai[]" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="waktu_mulai" class="form-label">Waktu Mulai</label>
+                        <input type="time" name="waktu_mulai[]" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="waktu_selesai" class="form-label">Waktu Selesai</label>
+                        <input type="time" name="waktu_selesai[]" class="form-control" required>
+                    </div>
+                </div>
+            `;
+        }
+
         // Menambahkan event untuk tombol tambah
         buttonGroup.querySelector(".btn-add").addEventListener("click", () => {
-            const firstInput = formContainer.querySelector(".mb-3");
+            const firstInput = formContainer.querySelector(".form-row");
             const newInput = firstInput.cloneNode(true);
             const select = newInput.querySelector("select");
 
-            // Reset nilai select dan atribut data-previous-value
+            // Reset nilai select
             select.value = "";
-            select.setAttribute("data-previous-value", "");
+
+            // Tambahkan field tambahan
+            const additionalFields = document.createElement("div");
+            additionalFields.innerHTML = createAdditionalFields();
+            newInput.appendChild(additionalFields);
 
             formContainer.appendChild(newInput);
             updateButtons();
-            updateRoomOptions(); // Memperbarui pilihan ruangan setelah menambah input
+            updateRoomOptions();
         });
 
         // Menambahkan event listener untuk perubahan pilihan ruangan
@@ -242,15 +288,11 @@
                     selectedRooms.push(selectedValue);
                 }
 
-                // Memperbarui atribut data-previous-value dengan nilai yang baru dipilih
                 select.setAttribute("data-previous-value", selectedValue);
-
-                // Memperbarui pilihan setelah pemilihan
                 updateRoomOptions();
             }
         });
 
-        // Inisialisasi pilihan ruangan saat halaman pertama kali dimuat
         updateButtons();
         updateRoomOptions();
     });

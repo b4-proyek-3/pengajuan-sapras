@@ -11,6 +11,8 @@ use Database\Seeders\TempatSeeder;
 use Database\Seeders\PengajuSeeder;
 use Database\Seeders\PengajuanSeeder;
 use Database\Seeders\DokumenSeeder;
+use Database\Seeders\RuanganSeeder;
+use Database\Seeders\GedungSeeder;
 use Database\Seeders\UsersTableSeeder;
 
 class DatabaseSeeder extends Seeder
@@ -26,6 +28,8 @@ class DatabaseSeeder extends Seeder
             ReviewerSeeder::class,
             TempatSeeder::class,
             PengajuSeeder::class,
+            RuanganSeeder::class,
+            GedungSeeder::class
             //PengajuanSeeder::class,
             //DokumenSeeder::class,
         ]);
