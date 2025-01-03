@@ -1,29 +1,31 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
+namespace App\Models;
 
-return new class extends Migration
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Ruangan extends Model
 {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
+    use HasFactory;
+
+    protected $table = 'ruangan';
+    protected $primaryKey = 'id_ruangan';
+
+    protected $fillable = [
+        'nama_ruangan',
+        'id_gedung',
+        'foto',
+        'kapasitas'
+    ];
+
+    public function gedung()
     {
-        Schema::create('ruangan', function (Blueprint $table) {
-            $table->id('id_ruangan')->primary();
-            $table->string('nama_ruangan');
-            $table->foreignId('id_gedung')->constrained('gedung', 'id_gedung')->onDelete('cascade');
-            $table->timestamps();
-        });
+        return $this->belongsTo(Gedung::class, 'id_gedung');
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
+    public function pengajuan()
     {
-        //
+        return $this->belongsToMany(Pengajuan::class, 'menggunakan_ruangan', 'id_ruangan', 'id_pengajuan');
     }
-};
+}
