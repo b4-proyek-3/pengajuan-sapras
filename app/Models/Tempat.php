@@ -11,7 +11,7 @@ class Tempat extends Model
 
     protected $primaryKey = 'id_tempat';
     protected $table = 'tempat';
-    protected $fillable = 
+    protected $fillable =
     [
         'nama_ruangan',
         'nama_gedung',

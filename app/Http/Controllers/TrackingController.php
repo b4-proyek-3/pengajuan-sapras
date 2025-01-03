@@ -14,7 +14,7 @@ class TrackingController extends Controller
 {
     private $stepIcons = [
         'Pengajuan dibuat' => 'pencil',
-        'Review Sekretaris BEM' => 'user-magnifying-glass',
+        'Review BEM' => 'user-magnifying-glass',
         'Review KLI' => 'file-check',
         'Review Wadir 3' => 'user',
         'Diterima' => 'check-circle'
@@ -52,7 +52,7 @@ class TrackingController extends Controller
     {
         $stepStatus = [
             'Pengajuan dibuat' => ['status' => true, 'isRevisi' => false, 'isDitolak' => false],
-            'Review Sekretaris BEM' => ['status' => false, 'isRevisi' => false, 'isDitolak' => false],
+            'Review BEM' => ['status' => false, 'isRevisi' => false, 'isDitolak' => false],
             'Review KLI' => ['status' => false, 'isRevisi' => false, 'isDitolak' => false],
             'Review Wadir 3' => ['status' => false, 'isRevisi' => false, 'isDitolak' => false],
             'Diterima' => ['status' => false, 'isRevisi' => false, 'isDitolak' => false]
@@ -61,9 +61,9 @@ class TrackingController extends Controller
         foreach ($reviews as $review) {
             switch ($review->reviewer->role) {
                 case 'sekum-bem':
-                    $stepStatus['Review Sekretaris BEM']['status'] = true;
-                    $stepStatus['Review Sekretaris BEM']['isRevisi'] = ($review->status === 'direvisi');
-                    $stepStatus['Review Sekretaris BEM']['isDitolak'] = ($review->status === 'ditolak');
+                    $stepStatus['Review BEM']['status'] = true;
+                    $stepStatus['Review BEM']['isRevisi'] = ($review->status === 'direvisi');
+                    $stepStatus['Review BEM']['isDitolak'] = ($review->status === 'ditolak');
                     break;
                 case 'kli':
                     $stepStatus['Review KLI']['status'] = true;
@@ -93,7 +93,7 @@ class TrackingController extends Controller
         foreach ($reviews as $review) {
             switch ($review->reviewer->role) {
                 case 'sekum-bem':
-                    $dates['Review Sekretaris BEM'] = $review->tanggal_review;
+                    $dates['Review BEM'] = $review->tanggal_review;
                     break;
                 case 'kli':
                     $dates['Review KLI'] = $review->tanggal_review;
@@ -114,7 +114,7 @@ class TrackingController extends Controller
     {
         $progress = [
             'Pengajuan dibuat' => true,
-            'Review Sekretaris BEM' => false,
+            'Review BEM' => false,
             'Review KLI' => false,
             'Review Wadir 3' => false,
             'Diterima' => false
@@ -123,7 +123,7 @@ class TrackingController extends Controller
         foreach ($reviews as $review) {
             switch ($review->reviewer->role) {
                 case 'sekum-bem':
-                    $progress['Review Sekretaris BEM'] = true;
+                    $progress['Review BEM'] = true;
                     break;
                 case 'kli':
                     $progress['Review KLI'] = true;

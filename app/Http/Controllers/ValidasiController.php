@@ -14,7 +14,7 @@ class ValidasiController extends Controller
     public function show($id_pengajuan)
     {
         // Mengambil data pengajuan berdasarkan id_pengajuan
-        $pengajuan = Pengajuan::with('tempat', 'pengaju.ormawa')->where('id_pengajuan', $id_pengajuan)->first();
+        $pengajuan = Pengajuan::with('ruangan', 'pengaju.ormawa')->where('id_pengajuan', $id_pengajuan)->first();
 
         // Mengambil data review terakhir dari reviewer
         $reviews = Review::where('id_pengajuan', $id_pengajuan)

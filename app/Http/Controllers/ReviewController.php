@@ -6,7 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Pengajuan;
 use App\Models\Review;
 use App\Models\Reviewer;
-use App\Models\Tempat;
+use App\Models\Ruangan;
+use App\Models\Gedung;
 use App\Models\Ormawa;
 use Illuminate\Support\Facades\Log;
 
@@ -93,7 +94,7 @@ class ReviewController extends Controller
             })
             ->paginate(10, ['*'], 'diajukan_page');
 
-        $tempatList = Tempat::all();
+        $tempatList = Ruangan::all();
 
         return view('reviewer.index', compact('tempatList', 'reviewer', 'pengajuanRiwayat', 'pengajuanDiajukan', 'activeTab'));
     }

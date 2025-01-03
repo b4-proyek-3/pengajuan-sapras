@@ -6,15 +6,15 @@
     <div class="container mx-auto mt-6">
         <!-- Tabs -->
         <div class="flex justify-end -mb-px">
-            <button 
-                id="diajukanBtn" 
-                onclick="showCard('diajukan')" 
+            <button
+                id="diajukanBtn"
+                onclick="showCard('diajukan')"
                 class="tab-button {{ $activeTab === 'diajukan' ? 'bg-white text-gray-800 shadow-md' : 'bg-gray-200 text-gray-400' }} font-bold py-2 px-6 rounded-t-lg shadow-md mr-2">
                 Diajukan
             </button>
-            <button 
-                id="riwayatBtn" 
-                onclick="showCard('riwayat')" 
+            <button
+                id="riwayatBtn"
+                onclick="showCard('riwayat')"
                 class="tab-button {{ $activeTab === 'riwayat' ? 'bg-white text-gray-800 shadow-md' : 'bg-gray-200 text-gray-400' }} font-bold py-2 px-6 rounded-t-lg shadow-md mr-2">
                 Riwayat
             </button>
@@ -299,7 +299,7 @@
             document.getElementById('diajukanBtn').classList.remove('bg-gray-200', 'text-gray-400');
             
             document.getElementById('riwayatBtn').classList.add('bg-gray-200', 'text-gray-400');
-            document.getElementById('riwayatBtn').classList.remoave('bg-white', 'text-gray-800', 'shadow-md');
+            document.getElementById('riwayatBtn').classList.remove('bg-white', 'text-gray-800', 'shadow-md');
         } else if (activeTab === 'riwayat') {
             riwayatCard.classList.remove('hidden');
             diajukanCard.classList.add('hidden');
