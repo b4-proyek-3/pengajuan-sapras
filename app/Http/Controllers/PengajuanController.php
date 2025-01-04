@@ -9,6 +9,7 @@ use App\Models\Ormawa;
 use App\Models\Dokumen;
 use App\Models\Pengaju;
 use App\Models\JadwalUjian;
+use App\Models\MenggunakanRuangan;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -94,45 +95,61 @@ class PengajuanController extends Controller
     private function validateTanggalUjian($tanggal, $fail, $label)
     {
         $jadwalUjian = JadwalUjian::all();
-        $tanggalInput = Carbon::parse($tanggal);
     
-        foreach ($jadwalUjian as $ujian) {
-            $mulaiUjian = Carbon::parse($ujian->mulai_ujian);
-            $akhirUjian = Carbon::parse($ujian->akhir_ujian);
+        // Jika $tanggal adalah array, iterasi setiap itemnya
+        $tanggalList = is_array($tanggal) ? $tanggal : [$tanggal];
     
-            if ($tanggalInput->between($mulaiUjian->subDays(7), $akhirUjian->addDays(7))) {
-                session()->flash('alert', "$label tidak boleh berada dalam H-7 hingga H+7 dari tanggal ujian.");
-                $fail("$label tidak boleh berada dalam H-7 hingga H+7 dari tanggal ujian.");
+        foreach ($tanggalList as $tanggalItem) {
+            $tanggalInput = Carbon::parse($tanggalItem);
+    
+            foreach ($jadwalUjian as $ujian) {
+                $mulaiUjian = Carbon::parse($ujian->mulai_ujian);
+                $akhirUjian = Carbon::parse($ujian->akhir_ujian);
+    
+                if ($tanggalInput->between($mulaiUjian->subDays(7), $akhirUjian->addDays(7))) {
+                    session()->flash('alert', "$label tidak boleh berada dalam H-7 hingga H+7 dari tanggal ujian.");
+                    $fail("$label tidak boleh berada dalam H-7 hingga H+7 dari tanggal ujian.");
+                    return; // Hentikan validasi jika ada konflik
+                }
             }
         }
-    }
+    }    
 
     public function store(Request $request)
     {
         try {
             $user = Auth::user();
             $pengaju = $user->pengaju;
-            $existingCount = Pengajuan::count();
-
+    
             $request->validate([
-                'tanggal_pinjam' => [
-                'required',
-                'date',
-                function ($attribute, $value, $fail) {
-                    $this->validateTanggalUjian($value, $fail, 'Tanggal pinjam');
-                }
-            ],
-            'tanggal_akhir' => [
-                'required',
-                'date',
-                function ($attribute, $value, $fail) {
-                    $this->validateTanggalUjian($value, $fail, 'Tanggal berakhir');
-                }
-            ],
-                'waktu_pinjam' => 'required',
+                'tanggal_mulai' => [
+                    'required',
+                    'array',
+                    'min:1',
+                    function ($attribute, $value, $fail) {
+                        $this->validateTanggalUjian($value, $fail, 'Tanggal mulai');
+                    }
+                ],
+                'tanggal_akhir' => [
+                    'required',
+                    'array',
+                    'min:1',
+                    function ($attribute, $value, $fail) {
+                        $this->validateTanggalUjian($value, $fail, 'Tanggal akhir');
+                    }
+                ],
+                'tanggal_mulai.*' => 'required|date',
+                'tanggal_akhir.*' => 'required|date|after_or_equal:tanggal_mulai.*',
+                'waktu_mulai' => 'required|array|min:1',
+                'waktu_akhir' => 'required|array|min:1',
+                'waktu_mulai.*' => 'required|date_format:H:i',
+                'waktu_akhir.*' => 'required|date_format:H:i|after:waktu_mulai.*',
                 'ruangan' => 'required|array|min:1',
                 'ruangan.*' => 'exists:ruangan,id_ruangan',
                 'nama_kegiatan' => 'required|string|max:100',
+                'nama_ketuplak' => 'required|string|max:50',
+                'notelp' => 'required|string|regex:/^\+?[0-9]{10,15}$/',
+                'jumlah_peserta' => 'required|integer',
                 'link_gdrive' => 'nullable|url',
                 'activity_type' => 'required|string|in:proker,pergerakan',
                 'dokumen1' => 'nullable|file|mimes:pdf|max:2048',
@@ -140,43 +157,59 @@ class PengajuanController extends Controller
                 'dokumen3' => 'nullable|file|mimes:pdf|max:2048',
                 'dokumen4' => 'nullable|file|mimes:pdf|max:2048',
                 'dokumen5' => 'nullable|file|mimes:pdf|max:2048',
-                'dokumen6' => 'nullable|file|mimes:pdf|max:2048',
-                'dokumen7' => 'nullable|file|mimes:pdf|max:2048',
             ]);
-
+    
             // Membuat ID pengajuan unik
             $lastPengajuan = Pengajuan::orderBy('id_pengajuan', 'desc')->first();
             $lastId = $lastPengajuan ? (int) substr($lastPengajuan->id_pengajuan, 1) : 0;
             $id_pengajuan = 'P' . str_pad($lastId + 1, 5, '0', STR_PAD_LEFT);
-
+    
             // Menyimpan data pengajuan
             $pengajuan = Pengajuan::create([
                 'id_pengajuan' => $id_pengajuan,
                 'nim' => $pengaju->nim,
                 'tanggal_pengajuan' => now(),
-                'tanggal_pinjam' => $request->tanggal_pinjam,
+                'tanggal_mulai' => $request->tanggal_mulai,
                 'tanggal_akhir' => $request->tanggal_akhir,
-                'waktu_pinjam' => $request->waktu_pinjam,
+                'waktu_mulai' => $request->waktu_mulai,
+                'waktu_akhir' => $request->waktu_akhir,
                 'nama_kegiatan' => $request->nama_kegiatan,
+                'nama_ketuplak' => $request->nama_ketuplak,
+                'notelp' => $request->notelp,
+                'jumlah_peserta' => $request->jumlah_peserta,
                 'jenis_kegiatan' => $request->activity_type,
                 'link_drive' => $request->link_gdrive,
+                'status' => 'diajukan',
+                'edited' => false,
                 'updated_at' => now(),
             ]);
-
+    
             foreach ($request->ruangan as $ruanganId) {
-                $pengajuan->ruangan()->attach($ruanganId);
-            }
-
+                foreach ($request->tanggal_mulai as $index => $tanggalMulai) {
+                    $tanggalAkhir = $request->tanggal_akhir[$index];
+                    $waktuMulai = $request->waktu_mulai[$index];
+                    $waktuAkhir = $request->waktu_akhir[$index];
+            
+                    MenggunakanRuangan::create([
+                        'id_pengajuan' => $id_pengajuan,
+                        'id_ruangan' => $ruanganId,
+                        'tanggal_mulai' => $tanggalMulai,
+                        'tanggal_akhir' => $tanggalAkhir,
+                        'waktu_mulai' => $waktuMulai,
+                        'waktu_akhir' => $waktuAkhir,
+                    ]);
+                }
+            }             
+    
+            // Menyimpan dokumen terkait
             $this->simpanDokumen($request, $id_pengajuan);
-
+    
             return redirect()->route('pengajuan.index')->with('success', 'Pengajuan berhasil ditambahkan!');
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return redirect()->route('pengajuan.index')->with('error', 'Gagal menambahkan pengajuan. Data ujian tidak ditemukan.');
         } catch (\Exception $e) {
-            return redirect()->route('pengajuan.index')->with('error', 'Terjadi kesalahan saat menambahkan pengajuan.' . $e->getMessage());
+            return redirect()->route('pengajuan.index')->with('error', 'Terjadi kesalahan saat menambahkan pengajuan: ' . $e->getMessage());
         }
     }
-
+    
     private function simpanDokumen(Request $request, $id_pengajuan)
     {
         \Log::info('Memulai proses penyimpanan dokumen.', ['request' => $request->all(), 'id_pengajuan' => $id_pengajuan]);
@@ -185,10 +218,8 @@ class PengajuanController extends Controller
             'dokumen1' => 'Proposal',
             'dokumen2' => 'Term of Reference',
             'dokumen3' => 'Surat Peminjaman Sarana Prasarana',
-            'dokumen4' => 'Surat Pernyataan Berkegiatan',
-            'dokumen5' => 'Surat Pernyataan Ketua Ormawa',
-            'dokumen6' => 'Surat Pendampingan Pembina',
-            'dokumen7' => 'Lampiran Daftar Peserta',
+            'dokumen5' => 'Lembar Pengesahan Kegiatan',
+            'dokumen6' => 'Lampiran Daftar Peserta',
         ];
 
         foreach ($dokumen_fields as $field => $nama_dokumen) {
@@ -216,8 +247,8 @@ class PengajuanController extends Controller
     {
         try {
             $validatedData = $request->validate([
-                'tanggal_pinjam' => 'nullable|date',
-                'tanggal_akhir' => 'nullable|date|after_or_equal:tanggal_pinjam',
+                'tanggal_mulai' => 'nullable|date',
+                'tanggal_akhir' => 'nullable|date|after_or_equal:tanggal_mulai',
                 'ruangan' => 'required|array|min:1',
                 'ruangan.*' => 'exists:ruangan,id_ruangan',
                 'nama_kegiatan' => 'nullable|string',
@@ -228,7 +259,7 @@ class PengajuanController extends Controller
             $pengajuan = Pengajuan::findOrFail($id_pengajuan);
     
             $updateData = array_filter([
-                'tanggal_pinjam' => $request->tanggal_pinjam,
+                'tanggal_mulai' => $request->tanggal_mulai,
                 'tanggal_akhir' => $request->tanggal_akhir,
                 'nama_kegiatan' => $request->nama_kegiatan,
                 'waktu_pinjam' => $request->waktu_pengajuan,

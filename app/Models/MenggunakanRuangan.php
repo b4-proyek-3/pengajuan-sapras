@@ -15,9 +15,9 @@ class MenggunakanRuangan extends Model
         'id_pengajuan',
         'id_ruangan',
         'tanggal_mulai',
-        'tanggal_selesai',
+        'tanggal_akhir',
         'waktu_mulai',
-        'waktu_selesai'
+        'waktu_akhir'
     ];
 
     public function pengajuan()

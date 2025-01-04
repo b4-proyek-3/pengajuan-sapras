@@ -26,6 +26,6 @@ class Ruangan extends Model
 
     public function pengajuan()
     {
-        return $this->belongsToMany(Pengajuan::class, 'menggunakan_ruangan', 'id_ruangan', 'id_pengajuan');
+        return $this->hasMany(Pengajuan::class, 'menggunakan_ruangan', 'id_ruangan', 'id_pengajuan');
     }
 }

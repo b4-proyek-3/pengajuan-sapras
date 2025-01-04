@@ -20,7 +20,6 @@
 
     <div class="items-center block w-auto max-h-screen overflow-auto h-sidenav grow basis-full">
         <ul class="flex flex-col pl-0 mb-0">
-            @if (auth()->user()->reviewer)
             <li class="mt-0.5 w-full">
                 <a class="{{ request()->routeIs('dashboard') ? 'shadow-lg bg-white text-slate-700 ring-2 ring-purple-200 transition-all duration-300 transform hover:scale-105' : 'text-slate-700 hover:shadow-md' }} 
                   py-2.7 text-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap rounded-lg 
@@ -55,7 +54,6 @@
                     <span class="ml-1 duration-300 opacity-100 pointer-events-none ease-soft">Dashboard</span>
                 </a>
             </li>
-            @endif
 
             <li class="mt-0.5 w-full">
                 <a class="{{ request()->routeIs('pengajuan.index', 'reviewer.index') ? 'shadow-lg bg-white text-slate-700 ring-2 ring-purple-200 transition-all duration-300 transform hover:scale-105' : 'text-slate-700 hover:shadow-md' }} 
@@ -231,7 +229,7 @@
                             Pengajuan
                         @elseif(request()->routeIs('tracking.show'))
                             Status Pengajuan
-                        @elseif(request()->routeIs('dashboard'))
+                        @elseif(request()->routeIs('layout.dashboard'))
                             Dashboard
                         @elseif(request()->routeIs('pengajuan.show'))
                             Detail Pengajuan
@@ -251,7 +249,7 @@
                         Pengajuan
                     @elseif(request()->routeIs('tracking.show'))
                         Status Pengajuan
-                    @elseif(request()->routeIs('dashboard'))
+                    @elseif(request()->routeIs('layout.dashboard'))
                         Dashboard
                     @elseif(request()->routeIs('pengajuan.show'))
                         Detail Pengajuan

@@ -28,7 +28,7 @@ class DatabaseSeeder extends Seeder
             ReviewerSeeder::class,
             TempatSeeder::class,
             PengajuSeeder::class,
-            RuanganSeeder::class,
+            //RuanganSeeder::class,
             GedungSeeder::class
             //PengajuanSeeder::class,
             //DokumenSeeder::class,
