@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('ruangan', function (Blueprint $table) {
             $table->id('id_ruangan')->primary();
             $table->string('nama_ruangan');
+            $table->string('foto');
+            $table->integer('kapasitas');
             $table->foreignId('id_gedung')->constrained('gedung', 'id_gedung')->onDelete('cascade');
             $table->timestamps();
         });

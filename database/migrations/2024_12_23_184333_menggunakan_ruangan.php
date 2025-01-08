@@ -16,6 +16,10 @@ return new class extends Migration
             $table->foreign('id_pengajuan')->references('id_pengajuan')->on('pengajuan')->onDelete('cascade');
             $table->unsignedBigInteger('id_ruangan');
             $table->foreign('id_ruangan')->references('id_ruangan')->on('ruangan')->onDelete('cascade');
+            $table->date('tanggal_mulai');
+            $table->date('tanggal_akhir');
+            $table->time('waktu_mulai');
+            $table->time('waktu_akhir');
             $table->timestamps();
         });
     }
