@@ -19,8 +19,9 @@ return new class extends Migration
             $table->date('tanggal_pinjam');
             $table->date('tanggal_akhir');
             $table->time('waktu_pinjam');
+            $table->time('waktu_akhir');
             $table->string('nama_kegiatan');
-            $table->enum('jenis_kegiatan', ['proker', 'pergerakan']);
+            $table->enum('jenis_kegiatan', ['proker', 'pergerakan', 'latihan']);
             $table->enum('status', ['diedit', 'direview', 'direvisi', 'ditolak', 'selesai', 'diajukan'])->default('diajukan');
             $table->string('link_drive');
             $table->boolean('edited')->default(false);
