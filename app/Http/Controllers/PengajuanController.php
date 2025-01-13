@@ -2,114 +2,331 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use App\Models\Pengajuan;
+use App\Models\Ruangan;
+use App\Models\Gedung;
+use App\Models\Ormawa;
+use App\Models\Dokumen;
+use App\Models\Pengaju;
+use App\Models\JadwalUjian;
+use App\Models\MenggunakanRuangan;
+use Carbon\Carbon;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 
 class PengajuanController extends Controller
 {
     public function index(Request $request)
     {
-        // Ambil nilai sorting dari query string
-        $sortStatus = $request->input('sort_status');
-        $search = $request->input('search');
+        $pengaju = auth()->user()->pengaju;
 
-        // Query dasar untuk mengambil data pengajuan
-        $query = Pengajuan::query();
+        $activeTab = $request->input('active_tab', 'diajukan');
 
-        // Jika ada nilai sorting berdasarkan status, tambahkan sorting
-        if ($sortStatus) {
-            $query->where('status', $sortStatus);
+        $pengajuanDiajukan = Pengajuan::whereIn('status', ['diajukan', 'direview', 'direvisi', 'diedit'])
+            ->where('nim', $pengaju->nim)
+            ->when($request->input('diajukan_sort_status'), function ($query, $status) {
+                return $query->where('status', $status);
+            })
+            ->when($request->input('search'), function ($query, $search) {
+                return $query->where(function($q) use ($search) {
+                    $q->where('nama_kegiatan', 'like', "%{$search}%")
+                      ->orWhereHas('pengaju.ormawa', function($subQuery) use ($search) {
+                          $subQuery->where('nama_ormawa', 'like', "%{$search}%");
+                      });
+                });
+            })
+            ->paginate(10, ['*'], 'diajukan_page');
+    
+        $pengajuanRiwayat = Pengajuan::whereIn('status', ['selesai', 'ditolak'])
+            ->where('nim', $pengaju->nim)
+            ->when($request->input('riwayat_sort_status'), function ($query, $status) {
+                return $query->where('status', $status);
+            })
+            ->when($request->input('search'), function ($query, $search) {
+                return $query->where(function($q) use ($search) {
+                    $q->where('nama_kegiatan', 'like', "%{$search}%")
+                      ->orWhereHas('pengaju.ormawa', function($subQuery) use ($search) {
+                          $subQuery->where('nama_ormawa', 'like', "%{$search}%");
+                      });
+                });
+            })
+            ->paginate(10, ['*'], 'riwayat_page');
+    
+        $tempatList = Ruangan::all();
+    
+        return view('pengajuan.index', compact('pengajuanDiajukan', 'pengajuanRiwayat', 'tempatList', 'activeTab'));
+    }
+
+    public function show(string $id_pengajuan)
+    {
+        $pengajuans = Pengajuan::with(['pengaju', 'reviewers', 'latestReview', 'dokumen', 'ruangan'])->findOrFail($id_pengajuan);
+        $tempatList = Ruangan::all();
+        $ruanganData = MenggunakanRuangan::where('id_pengajuan', $id_pengajuan)->get();
+        foreach ($pengajuans->ruangan as $ruangan) {
+            $ruangan->pivot->waktu_mulai = Carbon::parse($ruangan->pivot->waktu_mulai)->format('H:i');
+            $ruangan->pivot->waktu_akhir = Carbon::parse($ruangan->pivot->waktu_akhir)->format('H:i');
         }
-
-        // Jika ada pencarian, filter berdasarkan nama kegiatan atau ormawa
-        if ($search) {
-            $query->where('nama_kegiatan', 'like', '%' . $search . '%')
-                ->orWhere('ormawa', 'like', '%' . $search . '%');
-        }
-
-        // Dapatkan data pengajuan setelah filter dan sorting
-        $pengajuanList = $query->get();
-
-        // Kembalikan view dengan data pengajuan yang sudah difilter dan diurutkan
-        return view('pengajuan.index', compact('pengajuanList'));
+        return view('pengajuan.detail', compact('pengajuans', 'tempatList', 'ruanganData'));
     }
 
     public function create()
     {
-        return view('pengajuan.index');
+        $ormawaList = Ormawa::all();
+        $tempatList = Ruangan::all();
+        $selectedRuangan = [];
+
+        if ($pengajuan) {
+            $selectedRuangan = $pengajuan->ruangan->pluck('id_ruangan')->toArray();
+        }
+
+        return view('pengajuan.index', compact('ormawaList', 'tempatList', 'selectedRuangan'));
     }
+
+    public function destroy($id_pengajuan)
+    {
+        $pengajuan = Pengajuan::findOrFail($id_pengajuan);
+
+        try {
+            $pengajuan->delete();
+            return redirect()->route('pengajuan.index')->with('success', 'Pengajuan berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->route('pengajuan.index')->with('error', 'Pengajuan gagal dihapus.');
+        }
+    }
+
+    private function validateTanggalUjian($tanggal, $fail, $label)
+    {
+        $jadwalUjian = JadwalUjian::all();
     
-    public function form(Request $request)
+        // Jika $tanggal adalah array, iterasi setiap itemnya
+        $tanggalList = is_array($tanggal) ? $tanggal : [$tanggal];
+    
+        foreach ($tanggalList as $tanggalItem) {
+            $tanggalInput = Carbon::parse($tanggalItem);
+    
+            foreach ($jadwalUjian as $ujian) {
+                $mulaiUjian = Carbon::parse($ujian->mulai_ujian);
+                $akhirUjian = Carbon::parse($ujian->akhir_ujian);
+    
+                if ($tanggalInput->between($mulaiUjian->subDays(7), $akhirUjian->addDays(7))) {
+                    session()->flash('alert', "$label tidak boleh berada dalam H-7 hingga H+7 dari tanggal ujian.");
+                    $fail("$label tidak boleh berada dalam H-7 hingga H+7 dari tanggal ujian.");
+                    return; // Hentikan validasi jika ada konflik
+                }
+            }
+        }
+    }
+
+    public function store(Request $request)
     {
         try {
-            $validatedData = $request->validate([
-                'ormawa' => 'required|string',
-                'nama_pengaju' => 'required|string',
-                'tanggal_peminjaman' => 'required|date',
-                'tanggal_berakhir' => 'required|date|after_or_equal:tanggal_peminjaman',
-                'waktu' => 'required|string',
-                'nama_kegiatan' => 'required|string',
-                'tempat_peminjaman' => 'required|string',
-                'dokumen1' => 'required|file|mimes:pdf|max:2048',
+            $user = Auth::user();
+            $pengaju = $user->pengaju;
+    
+            $request->validate([
+                'tanggal_mulai' => [
+                    'required',
+                    'array',
+                    'min:1',
+                    function ($attribute, $value, $fail) {
+                        $this->validateTanggalUjian($value, $fail, 'Tanggal mulai');
+                    }
+                ],
+                'tanggal_akhir' => [
+                    'required',
+                    'array',
+                    'min:1',
+                    function ($attribute, $value, $fail) {
+                        $this->validateTanggalUjian($value, $fail, 'Tanggal akhir');
+                    }
+                ],
+                'tanggal_mulai.*' => 'required|date',
+                'tanggal_akhir.*' => 'required|date|after_or_equal:tanggal_mulai.*',
+                'waktu_mulai' => 'required|array|min:1',
+                'waktu_akhir' => 'required|array|min:1',
+                'waktu_mulai.*' => 'required|date_format:H:i',
+                'waktu_akhir.*' => 'required|date_format:H:i|after:waktu_mulai.*',
+                'ruangan' => 'required|array|min:1',
+                'ruangan.*' => 'exists:ruangan,id_ruangan',
+                'nama_kegiatan' => 'required|string|max:100',
+                'nama_ketuplak' => 'required|string|max:50',
+                'notelp' => 'required|string|regex:/^\+?[0-9]{10,15}$/',
+                'jumlah_peserta' => 'required|integer',
+                'link_gdrive' => 'nullable|url',
+                'activity_type' => 'required|string|in:proker,pergerakan',
+                'dokumen1' => 'nullable|file|mimes:pdf|max:2048',
                 'dokumen2' => 'nullable|file|mimes:pdf|max:2048',
                 'dokumen3' => 'nullable|file|mimes:pdf|max:2048',
                 'dokumen4' => 'nullable|file|mimes:pdf|max:2048',
                 'dokumen5' => 'nullable|file|mimes:pdf|max:2048',
-                'dokumen6' => 'nullable|file|mimes:pdf|max:2048',
-                'dokumen7' => 'nullable|file|mimes:pdf|max:2048',
-                'link_gdrive' => 'nullable|url',
             ]);
-
-            // Menyimpan file dokumen dan mendapatkan path-nya
-            $dokumen1 = $request->file('dokumen1')->store('dokumen', 'public');
-            $dokumen2 = $request->file('dokumen2') ? $request->file('dokumen2')->store('dokumen', 'public') : null;
-            $dokumen3 = $request->file('dokumen3') ? $request->file('dokumen3')->store('dokumen', 'public') : null;
-            $dokumen4 = $request->file('dokumen4') ? $request->file('dokumen4')->store('dokumen', 'public') : null;
-            $dokumen5 = $request->file('dokumen5') ? $request->file('dokumen5')->store('dokumen', 'public') : null;
-            $dokumen6 = $request->file('dokumen6') ? $request->file('dokumen6')->store('dokumen', 'public') : null;
-            $dokumen7 = $request->file('dokumen7') ? $request->file('dokumen7')->store('dokumen', 'public') : null;
-
-            // Generate id_pengajuan
-            $id_pengajuan = strtoupper(Str::random(6));
-
-            // Simpan data ke database
+    
+            // Membuat ID pengajuan unik
+            $lastPengajuan = Pengajuan::orderBy('id_pengajuan', 'desc')->first();
+            $lastId = $lastPengajuan ? (int) substr($lastPengajuan->id_pengajuan, 1) : 0;
+            $id_pengajuan = 'P' . str_pad($lastId + 1, 5, '0', STR_PAD_LEFT);
+    
+            // Menyimpan data pengajuan
             $pengajuan = Pengajuan::create([
                 'id_pengajuan' => $id_pengajuan,
+                'nim' => $pengaju->nim,
                 'tanggal_pengajuan' => now(),
-                'ormawa' => $request->ormawa,
-                'nama_pengaju' => $request->nama_pengaju,
-                'tanggal_peminjaman' => $request->tanggal_peminjaman,
-                'tanggal_berakhir' => $request->tanggal_berakhir,
-                'waktu' => $request->waktu,
                 'nama_kegiatan' => $request->nama_kegiatan,
-                'tempat_peminjaman' => $request->tempat_peminjaman,
-                'dokumen1' => $dokumen1,
-                'dokumen2' => $dokumen2,
-                'dokumen3' => $dokumen3,
-                'dokumen4' => $dokumen4,
-                'dokumen5' => $dokumen5,
-                'dokumen6' => $dokumen6,
-                'dokumen7' => $dokumen7,
-                'link_gdrive' => $request->link_gdrive,
+                'nama_ketuplak' => $request->nama_ketuplak,
+                'notelp' => $request->notelp,
+                'jumlah_peserta' => $request->jumlah_peserta,
+                'jenis_kegiatan' => $request->activity_type,
+                'link_drive' => $request->link_gdrive,
+                'status' => 'diajukan',
+                'edited' => false,
+                'updated_at' => now(),
             ]);
 
-            return redirect()->route('pengajuan.index')->with('success', 'Pengajuan berhasil disimpan!');
+            foreach ($request->ruangan as $index => $ruanganId) {
+                try {
+                    $tanggalMulai = $request->tanggal_mulai[$index];
+                    $tanggalAkhir = $request->tanggal_akhir[$index];
+                    $waktuMulai = $request->waktu_mulai[$index];
+                    $waktuAkhir = $request->waktu_akhir[$index];
+            
+                    MenggunakanRuangan::create([
+                        'id_pengajuan' => $id_pengajuan,
+                        'id_ruangan' => $ruanganId,
+                        'tanggal_mulai' => $tanggalMulai,
+                        'tanggal_akhir' => $tanggalAkhir,
+                        'waktu_mulai' => $waktuMulai,
+                        'waktu_akhir' => $waktuAkhir,
+                    ]);
+                } catch (\Exception $e) {
+                    dd($e->getMessage()); // Menampilkan error jika ada
+                }
+            }
 
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            // Tangkap kesalahan validasi dan kembalikan ke halaman form dengan error
-            return redirect()->back()->withErrors($e->errors())->withInput();
+            // Menyimpan dokumen terkait
+            $this->simpanDokumen($request, $id_pengajuan);
+
+            return redirect()->route('pengajuan.index')->with('success', 'Pengajuan berhasil ditambahkan!');
         } catch (\Exception $e) {
-            // Tangkap kesalahan lain dan berikan pesan gagal
-            return redirect()->route('pengajuan.index')->with('failed', 'Pengajuan gagal disimpan!');
+            return redirect()->route('pengajuan.index')->with('error', 'Terjadi kesalahan saat menambahkan pengajuan: ' . $e->getMessage());
+        }
+    }
+    
+    private function simpanDokumen(Request $request, $id_pengajuan)
+    {
+        \Log::info('Memulai proses penyimpanan dokumen.', ['request' => $request->all(), 'id_pengajuan' => $id_pengajuan]);
+       
+        try {
+            $dokumen_fields = [
+                'dokumen1' => 'Proposal',
+                'dokumen2' => 'Term of Reference',
+                'dokumen3' => 'Surat Peminjaman Sarana Prasarana',
+                'dokumen4' => 'Lembar Pengesahan Kegiatan',
+                'dokumen5' => 'Lampiran Daftar Peserta',
+            ];
+    
+            foreach ($dokumen_fields as $field => $nama_dokumen) {
+                if ($request->hasFile($field)) {
+                    $file = $request->file($field);
+                    $filename = time() . '_' . $file->getClientOriginalName();
+                    $path = $file->storeAs('dokumen/' . $id_pengajuan, $filename, 'public');
+    
+                    Dokumen::create([
+                        'id_pengajuan' => $id_pengajuan,
+                        'nama_dokumen' => $nama_dokumen,
+                        'path' => $path,
+                    ]);
+    
+                    \Log::info("Dokumen $nama_dokumen berhasil disimpan.", ['id_pengajuan' => $id_pengajuan, 'nama_dokumen' => $nama_dokumen, 'path' => $path]);
+    
+                } else {
+                    \Log::warning("Dokumen $field tidak ada dalam permintaan.");
+                    
+                }
+            }
+        } catch (\Exception $e) {
+            return redirect()->route('pengajuan.index')->with('error', 'Terjadi kesalahan saat menambahkan pengajuan: ' . $e->getMessage());
         }
     }
 
-    public function details()
+    public function update(Request $request, $id_pengajuan)
     {
-        //$pengajuan = Pengajuan::findOrFail($id); 
+        try {
+            $pengajuan = Pengajuan::findOrFail($id_pengajuan);
 
-        //return view('pengajuan.details'); 
+            $request->validate([
+                'nama_kegiatan' => 'sometimes|string|max:100',
+                'nama_ketuplak' => 'sometimes|string|max:50',
+                'notelp' => 'sometimes|string|regex:/^\+?[0-9]{10,15}$/',
+                'jumlah_peserta' => 'sometimes|integer',
+                'tanggal_mulai' => 'sometimes|array|min:1',
+                'tanggal_akhir' => 'sometimes|array|min:1',
+                'tanggal_mulai.*' => 'required_with:tanggal_akhir.*|date',
+                'tanggal_akhir.*' => 'required_with:tanggal_mulai.*|date|after_or_equal:tanggal_mulai.*',
+                'waktu_mulai' => 'sometimes|array|min:1',
+                'waktu_akhir' => 'sometimes|array|min:1',
+                'waktu_mulai.*' => 'required_with:waktu_akhir.*|date_format:H:i',
+                'waktu_akhir.*' => 'required_with:waktu_mulai.*|date_format:H:i|after:waktu_mulai.*',
+                'ruangan' => 'sometimes|array|min:1',
+                'ruangan.*' => 'exists:ruangan,id_ruangan',
+            ]);
+
+            // Mengupdate data pengajuan
+            $pengajuan->update([
+                'nama_kegiatan' => $request->nama_kegiatan ?? $pengajuan->nama_kegiatan,
+                'nama_ketuplak' => $request->nama_ketuplak ?? $pengajuan->nama_ketuplak,
+                'notelp' => $request->notelp ?? $pengajuan->notelp,
+                'jumlah_peserta' => $request->jumlah_peserta ?? $pengajuan->jumlah_peserta,
+                'status' => 'diedit',
+                'edited' => true,
+                'updated_at' => now(),
+            ]);
+
+            // Mengupdate data ruangan jika ada
+            if ($request->has('ruangan')) {
+                MenggunakanRuangan::where('id_pengajuan', $id_pengajuan)->delete();
+
+                foreach ($request->ruangan as $index => $ruanganId) {
+                    $tanggalMulai = $request->tanggal_mulai[$index] ?? null;
+                    $tanggalAkhir = $request->tanggal_akhir[$index] ?? null;
+                    $waktuMulai = $request->waktu_mulai[$index] ?? null;
+                    $waktuAkhir = $request->waktu_akhir[$index] ?? null;
+
+                    MenggunakanRuangan::create([
+                        'id_pengajuan' => $id_pengajuan,
+                        'id_ruangan' => $ruanganId,
+                        'tanggal_mulai' => $tanggalMulai,
+                        'tanggal_akhir' => $tanggalAkhir,
+                        'waktu_mulai' => $waktuMulai,
+                        'waktu_akhir' => $waktuAkhir,
+                    ]);
+                }
+            }
+
+            return redirect()->route('pengajuan.show', $pengajuan->id_pengajuan)->with('success', 'Informasi pengajuan berhasil diperbarui.');
+        } catch (\Exception $e) {
+            dd($e->getMessage());
+            return redirect()->route('pengajuan.show', $id_pengajuan)->with('failed', 'Informasi pengajuan tidak berhasil diperbarui.');
+        }
+    }
+
+    public function submitPengajuan(Request $request, $id_pengajuan)
+    {
+        $request->validate([
+            'status' => 'required|string',
+        ]);
+
+        $pengajuan = Pengajuan::find($id_pengajuan);
+
+        if (!$pengajuan) {
+            return redirect()->back()->with('error', 'Pengajuan tidak ditemukan');
+        }
+
+        $pengajuan->edited = true;
+        $pengajuan->status = 'diedit';
+        $pengajuan->save();
+
+        return redirect()->route('pengajuan.show', $id_pengajuan)->with('success', 'Pengajuan berhasil diedit');
     }
 }

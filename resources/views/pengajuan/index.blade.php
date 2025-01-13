@@ -1,538 +1,468 @@
 @extends('layout.main')
 @section('content')
 
-<!-- cards -->
+<!-- Cards -->
 <div class="w-full px-6 py-6 mx-auto">
     <div class="container mx-auto mt-6">
         <!-- Tabs -->
-        <div class="flex justify-end">
-            <button id="diajukanBtn" onclick="showCard('diajukan')" class="tab-button active bg-white text-gray-800 font-bold py-2 px-6 rounded-t-lg shadow-md mr-2">Diajukan</button>
-            <button id="riwayatBtn" onclick="showCard('riwayat')" class="tab-button bg-gray-200 text-gray-400 font-bold py-2 px-6 rounded-t-lg mr-2">Riwayat</button>
+        <div class="flex justify-end -mb-px">
+            <button
+                id="diajukanBtn"
+                onclick="showCard('diajukan')"
+                class="tab-button {{ $activeTab === 'diajukan' ? 'bg-white text-gray-800 shadow-md' : 'bg-gray-200 text-gray-400' }} font-bold py-2 px-6 rounded-t-lg shadow-md mr-2">
+                Diajukan
+            </button>
+            <button
+                id="riwayatBtn"
+                onclick="showCard('riwayat')"
+                class="tab-button {{ $activeTab === 'riwayat' ? 'bg-white text-gray-800 shadow-md' : 'bg-gray-200 text-gray-400' }} font-bold py-2 px-6 rounded-t-lg shadow-md mr-2">
+                Riwayat
+            </button>
         </div>
 
         <!-- Card Diajukan -->
-        <div id="diajukanCard" class="bg-white shadow-md rounded-lg p-6 max-w-sm mx-auto">
+        <div id="diajukanCard" class="bg-white shadow-md rounded-lg p-6 -mt-1 relative ? {{ ($activeTab ?? '') === 'diajukan' }}">
             <!-- Tombol Pengajuan -->
-            <div class="flex justify-between mb-4">
-                <button data-bs-toggle="modal" data-bs-target="#pengajuanModal"
-                    class="bg-blue-600 text-white px-4 py-2 rounded-lg">
-                    <span class="mr-2">+</span>Tambah Pengajuan
+            <div class="flex flex-col items-start">
+                <button data-bs-toggle="modal" data-bs-target="#pengajuanModal" class="flex items-center bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg transition duration-200 ease-in-out">
+                    <span class="mr-2 text-lg font-bold">+</span>Tambah Pengajuan
                 </button>
             </div>
 
-            <div class="container mx-auto">
-                <!-- Notifikasi sukses -->
-                @if (session('success'))
-                    <div x-data="{ show: true }" 
-                        x-show="show" 
-                        x-init="setTimeout(() => show = false, 5000)" 
-                        class="fixed top-10 left-1/2 transform -translate-x-1/2 bg-orange-500 bg-opacity-100 text-white text-center px-4 py-2 rounded shadow-lg z-50"
-                        style="width: 350px; text-align: center;"
-                        role="alert">
-                        <span class="block sm:inline">{{ session('success') }}</span>
-                        <button @click="show = false" class="absolute top-1 right-1 text-white">
-                            <svg class="fill-current h-6 w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" role="button">
-                                <path d="M14.348 5.652a1 1 0 10-1.414-1.414L10 7.172 7.066 4.238a1 1 0 10-1.414 1.414L8.586 8.586l-2.936 2.936a1 1 0 001.414 1.414L10 9.828l2.936 2.936a1 1 0 001.414-1.414L11.414 8.586l2.936-2.936z"/>
-                            </svg>
-                        </button>
-                    </div>
-                @endif
-
-                <!-- Notifikasi gagal -->
-                @if (session('failed'))
-                    <div x-data="{ show: true }" 
-                        x-show="show" 
-                        x-init="setTimeout(() => show = false, 5000)" 
-                        class="fixed top-20 left-1/2 transform -translate-x-1/2 bg-red-600 bg-opacity-100 text-white px-6 py-4 rounded shadow-lg z-50"
-                        style="width: 300px; text-align: center;"
-                        role="alert">
-                        <span class="block sm:inline">{{ session('failed') }}</span>
-                        <button @click="show = false" class="absolute top-1 right-1 text-white">
-                            <svg class="fill-current h-6 w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" role="button">
-                                <path d="M14.348 5.652a1 1 0 10-1.414-1.414L10 7.172 7.066 4.238a1 1 0 10-1.414 1.414L8.586 8.586l-2.936 2.936a1 1 0 001.414 1.414L10 9.828l2.936 2.936a1 1 0 001.414-1.414L11.414 8.586l2.936-2.936z"/>
-                            </svg>
-                        </button>
-                    </div>
-                @endif
-            </div>
-
             <!-- Sorting dan Pencarian -->
-            <div class="relative">
-                <div class="h-1 bg-orange-500 py-6"></div> <!-- Top Orange Line -->
+            <div class="bg-orange-500 p-4 border-b border-orange-500 mt-4"></div>
                 <div class="bg-gray-100 p-4 border-b border-gray-300">
                     <form method="GET" action="{{ route('pengajuan.index') }}" class="flex justify-between items-center">
+                        <input type="hidden" name="active_tab" value="diajukan">
                         <!-- Sort Dropdown -->
                         <div class="w-1/4">
                             <div class="relative">
-                                <select name="sort_status" class="appearance-none border border-gray-300 rounded-md p-2 w-full pr-10" onchange="this.form.submit()">
-                                    <option value="">Sort Status</option>
-                                    <option value="direview" {{ request('sort_status') == 'direview' ? 'selected' : '' }}>Direview</option>
-                                    <option value="direvisi" {{ request('sort_status') == 'direvisi' ? 'selected' : '' }}>Direvisi</option>
+                                <select name="diajukan_sort_status" class="appearance-none border border-gray-300 rounded-md p-2 w-full pr-10" onchange="this.form.submit()">
+                                    <option value=""> Pilih Status </option>
+                                    <option value="diajukan" {{ request('diajukan_sort_status') == 'diajukan' ? 'selected' : '' }}>Diajukan</option>
+                                    <option value="direview" {{ request('diajukan_sort_status') == 'direview' ? 'selected' : '' }}>Direview</option>
+                                    <option value="direvisi" {{ request('diajukan_sort_status') == 'direvisi' ? 'selected' : '' }}>Direvisi</option>
+                                    <option value="diedit" {{ request('diajukan_sort_status') == 'diedit' ? 'selected' : '' }}>Diedit</option>
                                 </select>
+
                                 <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 011.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400"
+                                        viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd"
+                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 011.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                            clip-rule="evenodd" />
                                     </svg>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Search Input -->
-                        <div class="flex items-center mt-2 lg:flex-1">
-                            <div class="relative flex items-stretch w-full transition-all rounded-lg ease-soft">
-                                <span class="text-sm ease-soft leading-5.6 absolute z-50 -ml-px flex h-full items-center whitespace-nowrap rounded-lg rounded-tr-none rounded-br-none border border-r-0 border-transparent bg-transparent py-2 px-2.5 text-center font-normal text-gray-500 transition-all">
-                                    <i class="fas fa-search"></i>
-                                </span>
-                                <input type="text" name="search" value="{{ request('search') }}" class="pl-8.75 text-sm focus:shadow-soft-primary-outline ease-soft w-full leading-5.6 relative -ml-px block min-w-0 flex-auto rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding py-2 pr-3 text-gray-700 transition-all placeholder:text-gray-500 focus:border-fuchsia-300 focus:outline-none focus:transition-shadow" placeholder="Cari...">
-                            </div>
-
-                            <!-- Tombol reset hanya muncul jika ada pencarian atau sorting -->
-                            @if(request('search') || request('sort_status'))
-                            <a href="{{ route('pengajuan.index') }}" class="bg-gray-600 text-white py-2 px-4 rounded-md ml-4">Reset</a>
-                            @endif
+                        <div class="relative flex items-center space-x-2">
+                            <span class="text-sm flex items-center px-2 text-gray-500">
+                                <i class="fas fa-search"></i>
+                            </span>
+                            <input type="text" name="search" value="{{ request('search') }}" class="pl-8.75 text-sm border border-gray-300 rounded-md p-2 w-full" placeholder=" Cari">
+                                @if(request('search') || request('diajukan_sort_status'))
+                                    <a href="{{ route('pengajuan.index', ['active_tab' => 'diajukan']) }}" class="bg-gray-600 text-white py-2 px-4 rounded-md ml-4">Reset</a>
+                                @endif
                         </div>
                     </form>
                 </div>
 
                 <!-- Data Pengajuan -->
                 <div class="overflow-x-auto">
-                    <table class="min-w-full bg-white border border-gray-200 mmt-2 max-w-full">
+                    <table class="min-w-full w-full bg-white border border-gray-200 mt-2">
                         <thead class="bg-gray-200 text-gray-600">
                             <tr>
-                                <th class="py-3 px-4 border w-1/12">No</th>
-                                <th class="py-3 px-4 border w-1/12">Tanggal Pengajuan</th>
-                                <th class="py-3 px-4 border w-1/12">Nama Kegiatan</th>
-                                <th class="py-3 px-4 border w-1/12">Ormawa</th>
-                                <th class="py-3 px-4 border w-1/12">Status</th>
-                                <th class="py-3 px-4 border w-1/12">Keterangan</th>
-                                <th class="py-3 px-4 border w-1/12">Aksi</th>
+                                <th class="py-3 px-4 border">No</th>
+                                <th class="py-3 px-4 border">Tanggal Pengajuan</th>
+                                <th class="py-3 px-4 border">Nama Kegiatan</th>
+                                <th class="py-3 px-4 border">Ormawa</th>
+                                <th class="py-3 px-4 border">Status</th>
+                                <th class="py-3 px-4 border">Keterangan</th>
+                                <th class="py-3 px-4 border">Aksi</th>
                             </tr>
                         </thead>
 
                         <tbody>
-                        @foreach ($pengajuanList as $pengajuan)
-                            <tr>
-                                <td class="py-3 px-4 border">{{ $loop->iteration }}</td>
-                                <td class="py-3 px-4 border">{{ $pengajuan->tanggal_pengajuan }}</td>
-                                <td class="py-3 px-4 border">{{ $pengajuan->nama_kegiatan }}</td>
-                                <td class="py-3 px-4 border">{{ $pengajuan->ormawa }}</td>
-                                <td class="py-3 px-4 border">{{ $pengajuan->status }}</td>
-                                <td class="py-3 px-4 border">{{ $pengajuan->keterangan }}</td>
-                                <td class="py-3 px-4 border">
-                                    <a href="#" class="bg-purple-600 text-white px-2 py-1 style='border-radius: 5px;">Details</a>
-                                </td>
-                            </tr>
-                        @endforeach
+                            @foreach ($pengajuanDiajukan as $key => $pengajuan)
+                                <tr>
+                                    <td class="py-3 px-4 border">{{ $pengajuanDiajukan->firstItem() + $key }}</td>
+                                    <td class="py-3 px-4 border">{{ $pengajuan->tanggal_pengajuan }}</td>
+                                    <td class="py-3 px-4 border">{{ $pengajuan->nama_kegiatan }}</td>
+                                    <td class="py-3 px-4 border">{{ $pengajuan->pengaju->ormawa->nama_ormawa ?? '-' }}</td>
+                                    <td class="py-3 px-4 border">
+                                        <span class="inline-block py-1 px-3 rounded-lg 
+                                            @if($pengajuan->status == 'diajukan' || $pengajuan->status == 'diedit')
+                                                bg-blue-200 text-blue-800
+                                            @elseif($pengajuan->status == 'direview')
+                                                bg-yellow-200 text-yellow-800
+                                            @elseif($pengajuan->status == 'direvisi')
+                                                bg-orange-200 text-orange-800
+                                            @else
+                                                bg-gray-200 text-gray-800
+                                            @endif">
+                                            {{ ucfirst($pengajuan->status) }}
+                                        </span>
+                                    </td>
+                                    <td class="py-3 px-4 border">{{ $pengajuan->latestReview->first()->catatan ?? '-' }}</td>
+                                    <td class="py-3 px-4 border items-center space-y-2">
+                                        <!-- Button Detail -->
+                                        <button 
+                                            onclick="window.location='{{ route('pengajuan.show', ['id_pengajuan' => $pengajuan->id_pengajuan]) }}'" 
+                                            class="bg-blue-600 text-white px-4 py-2 rounded-lg">
+                                            Detail
+                                        </button>
+                                        @if ($pengajuan->status == 'diajukan')
+                                        <form
+                                            action="{{ route('pengajuan.destroy', ['id_pengajuan' => $pengajuan->id_pengajuan]) }}" 
+                                            method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                        
+                                            <!-- Button Hapus -->
+                                            <button
+                                                type="button"
+                                                data-id="{{ $pengajuan->id_pengajuan }}"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#deleteModal"
+                                                class="text-white px-4 py-2 rounded-lg"
+                                                style="background-color: #ff7f00 !important;"
+                                                onclick="openModal('{{ $pengajuan->id_pengajuan }}')">
+                                                Hapus
+                                            </button>
+
+                                            <!-- Modal -->
+                                            <div class="modal fade overflow-y-auto" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog flex items-center justify-center min-h-screen">
+                                                    <div class="modal-content">
+                                                        <!-- Header Modal -->
+                                                        <div class="modal-header bg-gray-100">
+                                                            <h5 class="modal-title text-xl font-bold text-gray-800" id="deleteModalLabel">
+                                                               Hapus Pengajuan
+                                                            </h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        
+                                                        <div class="modal-body">
+                                                            <p class="text-gray-700 text-lg">
+                                                                Apakah Anda yakin ingin menghapus pengajuan ini?
+                                                            </p>
+                                                        </div>
+                                                        
+                                                        <div class="modal-footer flex justify-end space-x-4">
+                                                            <button type="button"
+                                                                class="text-white px-4 py-2 rounded hover:bg-gray-500" 
+                                                                style="background-color: #808080 !important;"
+                                                                data-bs-dismiss="modal">
+                                                                Batal
+                                                            </button>
+                                                            
+                                                            <form id="deleteForm" method="POST" action="/pengajuan/1">
+                                                                <button type="submit"
+                                                                    class="text-white px-4 py-2 rounded hover:bg-red-700"
+                                                                    style="background-color: #ff0000 !important;">
+                                                                    Hapus
+                                                                </button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                        @endif
+                                        
+                                        <script>
+                                            function openModal(id) {
+                                                const modal = document.getElementById('deleteModal');
+                                                const form = document.getElementById('deleteForm');
+                                                
+                                                form.action = `/pengajuan/${id}`;
+                                                
+                                                modal.classList.remove('hidden');
+                                            }
+
+                                            function closeModal() {
+                                                const modal = document.getElementById('deleteModal');
+                                                modal.classList.add('hidden');
+                                            }
+                                        </script>
+                                    </td>
+                                </tr>
+                            @endforeach
+
+                            @if($pengajuanDiajukan->isEmpty())
+                                <tr>
+                                    <td colspan="7" class="text-center">Tidak ada data pengajuan</td>
+                                </tr>
+                            @endif
                         </tbody>
                     </table>
-                </div>
 
-                <!-- Modal -->
-                <div class="modal fade" id="pengajuanModal" tabindex="-1" aria-labelledby="pengajuanModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="pengajuanModalLabel">Form Pengajuan Sarana dan Prasarana</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <form method="POST" enctype="multipart/form-data" action="{{ route('pengajuan.form') }}">
-                                    @csrf <!-- CSRF token for security -->
-                                    
-                                    <!-- Form fields -->
-                                    <div class="mb-3">
-                                        <label for="ormawa" class="form-label">Ormawa Pengaju</label>
-                                        <select name="ormawa" id="ormawa" class="form-control" required>
-                                            <option value="" disabled selected>Pilih Organisasi Mahasiswa</option>
-                                            <option value="MPM">Majelis Perwakilan Mahasiswa (MPM)</option>
-                                            <option value="BEM">Badan Eksekutif Mahasiswa (BEM)</option>
-                                            <option value="HMAN">HMJ_Administrasi Niaga</option>
-                                            <option value="HMAK">HMJ_Akuntansi</option>
-                                            <option value="HIMARIS">HMJ_Bahasa Inggris</option>
-                                            <option value="HME">HMJ_Teknik Elektro</option>
-                                            <option value="HMJTK">HMJ_Teknik Kimia</option>
-                                            <option value="HIMAKOM">HMJ_Teknik Komputer dan Informatika</option>
-                                            <option value="HMTE">HMJ_Teknik Konversi Energi</option>
-                                            <option value="HMM">HMJ_Teknik Mesin</option>
-                                            <option value="HMRA">HMJ_Teknik Refrigerasi dan Tata Udara</option>
-                                            <option value="HIMAS">HMJ_Teknik Sipil</option>
-                                            <option value="UKM_Assalam">UKM_Asosiasi Mahasiswa Islam (ASSALAM)</option>
-                                            <option value="UKM_BelaDiri">UKM_BELA DIRI</option>
-                                            <option value="UKM_BolaBaske">UKM_BOLA BASKET</option>
-                                            <option value="UKM_BolaVoli">UKM_BOLA VOLI</option>
-                                            <option value="UKM_Bulutangkis">UKM_BULUTANGKIS</option>
-                                            <option value="UKM_Catur">UKM_CATUR</option>
-                                            <option value="UKM_FlagFootball">UKM_Flag Football</option>
-                                            <option value="UKM_Kabayan">UKM_Kebudayaan Baraya Sunda (Kabayan)</option>
-                                            <option value="UKM_KMK">UKM_Keluarga Mahasiswa Katholik (KMK)</option>
-                                            <option value="UKM_KEWIRAUSAHAAN">UKM_KEWIRAUSAHAAN</option>
-                                            <option value="UKM_KSR">UKM_KSR</option>
-                                            <option value="UKM_MusikDanTeater">UKM_MUSIK DAN TEATER</option>
-                                            <option value="UKM_Otomotif">UKM_OTOMOTIF</option>
-                                            <option value="UKM_PSM">UKM_Paduan Suara Mahasiswa (PSM)</option>
-                                            <option value="UKM_SAGA">UKM_Perhimpunan Penempuh Rimba dan Pendaki Gunung (PPRPG) SAGA</option>
-                                            <option value="UKM_PMK">UKM_Persekutuan Mahasiswa Kristen (PMK)</option>
-                                            <option value="UKM_Pramuka">UKM_Pramuka</option>
-                                            <option value="UKM_Robotika">UKM_ROBOTIKA</option>
-                                            <option value="UKM_USF">UKM_SEPAK BOLA & FUTSAL</option>
-                                            <option value="UKM_TenisMeja">UKM_TENIS MEJA</option>
-                                            <option value="UKM_ELTRAS">UKM_The Education and Entertainment Line Transmitter Radio Stations (ELTRAS)</option>
-                                            <option value="UKM_UBSU">UKM_Unit Budaya dan Seni Sumatera Utara (UBSU)</option>
-                                            <option value="UKM_UKB">UKM_Unit Kesenian B</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="nama_pengaju" class="form-label">Nama Pengaju</label>
-                                        <input type="text" name="nama_pengaju" id="nama_pengaju" class="form-control" required>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="tanggal_peminjaman" class="form-label">Tanggal Peminjaman</label>
-                                        <input type="date" name="tanggal_peminjaman" id="tanggal_peminjaman" class="form-control" required>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="tanggal_berakhir" class="form-label">Tanggal Berakhir</label>
-                                        <input type="date" name="tanggal_berakhir" id="tanggal_berakhir" class="form-control" required>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="waktu" class="form-label">Waktu Kegiatan</label>
-                                        <input type="time" name="waktu" id="waktu" class="form-control" required>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="nama_kegiatan" class="form-label">Nama Kegiatan</label>
-                                        <input type="text" name="nama_kegiatan" id="nama_kegiatan" class="form-control" required>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="tempat_peminjama" class="form-label">Tempat Peminjaman</label>
-                                        <select name="tempat_peminjaman" id="tempat_peminjaman" class="form-control" required>
-                                            <option value="" disabled selected>Pilih Tempat</option>
-                                            <option value="H-405">Pendopo Agung</option>
-                                            <option value="H-405">Ruang Kulaih H-405</option>
-                                            <option value="Rapat-A">Ruang Rapat A (P2T)</option>
-                                            <option value="Kelas-310">Ruang Kelas 310</option>
-                                            <option value="Kelas-309">Ruang Kelas 309</option>
-                                            <option value="Kelas-307">Ruang Kelas 307</option>
-                                            <option value="Kelas-301">Ruang Kelas 301</option>
-                                            <option value="Aula">Ruang Aula</option>
-                                            <option value="Telcon">Ruang Teleconference Room </option>
-                                            <option value="Conference">Ruang Conference Room</option>
-                                            <option value="Rapat-E">Ruang Rapat E</option>
-                                            <option value="Rapat-D">Ruang Rapat D</option>
-                                            <option value="Rapat-C">Ruang Rapat C</option>
-                                            <option value="Rapat-B">Ruang Rapat B (Auditorium)</option>
-                                            <option value="Rapat-A">Ruang Rapat A (Direktorat)</option>
-                                            <option value="Rapim">Ruang Rapim</option>
-                                        </select>
-                                    </div>
-
-                                    <!-- File upload inputs -->
-                                    <div class="mb-3">
-                                        <label for="dokumen1" class="form-label">Proposal</label>
-                                        <input type="file" name="dokumen1" id="dokumen1" class="form-control" accept=".pdf">
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="dokumen2" class="form-label">Term of Reference</label>
-                                        <input type="file" name="dokumen2" id="dokumen2" class="form-control" accept=".pdf">
-                                    </div>
-                                    
-                                    <div class="mb-3">
-                                        <label for="dokumen3" class="form-label"> Surat Peminjaman Sarana Prasarana</label>
-                                        <input type="file" name="dokumen3" id="dokumen3" class="form-control" accept=".pdf">
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="dokumen4" class="form-label">Surat Pernyataan Berkegiatan</label>
-                                        <input type="file" name="dokumen4" id="dokumen4" class="form-control" accept=".pdf">
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="dokumen5" class="form-label">Surat Pernyataan Ketua Ormawa</label>
-                                        <input type="file" name="dokumen5" id="dokumen5" class="form-control" accept=".pdf">
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="dokumen6" class="form-label">Surat Pendampingan Pembina</label>
-                                        <input type="file" name="dokumen6" id="dokumen6" class="form-control" accept=".pdf">
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="dokumen7" class="form-label"> Lampiran Daftar Peserta</label>
-                                        <input type="file" name="dokumen7" id="dokumen7" class="form-control" accept=".pdf">
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="link" class="form-label">Link Surat Izin Orang Tua</label>
-                                        <input type="url" name="link_gdrive" id="link_gdrive" class="form-control" placeholder="https://drive.google.com/drive/folders/surat_izin_orang_tua">
-                                    </div>
-
-                                    <!-- Submit and Cancel buttons -->
-                                    <div class="flex justify-center mt-6">
-                                        <button type="submit" class="bg-blue-600 text-white py-2 px-4 rounded-md mr-4">Simpan</button>
-                                        <button type="button" class="bg-orange-600 text-white py-2 px-4 rounded-md mr-4" onclick="window.location.href='{{ route('pengajuan.index') }}'">Batal</button>
-                                    </div>
-                                    @if ($errors->any())
-                                        <div class="alert alert-danger">
-                                            <ul>
-                                                @foreach ($errors->all() as $error)
-                                                    <li>{{ $error }}</li>
-                                                @endforeach
-                                            </ul>
-                                        </div>
-                                    @endif
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Card Riwayat -->
-        <div id="riwayatCard" class="bg-white shadow-md rounded-lg p-6 max-w-sm mx-auto hidden"> 
-            <div class="relative">
-                <div class="h-1 bg-orange-500 py-6"></div>
-                <div class="bg-gray-100 p-2 border-b border-gray-300">
-                    <div class="flex justify-between mb-4">
-
-                        <!-- Sort Dropdown -->
-                        <div class="w-1/4 pr-4">
-                          <div class="relative">
-                              <select class="appearance-none border border-gray-300 rounded-md p-2 w-full pr-10">
-                                  <option value="">Sort Status</option>
-                                  <option value="selesai">Selesai</option>
-                                  <option value="ditolak">Ditolak</option>
-                              </select>
-                              <!-- Custom Dropdown Icon -->
-                              <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                                      <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 011.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                  </svg>
-                              </div>
-                          </div>
-                      </div>
-
-                        <!-- Search Box -->
-                        <div class="flex items-center mt-2 grow sm:mt-0 sm:mr-6 md:mr-0 lg:flex lg:basis-auto">
-                          <div class="flex items-center md:ml-auto md:pr-4">
-                            <div class="relative flex flex-wrap items-stretch w-full transition-all rounded-lg ease-soft">
-                              <span class="text-sm ease-soft leading-5.6 absolute z-50 -ml-px flex h-full items-center whitespace-nowrap rounded-lg rounded-tr-none rounded-br-none border border-r-0 border-transparent bg-transparent py-2 px-2.5 text-center font-normal text-slate-500 transition-all">
-                                <i class="fas fa-search"></i>
-                              </span>
-                              <input type="text" class="pl-8.75 text-sm focus:shadow-soft-primary-outline ease-soft w-1/100 leading-5.6 relative -ml-px block min-w-0 flex-auto rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding py-2 pr-3 text-gray-700 transition-all placeholder:text-gray-500 focus:border-fuchsia-300 focus:outline-none focus:transition-shadow" placeholder="Cari..." />
-                            </div>
-                          </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Table Riwayat -->
-            <div class="overflow-x-auto">
-                <table class="min-w-full bg-white border border-gray-200 mmt-2 max-w-full">
-                    <thead class="bg-gray-200 text-gray-600">
-                        <tr>
-                            <th class="py-3 px-4 border w-1/12">No</th>
-                            <th class="py-3 px-4 border w-1/12">Tanggal Pengajuan</th>
-                            <th class="py-3 px-4 border w-1/12">Nama Kegiatan</th>
-                            <th class="py-3 px-4 border w-1/12">Ormawa</th>
-                            <th class="py-3 px-4 border w-1/12">Status</th>
-                            <th class="py-3 px-4 border w-1/12">Keterangan</th>
-                            <th class="py-3 px-4 border w-1/12">Aksi</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                    @foreach ($pengajuanList as $pengajuan)
-                        <tr>
-                            <td class="py-3 px-4 border">{{ $loop->iteration }}</td>
-                            <td class="py-3 px-4 border">{{ $pengajuan->tanggal_pengajuan }}</td>
-                            <td class="py-3 px-4 border">{{ $pengajuan->nama_kegiatan }}</td>
-                            <td class="py-3 px-4 border">{{ $pengajuan->ormawa }}</td>
-                            <td class="py-3 px-4 border">{{ $pengajuan->status }}</td>
-                            <td class="py-3 px-4 border">{{ $pengajuan->keterangan }}</td>
-                            <td class="py-3 px-4 border">
-                                <!-- <a href="#" class="bg-purple-600 text-white px-2 py-1 rounded-md hover:bg-purple-700 transition">Details</a> -->
-                            </td>
-                        </tr>
-
-                        @if($pengajuanList->isEmpty())
-                            <tr>
-                                <td colspan="7" class="text-center">Tidak ada data pengajuan</td>
-                            </tr>
+                    <div class="mt-4 flex justify-center items-center">
+                        @if ($pengajuanDiajukan->currentPage() > 1)
+                            <a href="{{ $pengajuanDiajukan->appends(request()->except('diajukan_page'))->previousPageUrl() }}" 
+                            class="flex items-center text-blue-500 px-4 py-2 rounded-lg border border-blue-500 hover:bg-blue-500 hover:text-white transition-all mr-2">
+                                <span class="mr-2">&larr; Prev</span>
+                            </a>
                         @endif
-                        
-                    @endforeach
-                    </tbody>
-                </table>
+
+                        <div class="flex items-center space-x-2">
+                            @if ($pengajuanDiajukan->lastPage() > 10)
+                                <a href="{{ $pengajuanDiajukan->appends(request()->except('diajukan_page'))->url(1) }}" 
+                                class="px-4 py-2 rounded-lg text-blue-500 hover:bg-blue-100 transition-all mr-2">1</a>
+
+                                <span class="px-4 py-2 text-gray-500 mr-2">...</span>
+
+                                <a href="{{ $pengajuanDiajukan->appends(request()->except('diajukan_page'))->url($pengajuanDiajukan->lastPage()) }}" 
+                                class="px-4 py-2 rounded-lg text-blue-500 hover:bg-blue-100 transition-all mr-2">{{ $pengajuanDiajukan->lastPage() }}</a>
+                            @else
+                                @foreach ($pengajuanDiajukan->getUrlRange(1, $pengajuanDiajukan->lastPage()) as $page => $url)
+                                    @if ($page == $pengajuanDiajukan->currentPage())
+                                        <span class="px-4 py-2 rounded-lg bg-blue-500 text-white mr-2">{{ $page }}</span>
+                                    @else
+                                        <a href="{{ $pengajuanDiajukan->appends(request()->except('diajukan_page'))->url($page) }}" 
+                                        class="px-4 py-2 rounded-lg text-blue-500 hover:bg-blue-100 transition-all mr-2">{{ $page }}</a>
+                                    @endif
+                                @endforeach
+                            @endif
+                        </div>
+
+                        @if ($pengajuanDiajukan->hasMorePages())
+                            <a href="{{ $pengajuanDiajukan->appends(request()->except('diajukan_page'))->nextPageUrl() }}" 
+                            class="flex items-center text-blue-500 px-4 py-2 rounded-lg border border-blue-500 hover:bg-blue-500 hover:text-white transition-all ml-2">
+                                <span class="mr-2">Next &rarr;</span>
+                            </a>
+                        @endif
+                    </div>
+                </div>
             </div>
-        </div>
-    
-        <footer class="pt-4">
-            <div class="w-full px-6 mx-auto">
-                <div class="flex flex-wrap items-center -mx-3 lg:justify-between">
-                    <div class="w-full max-w-full px-3 mt-0 mb-6 shrink-0 lg:mb-0 lg:w-1/2 lg:flex-none">
-                        <div class="text-sm leading-normal text-center text-slate-500 lg:text-left">
-                            ©
-                            <script>
-                                document.write(new Date().getFullYear() + ",");
-                            </script>
-                            made with <i class="fa fa-heart"></i> by
-                            <a href="https://www.creative-tim.com" class="font-semibold text-slate-700" target="_blank">Creative Tim</a>
-                            for a better web.
+
+            <!-- Card Riwayat -->
+            <div id="riwayatCard" class="tab-content bg-white shadow-md rounded-lg p-6 -mt-1 relative hidden">
+                <!-- Sorting dan Pencarian -->
+                <div class="bg-orange-500 p-4 border-b border-orange-500 mt-4"></div>
+                    <div class="bg-gray-100 p-4 border-b border-gray-300">
+                        <form method="GET" action="{{ route('pengajuan.index') }}" class="flex justify-between items-center">
+                            <input type="hidden" name="active_tab" value="riwayat">
+
+                            <!-- Sort Dropdown -->
+                            <div class="w-1/4">
+                                <div class="relative">
+                                    <select name="riwayat_sort_status" class="appearance-none border border-gray-300 rounded-md p-2 w-full pr-10" onchange="this.form.submit()">
+                                        <option value=""> Pilih Status </option>
+                                        <option value="selesai" {{ request('riwayat_sort_status') == 'selesai' ? 'selected' : '' }}>Selesai</option>
+                                        <option value="ditolak" {{ request('riwayat_sort_status') == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
+                                    </select>
+
+                                    <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 011.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Search Input -->
+                            <div class="relative flex items-center space-x-2">
+                                <span class="text-sm flex items-center px-2 text-gray-500">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                                <input type="text" name="search" value="{{ request('search') }}" class="pl-8.75 text-sm border border-gray-300 rounded-md p-2 w-full" placeholder=" Cari">
+                                @if(request('search') || request('sort_status'))
+                                    <a href="{{ route('pengajuan.index') }}" class="bg-gray-600 text-white py-2 px-4 rounded-md ml-4">Reset</a>
+                                @endif
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Table Riwayat Pengajuan -->
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full bg-white border border-gray-200 mt-2">
+                            <thead class="bg-gray-200 text-gray-600">
+                                <tr>
+                                    <th class="py-3 px-4 border">No</th>
+                                    <th class="py-3 px-4 border">Tanggal Pengajuan</th>
+                                    <th class="py-3 px-4 border">Nama Kegiatan</th>
+                                    <th class="py-3 px-4 border">Ormawa</th>
+                                    <th class="py-3 px-4 border">Status</th>
+                                    <th class="py-3 px-4 border">Keterangan</th>
+                                    <th class="py-3 px-4 border">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @foreach ($pengajuanRiwayat as $pengajuan)
+                                <tr>
+                                    <td class="py-3 px-4 border">{{ $loop->iteration }}</td>
+                                    <td class="py-3 px-4 border">{{ $pengajuan->tanggal_pengajuan }}</td>
+                                    <td class="py-3 px-4 border">{{ $pengajuan->nama_kegiatan }}</td>
+                                    <td class="py-3 px-4 border">{{ $pengajuan->pengaju->ormawa->nama_ormawa ?? '-' }}</td>
+                                    <td class="py-3 px-4 border">
+                                    <span class="inline-block py-1 px-3 rounded-lg
+                                            @if($pengajuan->status == 'selesai')
+                                                bg-green-200 text-blue-800
+                                            @elseif($pengajuan->status == 'ditolak')
+                                                bg-red-200 text-red-800
+                                            @else
+                                                bg-gray-200 text-gray-800
+                                            @endif">
+                                            {{ ucfirst($pengajuan->status) }}
+                                        </span>
+                                    </td>
+                                    <td class="py-3 px-4 border">{{ $pengajuan->latestReview->first()->catatan ?? '-' }}</td>
+                                    <td class="py-3 px-4 border items-center space-y-2">
+                                        <button onclick="window.location='{{ route('pengajuan.show', ['id_pengajuan' => $pengajuan->id_pengajuan]) }}'" class="bg-blue-600 text-white px-4 py-2 rounded-lg">Detail</button>
+                                        @if ($pengajuan->status === 'selesai')
+                                            <button
+                                                onclick="window.location='{{ route('dokumen.generate', ['id_pengajuan' => $pengajuan->id_pengajuan]) }}'"
+                                                class="bg-green-600 text-white px-4 py-2 text-sm rounded-lg">Unduh</button>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
+
+                            @if($pengajuanRiwayat->isEmpty())
+                                <tr>
+                                    <td colspan="7" class="text-center">Tidak ada data pengajuan yang selesai</td>
+                                </tr>
+                            @endif
+                            </tbody>
+                        </table>
+                        <div class="mt-4 flex justify-center items-center">
+                            @if ($pengajuanRiwayat->currentPage() > 1)
+                                <a href="{{ $pengajuanRiwayat->appends(request()->except('riwayat_page'))->previousPageUrl() }}" 
+                                class="flex items-center text-blue-500 px-4 py-2 rounded-lg border border-blue-500 hover:bg-blue-500 hover:text-white transition-all mr-2">
+                                    <span class="mr-2">&larr; Prev</span>
+                                </a>
+                            @endif
+
+                            <div class="flex items-center space-x-2">
+                                @if ($pengajuanRiwayat->lastPage() > 10)
+                                    <a href="{{ $pengajuanRiwayat->appends(request()->except('riwayat_page'))->url(1) }}" 
+                                    class="px-4 py-2 rounded-lg text-blue-500 hover:bg-blue-100 transition-all mr-2">1</a>
+
+                                    <span class="px-4 py-2 text-gray-500 mr-2">...</span>
+
+                                    <a href="{{ $pengajuanRiwayat->appends(request()->except('riwayat_page'))->url($pengajuanRiwayat->lastPage()) }}" 
+                                    class="px-4 py-2 rounded-lg text-blue-500 hover:bg-blue-100 transition-all mr-2">{{ $pengajuanRiwayat->lastPage() }}</a>
+                                @else
+                                    @foreach ($pengajuanRiwayat->getUrlRange(1, $pengajuanRiwayat->lastPage()) as $page => $url)
+                                        @if ($page == $pengajuanRiwayat->currentPage())
+                                            <span class="px-4 py-2 rounded-lg bg-blue-500 text-white mr-2">{{ $page }}</span>
+                                        @else
+                                            <a href="{{ $pengajuanRiwayat->appends(request()->except('riwayat_page'))->url($page) }}" 
+                                            class="px-4 py-2 rounded-lg text-blue-500 hover:bg-blue-100 transition-all mr-2">{{ $page }}</a>
+                                        @endif
+                                    @endforeach
+                                @endif
+                            </div>
+
+                            @if ($pengajuanRiwayat->hasMorePages())
+                                <a href="{{ $pengajuanRiwayat->appends(request()->except('riwayat_page'))->nextPageUrl() }}" 
+                                class="flex items-center text-blue-500 px-4 py-2 rounded-lg border border-blue-500 hover:bg-blue-500 hover:text-white transition-all ml-2">
+                                    <span class="mr-2">Next &rarr;</span>
+                                </a>
+                            @endif
                         </div>
                     </div>
-                    <div class="w-full max-w-full px-3 mt-0 shrink-0 lg:w-1/2 lg:flex-none">
-                        <ul class="flex flex-wrap justify-center pl-0 mb-0 list-none lg:justify-end">
-                            <li class="nav-item">
-                                <a href="https://www.creative-tim.com" class="block px-4 pt-0 pb-1 text-sm font-normal transition-colors ease-soft-in-out text-slate-500" target="_blank">Creative Tim</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="https://www.creative-tim.com/presentation" class="block px-4 pt-0 pb-1 text-sm font-normal transition-colors ease-soft-in-out text-slate-500" target="_blank">About Us</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="https://creative-tim.com/blog" class="block px-4 pt-0 pb-1 text-sm font-normal transition-colors ease-soft-in-out text-slate-500" target="_blank">Blog</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="https://www.creative-tim.com/license" class="block px-4 pt-0 pb-1 pr-0 text-sm font-normal transition-colors ease-soft-in-out text-slate-500" target="_blank">License</a>
-                            </li>
-                        </ul>
+            </div>
+        </div>
+
+        <footer class="pt-4 w-full bg-transparent">
+            <div class="container mx-auto px-6">
+                <div class="flex flex-wrap items-center justify-center">
+                    <div class="w-full max-w-full px-3 mt-0 mb-6 lg:mb-0 lg:w-1/2 text-center">
+                        <p class="text-center text-sm font-normal text-slate-500">
+                            Pengajuan Sarana dan Prasarana<br>
+                            Politeknik Negeri Bandung
+                        </p>
                     </div>
                 </div>
             </div>
         </footer>
+
     </div>
 </div>
+@include('modal.modal_tambah_pengajuan')
 
-
+@if (session('success'))
 <script>
-    $(document).ready(function() {
-        $('#ormawa').select2({
-            placeholder: "Pilih Organisasi Mahasiswa"
-        });
-    });
+    Swal.fire({
+    position: "center",
+    title: "{{session('success')}}",
+    showConfirmButton: false,
+    timer: 1500,
+    icon: "success"
+  });
+</script>
+@endif
 
-    document.getElementById("link").addEventListener("blur", function() {
-        // Ambil nilai link dari form
-        var linkValue = document.getElementById("link").value;
-
-        // Validasi apakah input adalah URL yang benar
-        if (!linkValue.startsWith("http://") && !linkValue.startsWith("https://")) {
-            alert("Harap masukkan URL yang valid (dimulai dengan http:// atau https://)");
-        } else {
-            // Jika valid, otomatis submit form
-            alert("Link berhasil disubmit: " + linkValue);
-            document.getElementById("linkForm").submit(); // Kirim form secara otomatis
-        }
-    });
-
-    function showCard(card) {
-        // Sembunyikan kedua card terlebih dahulu
-        document.getElementById('diajukanCard').classList.add('hidden');
-        document.getElementById('riwayatCard').classList.add('hidden');
-        
-        // Atur ulang button style
-        document.getElementById('diajukanBtn').classList.remove('bg-white', 'text-gray-800', 'shadow-md');
-        document.getElementById('diajukanBtn').classList.add('bg-gray-200', 'text-gray-400');
-        document.getElementById('riwayatBtn').classList.remove('bg-white', 'text-gray-800', 'shadow-md');
-        document.getElementById('riwayatBtn').classList.add('bg-gray-200', 'text-gray-400');
-        
-        // Tampilkan card sesuai tombol yang diklik
-        if (card === 'diajukan') {
-            document.getElementById('diajukanCard').classList.remove('hidden');
-            document.getElementById('diajukanBtn').classList.add('bg-white', 'text-gray-800', 'shadow-md');
-            document.getElementById('diajukanBtn').classList.remove('bg-gray-200', 'text-gray-400');
-        } else if (card === 'riwayat') {
-            document.getElementById('riwayatCard').classList.remove('hidden');
-            document.getElementById('riwayatBtn').classList.add('bg-white', 'text-gray-800', 'shadow-md');
-            document.getElementById('riwayatBtn').classList.remove('bg-gray-200', 'text-gray-400');
-        }
-    }
-
-    // Set default tab as Diajukan
-    document.addEventListener('DOMContentLoaded', function () {
-        showCard('diajukan');
+@if (session('error'))
+<script>
+    Swal.fire({
+        position: "center",
+        title: "{{ session('error') }}",
+        showConfirmButton: false,
+        timer: 1500,
+        icon: "error"
     });
 </script>
+@endif
 
-<!-- Bootstrap CSS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function showCard(activeTab) {
+        const url = new URL(window.location.href);
+        url.searchParams.set('active_tab', activeTab);
+        window.history.pushState({}, '', url);
 
-<style>
-    .container {
-        max-width: 90%;
-        margin: auto;
+        const diajukanCard = document.getElementById('diajukanCard');
+        const riwayatCard = document.getElementById('riwayatCard');
+
+        if (activeTab === 'diajukan') {
+            diajukanCard.classList.remove('hidden');
+            riwayatCard.classList.add('hidden');
+            
+            document.getElementById('diajukanBtn').classList.add('bg-white', 'text-gray-800', 'shadow-md');
+            document.getElementById('diajukanBtn').classList.remove('bg-gray-200', 'text-gray-400');
+            
+            document.getElementById('riwayatBtn').classList.add('bg-gray-200', 'text-gray-400');
+            document.getElementById('riwayatBtn').classList.remove('bg-white', 'text-gray-800', 'shadow-md');
+        } else if (activeTab === 'riwayat') {
+            riwayatCard.classList.remove('hidden');
+            diajukanCard.classList.add('hidden');
+            
+            document.getElementById('riwayatBtn').classList.add('bg-white', 'text-gray-800', 'shadow-md');
+            document.getElementById('riwayatBtn').classList.remove('bg-gray-200', 'text-gray-400');
+            
+            document.getElementById('diajukanBtn').classList.add('bg-gray-200', 'text-gray-400');
+            document.getElementById('diajukanBtn').classList.remove('bg-white', 'text-gray-800', 'shadow-md');
+        }
     }
 
-    table {
-        border-spacing: 0;
-        border-collapse: collapse;
-    }
+    window.onload = function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const activeTab = urlParams.get('active_tab') || 'diajukan';
+        showCard(activeTab);
+    };
 
-    th, td {
-        text-align: center;
-    }
+    document.addEventListener('DOMContentLoaded', () => {
+        const deleteButtons = document.querySelectorAll('[data-bs-toggle="modal"]');
+        const cancelButton = document.getElementById('cancelButton');
+        const deleteModal = document.getElementById('deleteModal');
 
-    input:focus, select:focus {
-        outline: none;
-        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
-    }
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const id = button.getAttribute('data-id');
+                const form = document.getElementById('deleteForm');
+                form.setAttribute('action', `/pengajuan/${id}`);
+                deleteModal.classList.remove('hidden');
+            });
+        });
 
-    .bg-blue-600 {
-        background-color: #3B82F6;
-    }
-
-    .bg-orange-500 {
-        background-color: #F97316;
-    }
-
-    .bg-gray-200 {
-        background-color: #E5E7EB;
-    }
-
-    .bg-yellow-400 {
-        background-color: #FBBF24;
-    }
-
-    .bg-green-400 {
-        background-color: #34D399;
-    }
-
-    .bg-red-400 {
-        background-color: #F87171;
-    }
-
-    .text-gray-500, .text-gray-600 {
-        color: #6B7280;
-    }
-
-    .rounded-md {
-        border-radius: 0.375rem;
-    }
-
-    .rounded-full {
-        border-radius: 9999px;
-    }
-
-    .h-8 {
-        height: 2rem;
-    }
-
-    .overflow-x-auto {
-        overflow-x: auto;
-    }
-
-    button {
-        z-index: 10;
-        display: inline-block;
-    }
-</style>
+        cancelButton.addEventListener('click', () => {
+            deleteModal.classList.add('hidden');
+        });
+    });
+</script>
 
 @endsection

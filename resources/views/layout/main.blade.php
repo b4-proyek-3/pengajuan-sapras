@@ -13,22 +13,31 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 -->
 <!DOCTYPE html>
-<html>
+<html lang>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="apple-touch-icon" sizes="76x76" href="./assets/img/apple-icon.png" />
+    <link rel="logo-polban" sizes="16x16" href="{{ asset('assets/img/logo-polban.png') }}" />
+    <link rel="icon" type="image/png" href="{{ asset('assets/img/logo-polban.png') }}" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="icon" type="image/png" href="./assets/img/favicon.png" />
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-    <title>Pengajuan Sarpras</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('asset/css/index.css') }}?v={{ time() }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    @vite('resources/css/app.css')
+    <title>Pengajuan Sarana dan Prasarana</title>
     @include('layout.partial.link')
+
   </head>
 
-  <body class="m-0 font-sans text-base antialiased font-normal leading-default bg-gray-50 text-slate-500">
+<body class="m-0 font-sans text-base antialiased font-normal leading-default bg-gray-50 text-slate-500"
+      data-success-message="{{ session('success') ?? '' }}"
+      data-error-message="{{ session('error') ?? '' }}">
     @include('layout.partial.header')
       @yield('content')
-    @include('layout.partial.footer')
   </body>
   @include('layout.partial.script')
+
 </html>
