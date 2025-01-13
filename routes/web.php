@@ -16,7 +16,7 @@ use App\Http\Controllers\JadwalUjianController;
 use App\Http\Controllers\CalendarController;
 use App\Models\Dokumen;
 
-Route::get('/', [DashboardController::class, 'getDashboardStatistics'])->name('dashboard');
+Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 Route::get('/monthly-pengajuan-status', [DashboardController::class, 'getMonthlyPengajuanStatus']);
 
 // ========================================================================================

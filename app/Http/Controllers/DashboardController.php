@@ -10,6 +10,7 @@ use App\Models\Ruangan;
 use App\Models\Gedung;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
@@ -67,5 +68,5 @@ class DashboardController extends Controller
             'namaRuangan' => $namaRuangan,
             'tanggal' => $tanggal,
         ]);
-    }    
+    }
 }

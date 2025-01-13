@@ -229,7 +229,7 @@
                             Pengajuan
                         @elseif(request()->routeIs('tracking.show'))
                             Status Pengajuan
-                        @elseif(request()->routeIs('layout.dashboard'))
+                        @elseif(request()->routeIs('dashboard'))
                             Dashboard
                         @elseif(request()->routeIs('pengajuan.show'))
                             Detail Pengajuan
@@ -239,6 +239,10 @@
                             Status Pengajuan
                         @elseif(request()->routeIs('reviewer.index'))
                             Daftar Pengajuan
+                        @elseif(request()->routeIs('ruangan.index'))
+                            Kelola Tempat
+                        @elseif(request()->routeIs('jadwal.index'))
+                            Kelola Jadwal
                         @else
                             Pages
                         @endif
@@ -249,7 +253,7 @@
                         Pengajuan
                     @elseif(request()->routeIs('tracking.show'))
                         Status Pengajuan
-                    @elseif(request()->routeIs('layout.dashboard'))
+                    @elseif(request()->routeIs('dashboard'))
                         Dashboard
                     @elseif(request()->routeIs('pengajuan.show'))
                         Detail Pengajuan
@@ -259,6 +263,10 @@
                         Status Pengajuan
                     @elseif(request()->routeIs('reviewer.index'))
                         Daftar Pengajuan
+                    @elseif(request()->routeIs('ruangan.index'))
+                        Kelola Tempat
+                    @elseif(request()->routeIs('jadwal.index'))
+                        Kelola Jadwal
                     @else
                         Pages
                     @endif
