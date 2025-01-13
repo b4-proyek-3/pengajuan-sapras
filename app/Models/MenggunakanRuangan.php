@@ -20,6 +20,9 @@ class MenggunakanRuangan extends Model
         'waktu_akhir'
     ];
 
+    protected $primaryKey = ['id_pengajuan', 'id_ruangan'];
+    public $incrementing = false;
+
     public function pengajuan()
     {
         return $this->belongsTo(Pengajuan::class, 'id_pengajuan', 'id_pengajuan');

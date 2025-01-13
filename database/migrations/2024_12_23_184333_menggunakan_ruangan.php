@@ -21,6 +21,8 @@ return new class extends Migration
             $table->time('waktu_mulai');
             $table->time('waktu_akhir');
             $table->timestamps();
+
+            $table->primary(['id_pengajuan', 'id_ruangan']);
         });
     }
 

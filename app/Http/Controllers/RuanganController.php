@@ -19,12 +19,24 @@ class RuanganController extends Controller
 
     public function store(Request $request)
     {
+        // Validasi input
         $validated = $request->validate([
             'nama_ruangan' => 'required|string|max:255|unique:ruangan',
             'id_gedung' => 'required|exists:gedung,id_gedung',
+            'foto' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Validasi foto
+            'kapasitas' => 'required|integer|min:1', // Validasi kapasitas
         ]);
 
+        // Proses unggah foto
+        if ($request->hasFile('foto')) {
+            $fotoPath = $request->file('foto')->store('uploads/ruangan', 'public');
+            $validated['foto'] = $fotoPath; // Simpan path foto ke database
+        }
+
+        // Simpan data ke database
         Ruangan::create($validated);
+
+        // Redirect ke halaman index dengan pesan sukses
         return redirect()->route('ruangan.index')->with('success', 'Ruangan berhasil ditambahkan.');
     }
 

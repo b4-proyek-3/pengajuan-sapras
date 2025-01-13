@@ -4,8 +4,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="ruanganModalLabel">Form Tambah Ruangan</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                    aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form action="{{ route('ruangan.store') }}" method="POST" enctype="multipart/form-data">
@@ -23,6 +22,16 @@
                                 <option value="{{ $g->id_gedung }}">{{ $g->nama_gedung }}</option>
                             @endforeach
                         </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="foto" class="form-label">Foto</label>
+                        <input type="file" name="foto" id="foto" class="form-control" accept="image/*" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="kapasitas" class="form-label">Kapasitas</label>
+                        <input type="number" name="kapasitas" id="kapasitas" class="form-control" min="1" required>
                     </div>
 
                     <div class="flex justify-center mt-6 space-x-4">
