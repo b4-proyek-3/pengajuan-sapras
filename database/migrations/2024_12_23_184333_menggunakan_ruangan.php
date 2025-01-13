@@ -17,10 +17,12 @@ return new class extends Migration
             $table->unsignedBigInteger('id_ruangan');
             $table->foreign('id_ruangan')->references('id_ruangan')->on('ruangan')->onDelete('cascade');
             $table->date('tanggal_mulai');
-            $table->date('tanggal_selesai');
+            $table->date('tanggal_akhir');
             $table->time('waktu_mulai');
-            $table->time('waktu_selesai');
+            $table->time('waktu_akhir');
             $table->timestamps();
+
+            $table->primary(['id_pengajuan', 'id_ruangan']);
         });
     }
 

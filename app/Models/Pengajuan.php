@@ -55,7 +55,8 @@ class Pengajuan extends Model
 
     public function ruangan()
     {
-        return $this->belongsToMany(Ruangan::class, 'menggunakan_ruangan', 'id_pengajuan', 'id_ruangan');
+        return $this->belongsToMany(Ruangan::class, 'menggunakan_ruangan', 'id_pengajuan', 'id_ruangan')
+                    ->withPivot('tanggal_mulai', 'tanggal_akhir', 'waktu_mulai', 'waktu_akhir');
     }
 
     public function statusHistory()

@@ -150,11 +150,11 @@
             ketua pelaksana kegiatan {{ $nama_kegiatan }}, meminjam sarana dengan detail sebagai berikut:</p>
 
         <table class="table">
-            <tr>
+            <!-- <tr>
                 <th>ID Pengajuan:</th>
                 <td>{{ $id_pengajuan }}</td>
                 <td></td>
-            </tr>
+            </tr> -->
             <tr>
                 <th>Nama Kegiatan:</th>
                 <td>{{ $nama_kegiatan }}</td>
@@ -172,13 +172,9 @@
             </tr>
             <tr>
                 <th>Tempat:</th>
-                @if($ruangans->isEmpty())
-                    <td>Ruangan tidak ditemukan.</td>
-                @else
-                    @foreach($ruangans as $ruangan)
-                        <td>{{ $ruangan->nama_ruangan ?? 'Ruangan tidak ditemukan' }} - {{ $ruangan->gedung->nama_gedung ?? 'Gedung tidak ditemukan' }}</td>
-                    @endforeach
-                @endif
+                @foreach($ruangans as $ruangan)
+                <td>{{ $ruangan->first()->nama_ruangan ?? 'Ruangan tidak ditemukan' }} - {{ $ruangan->gedung->first()->nama_gedung ?? 'Gedung tidak ditemukan' }}</td>
+                @endforeach
                 <td></td>
             </tr>
             <tr>
@@ -197,7 +193,7 @@
                 <td></td>
             </tr>
             <tr>
-                <th>Sekretaris BEM:</th>
+                <th>BEM:</th>
                 <td>{{ $sekum_bem }}</td>
                 <td></td>
             </tr>
@@ -207,7 +203,7 @@
                 <td></td>
             </tr>
             <tr>
-                <th>Wadir 3:</th>
+                <th>Wakil Direktur 3:</th>
                 <td>{{ $wd3 }}</td>
                 <td></td>
             </tr>

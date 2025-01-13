@@ -66,9 +66,8 @@ class ReviewController extends Controller
         $pengajuanRiwayat = $queryRiwayat
             ->when($request->input('riwayat_sort_status'), function ($query, $status) use ($id_reviewer) {
                 return $query->whereHas('reviewers', function ($subQuery) use ($status, $id_reviewer) {
-                    // Filter by status and a specific reviewer id
                     $subQuery->where('reviewers.id_reviewer', $id_reviewer)
-                             ->where('reviews.status', $status); // Filter by status in 'reviews'
+                             ->where('reviews.status', $status); 
                 });
             })
             ->when($request->input('riwayat_search'), function ($query, $search) { 
@@ -80,6 +79,7 @@ class ReviewController extends Controller
                 });
             })
             ->paginate(10, ['*'], 'riwayat_page');
+            
         $pengajuanDiajukan = $queryDiajukan
             ->when($request->input('diajukan_sort_status'), function ($query, $status) {
                 return $query->where('status', $status);

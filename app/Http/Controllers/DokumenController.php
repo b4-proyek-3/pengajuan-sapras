@@ -21,18 +21,14 @@ class DokumenController extends Controller
             'dokumen3' => 'nullable|file|mimes:pdf|max:2048',
             'dokumen4' => 'nullable|file|mimes:pdf|max:2048',
             'dokumen5' => 'nullable|file|mimes:pdf|max:2048',
-            'dokumen6' => 'nullable|file|mimes:pdf|max:2048',
-            'dokumen7' => 'nullable|file|mimes:pdf|max:2048',
         ]);
 
         $dokumen_fields = [
             'dokumen1' => 'Proposal',
             'dokumen2' => 'Term of Reference',
             'dokumen3' => 'Surat Peminjaman Sarana Prasarana',
-            'dokumen4' => 'Surat Pernyataan Berkegiatan',
-            'dokumen5' => 'Surat Pernyataan Ketua Ormawa',
-            'dokumen6' => 'Surat Pendampingan Pembina',
-            'dokumen7' => 'Lampiran Daftar Peserta',
+            'dokumen4' => 'Lembar Pengesahan Kegiatan',
+            'dokumen5' => 'Lampiran Daftar Peserta',
         ];
 
         // Pastikan pengajuan valid
