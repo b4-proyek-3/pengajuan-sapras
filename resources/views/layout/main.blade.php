@@ -34,7 +34,13 @@
       data-success-message="{{ session('success') ?? '' }}"
       data-error-message="{{ session('error') ?? '' }}">
     @include('layout.partial.header')
-      @yield('content')
+    @yield('content')
+      <!-- Scripts -->
+    <script src="//cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>
+    <script src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    
+    @stack('scripts')
   </body>
   @include('layout.partial.script')
 

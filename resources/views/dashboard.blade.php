@@ -1,233 +1,153 @@
 @extends('layout.main')
+
 @section('content')
-    <!-- cards -->
-    <div class="w-full px-6 py-6 mx-auto">
-        <!-- row 1 -->
-        <div class="flex flex-wrap -mx-3">
-            <!-- Pengajuan Card -->
-            <div class="w-full max-w-full px-3 mb-6 sm:w-1/2 sm:flex-none xl:mb-0 xl:w-1/4">
-                <div class="relative flex flex-col min-w-0 break-words bg-white shadow-soft-xl rounded-2xl bg-clip-border">
-                    <div class="flex-auto p-4">
-                        <div class="flex flex-row -mx-3">
-                            <div class="flex-none w-2/3 max-w-full px-3">
-                                <div>
-                                    <p class="mb-0 font-sans text-sm font-semibold leading-normal">Total Pengajuan</p>
-                                    <h5 class="mb-0 font-bold">
-                                        {{ $totalPengajuan }}
-                                    </h5>
-                                </div>
-                            </div>
-                            <div class="px-3 text-right basis-1/3">
-                                <div
-                                    class="inline-block w-12 h-12 text-center rounded-lg bg-gradient-to-tl from-purple-700 to-pink-500">
-                                    <i class="ni leading-none ni-paper-diploma text-lg relative top-3.5 text-white"></i>
-                                </div>
-                            </div>
+<div class="w-full px-6 py-6 mx-auto">
+<div class="bg-gray-50 min-h-screen">
+
+    <!-- Main Content -->
+    <div class="px-6 py-4">
+        <h1 class="text-2xl font-semibold text-gray-900 mb-6">Pengajuan Sarana dan Prasarana</h1>
+
+        <!-- Orange Banner Section -->
+        <div class="bg-orange-400 h-10 rounded-t-lg"></div>
+
+        <!-- Search Form with White Background -->
+        <div class="bg-white rounded-b-lg shadow p-6">
+            <form action="{{ route('dashboard.index') }}" method="GET" class="grid grid-cols-12 gap-4">
+                <!-- Building Selection -->
+                <div class="col-span-4">
+                    <div class="relative">
+                    <select name="gedung" id="gedung" class="w-full h-11 pl-4 pr-8 bg-white rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 appearance-none">
+                        <option value="">Pilih Gedung</option>
+                        @foreach($gedungs as $gedung)
+                            <option value="{{ $gedung->id_gedung }}" {{ request('gedung') == $gedung->id_gedung ? 'selected' : '' }}>
+                                {{ $gedung->nama_gedung }}
+                            </option>
+                        @endforeach
+                    </select>
+                        <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                            <i class="fas fa-chevron-down text-gray-400"></i>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Tempat Card -->
-            <div class="w-full max-w-full px-3 mb-6 sm:w-1/2 sm:flex-none xl:mb-0 xl:w-1/4">
-                <div class="relative flex flex-col min-w-0 break-words bg-white shadow-soft-xl rounded-2xl bg-clip-border">
-                    <div class="flex-auto p-4">
-                        <div class="flex flex-row -mx-3">
-                            <div class="flex-none w-2/3 max-w-full px-3">
-                                <div>
-                                    <p class="mb-0 font-sans text-sm font-semibold leading-normal">Total Tempat</p>
-                                    <h5 class="mb-0 font-bold">
-                                        {{ $totalTempat }}
-                                    </h5>
-                                </div>
-                            </div>
-                            <div class="px-3 text-right basis-1/3">
-                                <div
-                                    class="inline-block w-12 h-12 text-center rounded-lg bg-gradient-to-tl from-purple-700 to-pink-500">
-                                    <i class="ni leading-none ni-world text-lg relative top-3.5 text-white"></i>
-                                </div>
-                            </div>
+                <!-- Date Range -->
+                <div class="col-span-5">
+                    <div class="relative">
+                    <input type="text" 
+                        id="daterange" 
+                        name="daterange" 
+                        class="w-full h-11 pl-4 pr-4 bg-white rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                        placeholder="13 Jan 2025 - 16 Jan 2025"
+                        value="{{ request('daterange') }}" 
+                        readonly>
+                        <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                            <i class="fas fa-calendar text-gray-400"></i>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Users Card -->
-            <div class="w-full max-w-full px-3 mb-6 sm:w-1/2 sm:flex-none xl:mb-0 xl:w-1/4">
-                <div class="relative flex flex-col min-w-0 break-words bg-white shadow-soft-xl rounded-2xl bg-clip-border">
-                    <div class="flex-auto p-4">
-                        <div class="flex flex-row -mx-3">
-                            <div class="flex-none w-2/3 max-w-full px-3">
-                                <div>
-                                    <p class="mb-0 font-sans text-sm font-semibold leading-normal">Total Users</p>
-                                    <h5 class="mb-0 font-bold">
-                                        {{ $totalUsers }}
-                                    </h5>
-                                </div>
-                            </div>
-                            <div class="px-3 text-right basis-1/3">
-                                <div
-                                    class="inline-block w-12 h-12 text-center rounded-lg bg-gradient-to-tl from-purple-700 to-pink-500">
-                                    <i class="ni leading-none ni-single-02 text-lg relative top-3.5 text-white"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <!-- Search Button -->
+                <div class="col-span-3">
+                    <button class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-800 focus:ring-2 focus:ring-indigo-400">
+                        Cari
+                    </button>
+                    <input type="hidden" name="sort" value="{{ request('sort', 'asc') }}">
                 </div>
-            </div>
+            </form>
+        </div>
 
-            <!-- Ormawa Card -->
-            <div class="w-full max-w-full px-3 sm:w-1/2 sm:flex-none xl:w-1/4">
-                <div class="relative flex flex-col min-w-0 break-words bg-white shadow-soft-xl rounded-2xl bg-clip-border">
-                    <div class="flex-auto p-4">
-                        <div class="flex flex-row -mx-3">
-                            <div class="flex-none w-2/3 max-w-full px-3">
-                                <div>
-                                    <p class="mb-0 font-sans text-sm font-semibold leading-normal">Total Ormawa</p>
-                                    <h5 class="mb-0 font-bold">
-                                        {{ $totalOrmawa }}
-                                    </h5>
-                                </div>
+        <!-- Results Section -->
+        <div class="bg-white rounded-lg shadow">
+            <div class="p-6">
+                <!-- Header -->
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-lg font-medium text-gray-900">
+                        {{ $selectedGedung ? $selectedGedung->nama_gedung : 'Semua Gedung' }}: {{ $ruangans->count() }} ruangan ditemukan
+                    </h2>
+                    <select name="sort" class="h-10 pl-4 pr-8 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-blue-500 text-sm">
+                        <option value="asc" {{ request('sort') == 'asc' ? 'selected' : '' }}>Sort by: A-Z</option>
+                        <option value="desc" {{ request('sort') == 'desc' ? 'selected' : '' }}>Sort by: Z-A</option>
+                    </select>
+                </div>
+
+                <!-- Room List -->
+                <div class="space-y-4">
+                    @forelse($ruangans as $ruangan)
+                    <div class="border border-gray-200 rounded-lg p-4 hover:shadow-lg transition-shadow duration-200">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <div class="w-32 h-32 bg-gray-200 rounded-lg"></div>
                             </div>
-                            <div class="px-3 text-right basis-1/3">
-                                <div
-                                    class="inline-block w-12 h-12 text-center rounded-lg bg-gradient-to-tl from-purple-700 to-pink-500">
-                                    <i class="ni leading-none ni-vector text-lg relative top-3.5 text-white"></i>
-                                </div>
+                            <div class="ml-6 flex-1">
+                                <h3 class="text-lg font-medium">
+                                    <a href="#" class="text-blue-600 hover:text-blue-800">Ruangan {{ $ruangan->nama_ruangan }}</a>
+                                </h3>
+                                <p class="text-blue-600 text-sm">{{ $ruangan->gedung->nama_gedung }}</p>
+                                <p class="mt-2 text-gray-600">{{ $ruangan->deskripsi }}</p>
+                            </div>
+                            <div class="ml-6 flex flex-col items-end justify-between">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium 
+                                    {{ !$ruangan->isBooked ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                                    {{ !$ruangan->isBooked ? 'Tersedia' : 'Tidak tersedia' }}
+                                </span>
+                                <button class="mt-2 px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
+                                    Details
+                                </button>
                             </div>
                         </div>
                     </div>
+                    @empty
+                    <div class="text-center py-8">
+                        <p class="text-gray-500">Tidak ada ruangan yang ditemukan</p>
+                    </div>
+                    @endforelse
                 </div>
             </div>
         </div>
-
-        <!-- cards row 2 -->
-        <!-- Pengajuan Overview -->
-        <div class="flex flex-wrap mt-6 -mx-3">
-            <div class="w-full max-w-full px-3 mt-0 lg:w-7/12 lg:flex-none">
-                <div
-                    class="border-black/12.5 shadow-soft-xl relative z-20 flex min-w-0 flex-col break-words rounded-2xl border-0 border-solid bg-white bg-clip-border">
-                    <div class="border-black/12.5 mb-0 rounded-t-2xl border-b-0 border-solid bg-white p-6 pb-0">
-                        <h6>Pengajuan Overview</h6>
-                        <p class="text-sm leading-normal">
-                            <i class="fa fa-arrow-up text-lime-500"></i>
-                            <span class="font-semibold">Pengajuan per bulan</span>
-                        </p>
-                    </div>
-                    <div class="flex-auto p-4">
-                        <div>
-                            <canvas id="chart-line" height="300"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                // Data diambil dari server-side dan diteruskan ke view sebagai array JavaScript
-                var data = @json($monthlyStatus);
-
-                var ctx = document.getElementById("chart-line").getContext("2d");
-
-                var gradientStroke1 = ctx.createLinearGradient(0, 230, 0, 50);
-                gradientStroke1.addColorStop(1, "rgba(203,12,159,0.2)");
-                gradientStroke1.addColorStop(0.2, "rgba(72,72,176,0.0)");
-                gradientStroke1.addColorStop(0, "rgba(203,12,159,0)");
-
-                var gradientStroke2 = ctx.createLinearGradient(0, 230, 0, 50);
-                gradientStroke2.addColorStop(1, "rgba(20,23,39,0.2)");
-                gradientStroke2.addColorStop(0.2, "rgba(72,72,176,0.0)");
-                gradientStroke2.addColorStop(0, "rgba(20,23,39,0)");
-
-                new Chart(ctx, {
-                    type: "line",
-                    data: {
-                        labels: data.map(item => item.month),
-                        datasets: [{
-                                label: "Selesai",
-                                tension: 0.4,
-                                borderWidth: 0,
-                                pointRadius: 0,
-                                borderColor: "#cb0c9f",
-                                borderWidth: 3,
-                                backgroundColor: gradientStroke1,
-                                fill: true,
-                                data: data.map(item => item.selesai_count),
-                                maxBarThickness: 6,
-                            },
-                            {
-                                label: "Ditolak",
-                                tension: 0.4,
-                                borderWidth: 0,
-                                pointRadius: 0,
-                                borderColor: "#3A416F",
-                                borderWidth: 3,
-                                backgroundColor: gradientStroke2,
-                                fill: true,
-                                data: data.map(item => item.ditolak_count),
-                                maxBarThickness: 6,
-                            },
-                        ],
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                display: false,
-                            },
-                        },
-                        interaction: {
-                            intersect: false,
-                            mode: "index",
-                        },
-                        scales: {
-                            y: {
-                                grid: {
-                                    drawBorder: false,
-                                    display: true,
-                                    drawOnChartArea: true,
-                                    drawTicks: false,
-                                    borderDash: [5, 5],
-                                },
-                                ticks: {
-                                    display: true,
-                                    padding: 10,
-                                    color: "#b2b9bf",
-                                    font: {
-                                        size: 11,
-                                        family: "Open Sans",
-                                        style: "normal",
-                                        lineHeight: 2,
-                                    },
-                                },
-                            },
-                            x: {
-                                grid: {
-                                    drawBorder: false,
-                                    display: false,
-                                    drawOnChartArea: false,
-                                    drawTicks: false,
-                                    borderDash: [5, 5],
-                                },
-                                ticks: {
-                                    display: true,
-                                    color: "#b2b9bf",
-                                    padding: 20,
-                                    font: {
-                                        size: 11,
-                                        family: "Open Sans",
-                                        style: "normal",
-                                        lineHeight: 2,
-                                    },
-                                },
-                            },
-                        },
-                    },
-                });
-            });
-        </script>
     </div>
+</div>
+</div>
+@push('styles')
+<style>
+    .daterangepicker {
+        @apply bg-white rounded-lg shadow-lg border border-gray-200;
+    }
+    .daterangepicker .calendar-table {
+        @apply border-none;
+    }
+    .daterangepicker td.active {
+        @apply bg-blue-600;
+    }
+    .daterangepicker td.in-range {
+        @apply bg-blue-100;
+    }
+</style>
+@endpush
+
+@push('scripts')
+<script>
+$(document).ready(function() {
+    $('#daterange').daterangepicker({
+        opens: 'left',
+        autoApply: true,
+        locale: {
+            format: 'DD MMM YYYY',
+            applyLabel: "Pilih",
+            cancelLabel: "Batal",
+            daysOfWeek: ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"],
+            monthNames: [
+                "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+                "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+            ],
+        },
+        showDropdowns: true,
+    });
+
+    $('#daterange').on('apply.daterangepicker', function(ev, picker) {
+        $(this).val(picker.startDate.format('DD MMM YYYY') + ' - ' + picker.endDate.format('DD MMM YYYY'));
+    });
+});
+</script>
+@endpush
 @endsection

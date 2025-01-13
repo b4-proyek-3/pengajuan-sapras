@@ -62,4 +62,9 @@ class Pengajuan extends Model
     {
         return $this->hasMany(Review::class, 'id_pengajuan', 'id_pengajuan');
     }
+
+    public function menggunakanRuangan()
+    {
+        return $this->hasMany(MenggunakanRuangan::class, 'id_pengajuan', 'id_pengajuan');
+    }
 }

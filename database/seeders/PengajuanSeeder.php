@@ -6,7 +6,6 @@ use Illuminate\Database\Seeder;
 use App\Models\Pengajuan;
 use App\Models\Pengaju;
 use App\Models\Tempat;
-use App\Models\Ormawa;
 use Illuminate\Support\Str;
 
 class PengajuanSeeder extends Seeder
@@ -37,7 +36,7 @@ class PengajuanSeeder extends Seeder
                 'waktu_pinjam' => now()->format('H:i:s'),
                 'nama_kegiatan' => 'Kegiatan ' . $i,
                 'jenis_kegiatan' => 'proker',
-                'link_drive' => 'https://google.com'
+                'link_drive' => 'https://google.com',
             ]);
         }
     }
