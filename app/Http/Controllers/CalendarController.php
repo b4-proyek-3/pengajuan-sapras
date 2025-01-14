@@ -17,7 +17,7 @@ class CalendarController extends Controller
 
     public function getCalendarData(Request $request)
     {
-        $ruanganId = $request->input('ruangan_id'); 
+        $ruanganId = $request->input('ruangan_id');
 
         $pengajuan = Pengajuan::where('status', 'selesai')
             ->whereHas('ruangan', function ($query) use ($ruanganId) {
@@ -39,6 +39,6 @@ class CalendarController extends Controller
             ];
         });
 
-        return response()->json($events); 
+        return response()->json($events);
     }
 }

@@ -62,7 +62,7 @@
                             Cari
                         </button>
                     </div>
-                </div>    
+                </div>
             </form>
         </div>
 
@@ -94,16 +94,17 @@
                 center: 'title',
                 right: 'dayGridMonth,timeGridWeek,timeGridDay'
             },
-            events: '/get-calendar-data',
+            events: '{{ route('dashboard.calendar.data') }}',
             eventClick: function (info) {
             Swal.fire({
-                title: info.event.title, 
+                title: info.event.title,
                 html: `
                     <p><strong>Waktu Mulai:</strong> ${info.event.start.toLocaleString()}</p>
                     <p><strong>Waktu Selesai:</strong> ${info.event.end ? info.event.end.toLocaleString() : 'Tidak ditentukan'}</p>
                 `,
                 icon: 'info',
-                confirmButtonText: 'Tutup'
+                confirmButtonText: 'Tutup',
+                confirmButtonColor: "#3085d6",
             });
         }
         });

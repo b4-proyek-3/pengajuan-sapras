@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('menggunakan_ruangan', function (Blueprint $table) {
+            $table->id('id_menggunakan_ruangan');
             $table->string('id_pengajuan', length: 6);
             $table->foreign('id_pengajuan')->references('id_pengajuan')->on('pengajuan')->onDelete('cascade');
             $table->unsignedBigInteger('id_ruangan');
@@ -22,7 +23,7 @@ return new class extends Migration
             $table->time('waktu_akhir');
             $table->timestamps();
 
-            $table->primary(['id_pengajuan', 'id_ruangan']);
+            $table->unique(['id_pengajuan', 'id_ruangan', 'tanggal_mulai', 'waktu_mulai'], 'unique_penggunaan_ruangan');
         });
     }
 

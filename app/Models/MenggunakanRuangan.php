@@ -20,7 +20,7 @@ class MenggunakanRuangan extends Model
         'waktu_akhir'
     ];
 
-    protected $primaryKey = ['id_pengajuan', 'id_ruangan'];
+    protected $primaryKey = 'id_menggunakan_ruangan';
     public $incrementing = false;
 
     public function pengajuan()

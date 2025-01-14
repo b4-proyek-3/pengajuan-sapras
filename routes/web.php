@@ -14,9 +14,11 @@ use App\Http\Controllers\RuanganController;
 use App\Http\Controllers\GedungController;
 use App\Http\Controllers\JadwalUjianController;
 use App\Http\Controllers\CalendarController;
+
 use App\Models\Dokumen;
 
-Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/dashboard/calendar-data', [DashboardController::class, 'getCalendarData'])->name('dashboard.calendar.data');
 Route::get('/monthly-pengajuan-status', [DashboardController::class, 'getMonthlyPengajuanStatus']);
 
 // ========================================================================================
