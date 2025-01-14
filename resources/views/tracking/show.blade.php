@@ -32,7 +32,19 @@
             </div>
             <div class="form-group">
                 <label for="tanggal-kegiatan">Tanggal Kegiatan</label>
-                <input type="date" id="tanggal-kegiatan" class="form-control" value="{{ $pengajuan->tanggal_pinjam }}" readonly>
+                <input type="text" class="form-control" value="{{ 
+                    \Carbon\Carbon::parse($penggunaan->tanggal_mulai)->format('d') . 
+                    (
+                        \Carbon\Carbon::parse($penggunaan->tanggal_mulai)->format('m Y') === 
+                        \Carbon\Carbon::parse($penggunaan->tanggal_akhir)->format('m Y') 
+                        ? 
+                        '-' . \Carbon\Carbon::parse($penggunaan->tanggal_akhir)->format('d F Y')
+                        : 
+                        ' ' . \Carbon\Carbon::parse($penggunaan->tanggal_mulai)->format('F') . 
+                        ' - ' . 
+                        \Carbon\Carbon::parse($penggunaan->tanggal_akhir)->format('d F Y')
+                    )
+                }}" readonly>
             </div>
             <div class="form-group">
                 <label for="ormawa">Ormawa</label>

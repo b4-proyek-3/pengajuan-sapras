@@ -29,4 +29,10 @@ class Ruangan extends Model
         return $this->belongsToMany(Pengajuan::class, 'menggunakan_ruangan', 'id_ruangan', 'id_pengajuan')
                     ->withPivot('tanggal_mulai', 'tanggal_akhir', 'waktu_mulai', 'waktu_akhir');
     }
+
+    public function menggunakanRuangan()
+    {
+        return $this->hasMany(MenggunakanRuangan::class, 'id_ruangan', 'id_ruangan');
+    }
+
 }

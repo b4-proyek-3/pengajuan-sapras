@@ -2,13 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Gedung;
+use App\Models\Pengajuan;
+use App\Models\Tempat;
+use App\Models\User;
+use App\Models\Ormawa;
 use App\Models\Ruangan;
+use App\Models\Gedung;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class DashboardController extends Controller
+class Dashboard1Controller extends Controller
 {
     public function index(Request $request)
     {
@@ -32,32 +37,6 @@ class DashboardController extends Controller
         $startDate = null;
         $endDate = null;
         $bookedTimes = collect(); // Initialize $bookedTimes here
-
-        // If coming from dashboard1, redirect to dashboard view
-            $fromDashboard1 = $request->input('from_dashboard1');
-            
-            if ($fromDashboard1) {
-                // Store the search parameters in session
-                session([
-                    'search_gedung' => $request->input('gedung'),
-                    'search_daterange' => $request->input('daterange'),
-                ]);
-                
-                return redirect()->route('dashboard.index')
-                    ->withInput();
-            }
-
-            // Get the stored search parameters
-            $storedGedung = session('search_gedung');
-            $storedDaterange = session('search_daterange');
-
-            // If there are stored parameters, use them
-            if (!$request->filled('gedung') && $storedGedung) {
-                $request->merge(['gedung' => $storedGedung]);
-            }
-            if (!$request->filled('daterange') && $storedDaterange) {
-                $request->merge(['daterange' => $storedDaterange]);
-            }
 
         // Process date range if provided
         if ($request->filled('daterange')) {
@@ -136,7 +115,16 @@ class DashboardController extends Controller
                 })->values();
             }
         }
+        
+        // Store the search parameters in session when searching
+        if ($request->filled('gedung') || $request->filled('daterange')) {
+            session([
+                'search_gedung' => $request->input('gedung'),
+                'search_daterange' => $request->input('daterange'),
+            ]);
+        }
 
-        return view('dashboard', compact('gedungs', 'selectedGedung', 'ruangans', 'bookedTimes'));
+        return view('dashboard1', compact('gedungs', 'selectedGedung', 'ruangans', 'bookedTimes'));
     }
+    
 }

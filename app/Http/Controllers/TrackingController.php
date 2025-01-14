@@ -7,6 +7,7 @@ use App\Models\Reviewer;
 use App\Models\Pengajuan;
 use App\Models\Pengaju;
 use App\Models\Ormawa;
+use App\Models\MenggunakanRuangan;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -23,21 +24,26 @@ class TrackingController extends Controller
     public function show(string $id_pengajuan)
     {
         $pengajuan = Pengajuan::findOrFail($id_pengajuan);
+        
+        // Ambil data dari tabel menggunakan_ruangan
+        $penggunaan = MenggunakanRuangan::where('id_pengajuan', $id_pengajuan)->first();
+    
         $reviews = Review::with('reviewer')
             ->where('id_pengajuan', $id_pengajuan)
             ->orderBy('tanggal_review', 'asc')
             ->get();
-
+    
         $pengaju = Pengaju::where('nim', $pengajuan->nim)->first();
         $ormawa = Ormawa::find($pengaju->id_ormawa);
-
+    
         $highestLevel = $this->getHighestLevel($reviews);
         $reviewDates = $this->getReviewDates($reviews, $pengajuan);
         $stepStatus = $this->getStepStatus($reviews);
         $progressStatus = $this->calculateProgress($reviews, $pengajuan);
-
+    
         return view('tracking.show', compact(
             'pengajuan',
+            'penggunaan', // Tambah ini
             'reviews',
             'ormawa',
             'reviewDates',
@@ -87,7 +93,7 @@ class TrackingController extends Controller
     private function getReviewDates($reviews, $pengajuan)
     {
         $dates = [
-            'Pengajuan dibuat' => $pengajuan->tanggal_pengajuan
+            'Pengajuan dibuat' => $pengajuan->tanggal_mulai
         ];
 
         foreach ($reviews as $review) {

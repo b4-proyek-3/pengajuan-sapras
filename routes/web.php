@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Dashboard1Controller;
 use App\Http\Controllers\PengajuanController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\TrackingController;
@@ -16,7 +17,6 @@ use App\Http\Controllers\JadwalUjianController;
 use App\Http\Controllers\CalendarController;
 use App\Models\Dokumen;
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 // ========================================================================================
 // AUTHENTICATION ROUTES ==================================================================
@@ -55,6 +55,9 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/pengajuan/{id_pengajuan}/update', [DokumenController::class, 'update'])->name('dokumen.update');
     Route::get('/dokumen/generate/{id_pengajuan}', [DokumenController::class, 'generate'])->name('dokumen.generate');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+    Route::get('/dashboard1', [Dashboard1Controller::class, 'index'])->name('dashboard1');
+
+    Route::resource('menggunakan-ruangan', MenggunakanRuanganController::class);
     Route::get('/status-pengajuan', [StatusPengajuanController::class, 'index'])->name('layout.status');
 
     // Rute untuk CRUD Ruangan
