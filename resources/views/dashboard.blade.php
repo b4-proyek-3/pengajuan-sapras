@@ -58,18 +58,17 @@
             </form>
         </div>
 
-        <!-- Scroll button -->
-        <div class="text-center my-8">
-            <button id="scrollToCalendarBtn" class="px-6 py-3 bg-orange-500 text-white rounded-lg shadow hover:bg-orange-600 transition-all">
-                Lihat Kalender
-            </button>
-        </div>
+        <!-- Scroll to Calendar Button -->
+        <button onclick="document.getElementById('calendarSection').scrollIntoView({ behavior: 'smooth' })" 
+            class="mt-12 px-6 py-3 bg-orange-500 text-white rounded-lg shadow hover:bg-orange-600">
+            Lihat Kalender
+        </button>
 
-        <!-- Calendar section -->
-        <div id="calendarSection" class="w-full mb-20">
+        <!-- Calendar Section -->
+        <div id="calendarSection" class="w-full mt-40">
             <div class="container mx-auto">
-                <div class="bg-white shadow-md rounded-lg p-6">
-                    <div id="calendar"></div>
+                <div id="ruanganCard" class="bg-white shadow-md rounded-lg p-6">
+                    <div class="mt-6" id="calendar"></div>
                 </div>
             </div>
         </div>
@@ -103,16 +102,17 @@
                 center: 'title',
                 right: 'dayGridMonth,timeGridWeek,timeGridDay'
             },
-            events: '/get-calendar-data',
+            events: '{{ route('dashboard.calendar.data') }}',
             eventClick: function (info) {
             Swal.fire({
-                title: info.event.title, 
+                title: info.event.title,
                 html: `
                     <p><strong>Waktu Mulai:</strong> ${info.event.start.toLocaleString()}</p>
                     <p><strong>Waktu Selesai:</strong> ${info.event.end ? info.event.end.toLocaleString() : 'Tidak ditentukan'}</p>
                 `,
                 icon: 'info',
-                confirmButtonText: 'Tutup'
+                confirmButtonText: 'Tutup',
+                confirmButtonColor: "#3085d6",
             });
         }
         });
@@ -158,6 +158,7 @@
             document.getElementById('sortForm').submit();
         });
     });
+
 </script>
 
 @endsection
