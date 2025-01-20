@@ -58,13 +58,14 @@
             </form>
         </div>
 
-        <!-- Scroll to Calendar Button -->
-        <button onclick="document.getElementById('calendarSection').scrollIntoView({ behavior: 'smooth' })" 
-            class="mt-12 px-6 py-3 bg-orange-500 text-white rounded-lg shadow hover:bg-orange-600">
-            Lihat Kalender
-        </button>
+        <!-- Scroll button -->
+        <div class="text-center my-8">
+            <button id="scrollToCalendarBtn" class="px-6 py-3 bg-orange-500 text-white rounded-lg shadow hover:bg-orange-600 transition-all">
+                Lihat Kalender
+            </button>
+        </div>
 
-        <!-- Calendar Section -->
+        <!-- Calendar section -->
         <div id="calendarSection" class="w-full mt-40">
             <div class="container mx-auto">
                 <div id="ruanganCard" class="bg-white shadow-md rounded-lg p-6">

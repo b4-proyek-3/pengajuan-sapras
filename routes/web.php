@@ -56,6 +56,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dokumen/generate/{id_pengajuan}', [DokumenController::class, 'generate'])->name('dokumen.generate');
     Route::get('/tempat-list', [TempatListController::class, 'index'])->name('dashboard.index');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard/calendar-data', [DashboardController::class, 'getCalendarData'])->name('dashboard.calendar.data');
+
 
     Route::resource('menggunakan-ruangan', MenggunakanRuanganController::class);
     Route::get('/status-pengajuan', [StatusPengajuanController::class, 'index'])->name('layout.status');

@@ -20,4 +20,25 @@ class DashboardController extends Controller
         $gedungs = Gedung::all();
         return view('dashboard', compact('gedungs'));
     }
+
+    public function getCalendarData()
+    {
+        // Ambil semua data dari tabel menggunakan_ruangan
+        $menggunakanRuangan = MenggunakanRuangan::with(['ruangan', 'pengajuan'])->get();
+
+        // Format data untuk kalender
+        $events = $menggunakanRuangan->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'id_pengajuan' => $item->id_pengajuan,
+                'id_ruangan' => $item->id_ruangan,
+                'title' => $item->pengajuan->nama_kegiatan . ' (Ruangan: ' . $item->ruangan->nama_ruangan . ')',
+                'start' => $item->tanggal_mulai . 'T' . $item->waktu_mulai,
+                'end' => $item->tanggal_akhir . 'T' . $item->waktu_akhir,
+                'description' => 'Ruangan: ' . $item->ruangan->nama_ruangan,
+            ];
+        });
+
+        return response()->json($events);
+    }
 }
