@@ -278,8 +278,6 @@ class PengajuanController extends Controller
                 'nama_ketuplak' => $request->nama_ketuplak ?? $pengajuan->nama_ketuplak,
                 'notelp' => $request->notelp ?? $pengajuan->notelp,
                 'jumlah_peserta' => $request->jumlah_peserta ?? $pengajuan->jumlah_peserta,
-                'status' => 'diedit',
-                'edited' => true,
                 'updated_at' => now(),
             ]);
 

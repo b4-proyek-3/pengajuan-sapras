@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\Dashboard1Controller;
+use App\Http\Controllers\TempatListController;
 use App\Http\Controllers\PengajuanController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\TrackingController;
@@ -54,8 +54,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/pengajuan/{id_pengajuan}/submit', [PengajuanController::class, 'submitPengajuan'])->name('pengajuan.submit');
     Route::put('/pengajuan/{id_pengajuan}/update', [DokumenController::class, 'update'])->name('dokumen.update');
     Route::get('/dokumen/generate/{id_pengajuan}', [DokumenController::class, 'generate'])->name('dokumen.generate');
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
-    Route::get('/dashboard1', [Dashboard1Controller::class, 'index'])->name('dashboard1');
+    Route::get('/tempat-list', [TempatListController::class, 'index'])->name('dashboard.index');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::resource('menggunakan-ruangan', MenggunakanRuanganController::class);
     Route::get('/status-pengajuan', [StatusPengajuanController::class, 'index'])->name('layout.status');
