@@ -27,16 +27,10 @@
                 <input type="checkbox" id="dokumen3-checkbox" name="dokumen3_checkbox" onclick="toggleFileInput('dokumen3')"> Surat Peminjaman Sarana Prasarana
               </div>
               <div>
-                <input type="checkbox" id="dokumen4-checkbox" name="dokumen4_checkbox" onclick="toggleFileInput('dokumen4')"> Surat Pernyataan Berkegiatan
+                <input type="checkbox" id="dokumen4-checkbox" name="dokumen4_checkbox" onclick="toggleFileInput('dokumen4')"> Lembar Pengesahan Kegiatan
               </div>
               <div>
-                <input type="checkbox" id="dokumen5-checkbox" name="dokumen5_checkbox" onclick="toggleFileInput('dokumen5')"> Surat Pernyataan Ketua Ormawa
-              </div>
-              <div>
-                <input type="checkbox" id="dokumen6-checkbox" name="dokumen6_checkbox" onclick="toggleFileInput('dokumen6')"> Surat Pendampingan Pembina
-              </div>
-              <div>
-                <input type="checkbox" id="dokumen7-checkbox" name="dokumen7_checkbox" onclick="toggleFileInput('dokumen7')"> Lampiran Daftar Peserta
+                <input type="checkbox" id="dokumen5-checkbox" name="dokumen5_checkbox" onclick="toggleFileInput('dokumen5')"> Lampiran Daftar Peserta
               </div>
             </div>
 
@@ -57,23 +51,13 @@
             </div>
 
             <div class="mb-3" id="dokumen4" style="display:none;">
-              <label for="dokumen4" class="form-label">Surat Izin Berkegiatan</label>
+              <label for="dokumen4" class="form-label">Surat Pengesahan Kegiatan</label>
               <input type="file" name="dokumen4" id="dokumen4-input" class="form-control" accept=".pdf">
             </div>
 
             <div class="mb-3" id="dokumen5" style="display:none;">
-              <label for="dokumen5" class="form-label">Surat Pernyataan Ketua Ormawa</label>
+              <label for="dokumen5" class="form-label">Lampiran Daftar Peserta</label>
               <input type="file" name="dokumen5" id="dokumen5-input" class="form-control" accept=".pdf">
-            </div>
-
-            <div class="mb-3" id="dokumen6" style="display:none;">
-              <label for="dokumen6" class="form-label">Surat Pendampingan Pembina</label>
-              <input type="file" name="dokumen6" id="dokumen6-input" class="form-control" accept=".pdf">
-            </div>
-
-            <div class="mb-3" id="dokumen7" style="display:none;">
-              <label for="dokumen7" class="form-label">Lampiran Daftar Peserta</label>
-              <input type="file" name="dokumen7" id="dokumen7-input" class="form-control" accept=".pdf">
             </div>
 
             <div class="flex justify-end">
@@ -121,7 +105,7 @@
 
   function openDokumenModal() {
     document.getElementById('editDokumenModal').classList.remove('hidden');
-    const jenisKegiatan = "{{ $pengajuans->jenis_kegiatan }}"; 
+    const jenisKegiatan = "{{ $pengajuans->jenis_kegiatan }}";
     showFilesForJenisKegiatan(jenisKegiatan);
   }
 

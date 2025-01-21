@@ -16,10 +16,10 @@ class Pengajuan extends Model
         'id_pengajuan',
         'nim',
         'tanggal_pengajuan',
-        'tanggal_pinjam',
-        'tanggal_akhir',
-        'waktu_pinjam',
         'nama_kegiatan',
+        'nama_ketuplak',
+        'notelp',
+        'jumlah_peserta',
         'jenis_kegiatan',
         'link_drive',
         'status',
@@ -55,11 +55,17 @@ class Pengajuan extends Model
 
     public function ruangan()
     {
-        return $this->belongsToMany(Ruangan::class, 'menggunakan_ruangan', 'id_pengajuan', 'id_ruangan');
+        return $this->belongsToMany(Ruangan::class, 'menggunakan_ruangan', 'id_pengajuan', 'id_ruangan')
+                    ->withPivot('tanggal_mulai', 'tanggal_akhir', 'waktu_mulai', 'waktu_akhir');
     }
 
     public function statusHistory()
     {
         return $this->hasMany(Review::class, 'id_pengajuan', 'id_pengajuan');
+    }
+
+    public function menggunakanRuangan()
+    {
+        return $this->hasMany(MenggunakanRuangan::class, 'id_pengajuan', 'id_pengajuan');
     }
 }

@@ -16,10 +16,10 @@ return new class extends Migration
             $table->char('nim', 9)->nullable();
             $table->foreign('nim')->references('nim')->on('pengaju')->onDelete('cascade');
             $table->dateTime('tanggal_pengajuan');
-            $table->date('tanggal_pinjam');
-            $table->date('tanggal_akhir');
-            $table->time('waktu_pinjam');
             $table->string('nama_kegiatan');
+            $table->string('nama_ketuplak');
+            $table->string('notelp', length: 15);
+            $table->integer('jumlah_peserta');
             $table->enum('jenis_kegiatan', ['proker', 'pergerakan']);
             $table->enum('status', ['diedit', 'direview', 'direvisi', 'ditolak', 'selesai', 'diajukan'])->default('diajukan');
             $table->string('link_drive');

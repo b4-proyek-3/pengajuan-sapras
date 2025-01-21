@@ -24,6 +24,8 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('asset/css/index.css') }}?v={{ time() }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     @vite('resources/css/app.css')
     <title>Pengajuan Sarana dan Prasarana</title>
     @include('layout.partial.link')
@@ -34,7 +36,13 @@
       data-success-message="{{ session('success') ?? '' }}"
       data-error-message="{{ session('error') ?? '' }}">
     @include('layout.partial.header')
-      @yield('content')
+    @yield('content')
+      <!-- Scripts -->
+    <script src="//cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>
+    <script src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    
+    @stack('scripts')
   </body>
   @include('layout.partial.script')
 

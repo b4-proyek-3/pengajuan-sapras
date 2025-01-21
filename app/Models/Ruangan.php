@@ -15,6 +15,8 @@ class Ruangan extends Model
     protected $fillable = [
         'nama_ruangan',
         'id_gedung',
+        'foto',
+        'kapasitas'
     ];
 
     public function gedung()
@@ -24,6 +26,13 @@ class Ruangan extends Model
 
     public function pengajuan()
     {
-        return $this->belongsToMany(Pengajuan::class, 'menggunakan_ruangan', 'id_ruangan', 'id_pengajuan');
+        return $this->belongsToMany(Pengajuan::class, 'menggunakan_ruangan', 'id_ruangan', 'id_pengajuan')
+                    ->withPivot('tanggal_mulai', 'tanggal_akhir', 'waktu_mulai', 'waktu_akhir');
     }
+
+    public function menggunakanRuangan()
+    {
+        return $this->hasMany(MenggunakanRuangan::class, 'id_ruangan', 'id_ruangan');
+    }
+
 }

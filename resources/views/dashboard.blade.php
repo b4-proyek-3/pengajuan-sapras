@@ -1,233 +1,165 @@
 @extends('layout.main')
 @section('content')
-    <!-- cards -->
-    <div class="w-full px-6 py-6 mx-auto">
-        <!-- row 1 -->
-        <div class="flex flex-wrap -mx-3">
-            <!-- Pengajuan Card -->
-            <div class="w-full max-w-full px-3 mb-6 sm:w-1/2 sm:flex-none xl:mb-0 xl:w-1/4">
-                <div class="relative flex flex-col min-w-0 break-words bg-white shadow-soft-xl rounded-2xl bg-clip-border">
-                    <div class="flex-auto p-4">
-                        <div class="flex flex-row -mx-3">
-                            <div class="flex-none w-2/3 max-w-full px-3">
-                                <div>
-                                    <p class="mb-0 font-sans text-sm font-semibold leading-normal">Total Pengajuan</p>
-                                    <h5 class="mb-0 font-bold">
-                                        {{ $totalPengajuan }}
-                                    </h5>
-                                </div>
-                            </div>
-                            <div class="px-3 text-right basis-1/3">
-                                <div
-                                    class="inline-block w-12 h-12 text-center rounded-lg bg-gradient-to-tl from-purple-700 to-pink-500">
-                                    <i class="ni leading-none ni-paper-diploma text-lg relative top-3.5 text-white"></i>
-                                </div>
-                            </div>
+
+<div class="dashboard-container min-h-screen bg-gray-50">
+    <main class="dashboard-main bg-gray-50">        <!-- Title Section -->
+        <div class="pt-24 text-center">
+            <h1 class="dashboard-page-title text-4xl font-bold mb-4 text-gray-600">
+                Pengajuan Sarana dan Prasarana
+            </h1>
+            <p class="dashboard-subtitle text-lg text-gray-600">
+                Mau cari ruangan apa? Temukan ruangan yang sesuai untuk kegiatan Anda.
+            </p>
+        </div>
+
+        <!-- Search Form with White Background -->
+        <div class="bg-white rounded-b-lg shadow w-full max-w-5xl mx-auto py-6 px-6 mb-8">
+            <form action="{{ route('dashboard.index') }}" method="GET" class="grid grid-cols-12 gap-4">
+                <!-- Building Selection -->
+                <div class="col-span-4">
+                    <div class="relative">
+                        <select name="gedung" id="gedung" class="w-full h-11 pl-4 pr-1 bg-white rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 appearance-none">
+                            <option value="">Pilih Gedung</option>
+                            @foreach($gedungs as $gedung)
+                                <option value="{{ $gedung->id_gedung }}" {{ request('gedung') == $gedung->id_gedung ? 'selected' : '' }}>
+                                    {{ $gedung->nama_gedung }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                            <i class="fas fa-chevron-down text-gray-400"></i>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Tempat Card -->
-            <div class="w-full max-w-full px-3 mb-6 sm:w-1/2 sm:flex-none xl:mb-0 xl:w-1/4">
-                <div class="relative flex flex-col min-w-0 break-words bg-white shadow-soft-xl rounded-2xl bg-clip-border">
-                    <div class="flex-auto p-4">
-                        <div class="flex flex-row -mx-3">
-                            <div class="flex-none w-2/3 max-w-full px-3">
-                                <div>
-                                    <p class="mb-0 font-sans text-sm font-semibold leading-normal">Total Tempat</p>
-                                    <h5 class="mb-0 font-bold">
-                                        {{ $totalTempat }}
-                                    </h5>
-                                </div>
-                            </div>
-                            <div class="px-3 text-right basis-1/3">
-                                <div
-                                    class="inline-block w-12 h-12 text-center rounded-lg bg-gradient-to-tl from-purple-700 to-pink-500">
-                                    <i class="ni leading-none ni-world text-lg relative top-3.5 text-white"></i>
-                                </div>
-                            </div>
+                <!-- Date Range -->
+                <div class="col-span-5">
+                    <div class="relative">
+                        <input type="text"
+                            id="daterange"
+                            name="daterange"
+                            class="w-full h-11 pl-4 pr-4 bg-white rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                            placeholder="13 Jan 2025 - 16 Jan 2025"
+                            value="{{ request('daterange') }}"
+                            readonly>
+                        <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                            <i class="fas fa-calendar text-gray-400"></i>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Users Card -->
-            <div class="w-full max-w-full px-3 mb-6 sm:w-1/2 sm:flex-none xl:mb-0 xl:w-1/4">
-                <div class="relative flex flex-col min-w-0 break-words bg-white shadow-soft-xl rounded-2xl bg-clip-border">
-                    <div class="flex-auto p-4">
-                        <div class="flex flex-row -mx-3">
-                            <div class="flex-none w-2/3 max-w-full px-3">
-                                <div>
-                                    <p class="mb-0 font-sans text-sm font-semibold leading-normal">Total Users</p>
-                                    <h5 class="mb-0 font-bold">
-                                        {{ $totalUsers }}
-                                    </h5>
-                                </div>
-                            </div>
-                            <div class="px-3 text-right basis-1/3">
-                                <div
-                                    class="inline-block w-12 h-12 text-center rounded-lg bg-gradient-to-tl from-purple-700 to-pink-500">
-                                    <i class="ni leading-none ni-single-02 text-lg relative top-3.5 text-white"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <!-- Search Button -->
+                <div class="col-span-3 flex justify-end">
+                    <button class="w-full md:w-auto bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-800 focus:ring-2 focus:ring-indigo-400">
+                        Cari
+                    </button>
                 </div>
-            </div>
+                <input type="hidden" value="true">
+            </form>
+        </div>
 
-            <!-- Ormawa Card -->
-            <div class="w-full max-w-full px-3 sm:w-1/2 sm:flex-none xl:w-1/4">
-                <div class="relative flex flex-col min-w-0 break-words bg-white shadow-soft-xl rounded-2xl bg-clip-border">
-                    <div class="flex-auto p-4">
-                        <div class="flex flex-row -mx-3">
-                            <div class="flex-none w-2/3 max-w-full px-3">
-                                <div>
-                                    <p class="mb-0 font-sans text-sm font-semibold leading-normal">Total Ormawa</p>
-                                    <h5 class="mb-0 font-bold">
-                                        {{ $totalOrmawa }}
-                                    </h5>
-                                </div>
-                            </div>
-                            <div class="px-3 text-right basis-1/3">
-                                <div
-                                    class="inline-block w-12 h-12 text-center rounded-lg bg-gradient-to-tl from-purple-700 to-pink-500">
-                                    <i class="ni leading-none ni-vector text-lg relative top-3.5 text-white"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+        <!-- Scroll button -->
+        <div class="text-center my-8">
+            <button id="scrollToCalendarBtn" class="px-6 py-3 bg-orange-500 text-white rounded-lg shadow hover:bg-orange-600 transition-all">
+                Lihat Kalender
+            </button>
+        </div>
+
+        <!-- Calendar section -->
+        <div id="calendarSection" class="w-full mt-40">
+            <div class="container mx-auto">
+                <div id="ruanganCard" class="bg-white shadow-md rounded-lg p-6">
+                    <div class="mt-6" id="calendar"></div>
                 </div>
             </div>
         </div>
+    </main>
+</div>
 
-        <!-- cards row 2 -->
-        <!-- Pengajuan Overview -->
-        <div class="flex flex-wrap mt-6 -mx-3">
-            <div class="w-full max-w-full px-3 mt-0 lg:w-7/12 lg:flex-none">
-                <div
-                    class="border-black/12.5 shadow-soft-xl relative z-20 flex min-w-0 flex-col break-words rounded-2xl border-0 border-solid bg-white bg-clip-border">
-                    <div class="border-black/12.5 mb-0 rounded-t-2xl border-b-0 border-solid bg-white p-6 pb-0">
-                        <h6>Pengajuan Overview</h6>
-                        <p class="text-sm leading-normal">
-                            <i class="fa fa-arrow-up text-lime-500"></i>
-                            <span class="font-semibold">Pengajuan per bulan</span>
-                        </p>
-                    </div>
-                    <div class="flex-auto p-4">
-                        <div>
-                            <canvas id="chart-line" height="300"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Scroll button functionality
+        const scrollButton = document.getElementById('scrollToCalendarBtn'); // Tombol
+        const calendarSection = document.getElementById('calendarSection'); // Section target
 
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                // Data diambil dari server-side dan diteruskan ke view sebagai array JavaScript
-                var data = @json($monthlyStatus);
+        scrollButton.addEventListener('click', function (e) {
+            e.preventDefault();
+            const yOffset = -50;
+            const y = calendarSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
 
-                var ctx = document.getElementById("chart-line").getContext("2d");
-
-                var gradientStroke1 = ctx.createLinearGradient(0, 230, 0, 50);
-                gradientStroke1.addColorStop(1, "rgba(203,12,159,0.2)");
-                gradientStroke1.addColorStop(0.2, "rgba(72,72,176,0.0)");
-                gradientStroke1.addColorStop(0, "rgba(203,12,159,0)");
-
-                var gradientStroke2 = ctx.createLinearGradient(0, 230, 0, 50);
-                gradientStroke2.addColorStop(1, "rgba(20,23,39,0.2)");
-                gradientStroke2.addColorStop(0.2, "rgba(72,72,176,0.0)");
-                gradientStroke2.addColorStop(0, "rgba(20,23,39,0)");
-
-                new Chart(ctx, {
-                    type: "line",
-                    data: {
-                        labels: data.map(item => item.month),
-                        datasets: [{
-                                label: "Selesai",
-                                tension: 0.4,
-                                borderWidth: 0,
-                                pointRadius: 0,
-                                borderColor: "#cb0c9f",
-                                borderWidth: 3,
-                                backgroundColor: gradientStroke1,
-                                fill: true,
-                                data: data.map(item => item.selesai_count),
-                                maxBarThickness: 6,
-                            },
-                            {
-                                label: "Ditolak",
-                                tension: 0.4,
-                                borderWidth: 0,
-                                pointRadius: 0,
-                                borderColor: "#3A416F",
-                                borderWidth: 3,
-                                backgroundColor: gradientStroke2,
-                                fill: true,
-                                data: data.map(item => item.ditolak_count),
-                                maxBarThickness: 6,
-                            },
-                        ],
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                display: false,
-                            },
-                        },
-                        interaction: {
-                            intersect: false,
-                            mode: "index",
-                        },
-                        scales: {
-                            y: {
-                                grid: {
-                                    drawBorder: false,
-                                    display: true,
-                                    drawOnChartArea: true,
-                                    drawTicks: false,
-                                    borderDash: [5, 5],
-                                },
-                                ticks: {
-                                    display: true,
-                                    padding: 10,
-                                    color: "#b2b9bf",
-                                    font: {
-                                        size: 11,
-                                        family: "Open Sans",
-                                        style: "normal",
-                                        lineHeight: 2,
-                                    },
-                                },
-                            },
-                            x: {
-                                grid: {
-                                    drawBorder: false,
-                                    display: false,
-                                    drawOnChartArea: false,
-                                    drawTicks: false,
-                                    borderDash: [5, 5],
-                                },
-                                ticks: {
-                                    display: true,
-                                    color: "#b2b9bf",
-                                    padding: 20,
-                                    font: {
-                                        size: 11,
-                                        family: "Open Sans",
-                                        style: "normal",
-                                        lineHeight: 2,
-                                    },
-                                },
-                            },
-                        },
-                    },
-                });
+            window.scrollTo({
+                top: y,
+                behavior: 'smooth',
             });
-        </script>
-    </div>
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            events: '{{ route('dashboard.calendar.data') }}',
+            eventClick: function (info) {
+            Swal.fire({
+                title: info.event.title,
+                html: `
+                    <p><strong>Waktu Mulai:</strong> ${info.event.start.toLocaleString()}</p>
+                    <p><strong>Waktu Akhir:</strong> ${info.event.end ? info.event.end.toLocaleString() : 'Tidak ditentukan'}</p>
+                `,
+                icon: 'info',
+                confirmButtonText: 'Tutup',
+                confirmButtonColor: "#3085d6",
+            });
+        }
+        });
+        calendar.render();
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const tanggal = document.getElementById('tanggal');
+
+        flatpickr(tanggal, {
+            dateFormat: "d M Y",
+            minDate: "today",
+            onChange: function (selectedDates, dateStr, instance) {
+                tanggalAkhir._flatpickr.set('minDate', dateStr);
+            }
+        });
+    });
+
+    $(document).ready(function() {
+        $('#daterange').daterangepicker({
+            opens: 'left',
+            autoApply: true,
+            minDate: moment(),
+            locale: {
+                format: 'DD MMM YYYY',
+                applyLabel: "Pilih",
+                cancelLabel: "Batal",
+                daysOfWeek: ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"],
+                monthNames: [
+                    "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+                    "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+                ],
+            },
+            showDropdowns: true,
+        });
+
+        // Update the input field value on date range selection
+        $('#daterange').on('apply.daterangepicker', function(ev, picker) {
+            $(this).val(picker.startDate.format('DD MMM YYYY') + ' - ' + picker.endDate.format('DD MMM YYYY'));
+        });
+
+        document.getElementById('sort').addEventListener('change', function() {
+            document.getElementById('sortForm').submit();
+        });
+    });
+
+</script>
+
 @endsection

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Dokumen;
 use App\Models\Pengajuan;
+use App\Models\MenggunakanRuangan;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use PDF;
@@ -21,18 +22,14 @@ class DokumenController extends Controller
             'dokumen3' => 'nullable|file|mimes:pdf|max:2048',
             'dokumen4' => 'nullable|file|mimes:pdf|max:2048',
             'dokumen5' => 'nullable|file|mimes:pdf|max:2048',
-            'dokumen6' => 'nullable|file|mimes:pdf|max:2048',
-            'dokumen7' => 'nullable|file|mimes:pdf|max:2048',
         ]);
 
         $dokumen_fields = [
             'dokumen1' => 'Proposal',
             'dokumen2' => 'Term of Reference',
             'dokumen3' => 'Surat Peminjaman Sarana Prasarana',
-            'dokumen4' => 'Surat Pernyataan Berkegiatan',
-            'dokumen5' => 'Surat Pernyataan Ketua Ormawa',
-            'dokumen6' => 'Surat Pendampingan Pembina',
-            'dokumen7' => 'Lampiran Daftar Peserta',
+            'dokumen4' => 'Lembar Pengesahan Kegiatan',
+            'dokumen5' => 'Lampiran Daftar Peserta',
         ];
 
         // Pastikan pengajuan valid
@@ -111,17 +108,10 @@ class DokumenController extends Controller
                 'ruangan.gedung',
                 'pengaju.user',
                 'pengaju.ormawa',
-                'reviewers.user'
+                'reviewers.user',
+                'ruangan'
             ])->findOrFail($id_pengajuan);
-            
-            // Extract details
-            $ruangans = $pengajuan->ruangan;
-            $gedung = $ruangans->map(function ($ruangan) {
-                return $ruangan->gedung;
-            });
 
-            $nama_gedung = $gedung->isEmpty() ? 'Gedung tidak ditemukan' : $gedung->first()->nama_gedung;
-            
             // Get ketua pelaksana details
             $ketua_pelaksana = $pengajuan->pengaju->user->name ?? 'Ketua Pelaksana tidak ditemukan';
             $nama_ormawa = $pengajuan->pengaju->ormawa->nama_ormawa ?? 'Ormawa tidak ditemukan';
@@ -130,6 +120,17 @@ class DokumenController extends Controller
             $sekum_bem = $this->getReviewerNameByRole($pengajuan->reviewers, 'sekum-bem');
             $kli = $this->getReviewerNameByRole($pengajuan->reviewers, 'kli');
             $wd3 = $this->getReviewerNameByRole($pengajuan->reviewers, 'wd-3');
+
+            $usageDetails = $pengajuan->ruangan->map(function ($usage) {
+                return [
+                    'ruangan' => $usage->nama_ruangan ?? 'Ruangan tidak ditemukan',
+                    'gedung' => $usage->gedung->nama_gedung ?? 'Gedung tidak ditemukan',
+                    'tanggal_mulai' => Carbon::parse($usage->pivot->tanggal_mulai)->isoFormat('D MMMM Y'),
+                    'tanggal_akhir' => Carbon::parse($usage->pivot->tanggal_akhir)->isoFormat('D MMMM Y'),
+                    'waktu_mulai' => Carbon::parse($usage->pivot->waktu_mulai)->format('H:i') . ' WIB',
+                    'waktu_akhir' => Carbon::parse($usage->pivot->waktu_akhir)->format('H:i') . ' WIB'
+                ];
+            });
 
             // Generate validation URL
             $validationUrl = URL::route('validasi.show', ['id_pengajuan' => $id_pengajuan]);
@@ -140,11 +141,7 @@ class DokumenController extends Controller
                 'nama_kegiatan' => $pengajuan->nama_kegiatan,
                 'nama_ketua_pelaksana' => $ketua_pelaksana,
                 'nama_ormawa' => $nama_ormawa,
-                'nama_gedung' => $nama_gedung,
-                'ruangans' => $ruangans,
-                'tanggal_mulai' => Carbon::parse($pengajuan->tanggal_pinjam)->isoFormat('D MMMM Y'),
-                'tanggal_akhir' => Carbon::parse($pengajuan->tanggal_akhir)->isoFormat('D MMMM Y'),
-                'waktu_kegiatan' => Carbon::parse($pengajuan->waktu_pinjam)->format('H:i') . ' WIB',
+                'usage_details' => $usageDetails,
                 'sekum_bem' => $sekum_bem,
                 'kli' => $kli,
                 'wd3' => $wd3,
