@@ -124,58 +124,76 @@ class TempatListController extends Controller
      */
     public function getBookedTimes($ruangans, $startDate, $endDate)
     {
-        if (!$startDate || !$endDate) {
-            return collect();
-        }
-
-        // Ambil semua tanggal dalam rentang yang dicari
-        $dateRange = CarbonPeriod::create($startDate, '1 day', $endDate)->toArray();
-
-        // Mengambil booked times per ruangan
-        $bookedTimes = $ruangans->flatMap(function ($ruangan) use ($startDate, $endDate) {
-            return $ruangan->menggunakanRuangan->flatMap(function ($booking) use ($startDate, $endDate, $ruangan) {
-                // Parsing tanggal dan waktu mulai dan akhir booking
-                $startBooking = Carbon::createFromFormat('Y-m-d H:i:s', $booking->tanggal_mulai . ' ' . $booking->waktu_mulai);
-                $endBooking = Carbon::createFromFormat('Y-m-d H:i:s', $booking->tanggal_akhir . ' ' . $booking->waktu_akhir);
-
-                // Membuat rentang tanggal yang dibooking
-                $bookedDates = CarbonPeriod::create($startBooking, '1 day', $endBooking);
-
-                // Filter tanggal berdasarkan rentang yang diminta
-                return collect(iterator_to_array($bookedDates))->filter(function ($date) use ($startDate, $endDate) {
-                    return $date->startOfDay()->gte($startDate->startOfDay()) && $date->startOfDay()->lte($endDate->startOfDay());
-                })->map(function ($date) use ($startBooking, $endBooking, $ruangan) {
-                    return [
-                        'id_ruangan' => $ruangan->id_ruangan,
-                        'date' => $date->isoFormat('DD MMMM YYYY'),
-                        'start' => $startBooking->format('H:i'),
-                        'end' => $endBooking->format('H:i')
-                    ];
-                });
-            });
-        })->values();
-
-        // Dapatkan semua tanggal dalam rentang yang dicari, dengan status "Kosong" jika tidak ada booking
-        $allDates = collect($dateRange)->map(function ($date) use ($bookedTimes, $ruangans) {
-            // Ambil ruangan pertama untuk id_ruangan
-            $ruangan = $ruangans->first(); // Ambil ruangan pertama, bisa disesuaikan dengan kebutuhan
-    
-            // Cek apakah tanggal tersebut ada dalam data booking
-            $booked = $bookedTimes->firstWhere('date', $date->isoFormat('DD MMMM YYYY'));
-    
-            // Jika tidak ada booking, kirimkan tanggal dengan status "Kosong"
-            if (!$booked) {
-                return [
-                    'id_ruangan' => $ruangan->id_ruangan, // Menggunakan id_ruangan dari ruangan
-                    'date' => $date->isoFormat('DD MMMM YYYY'),
-                    'status' => 'Kosong' // Menandakan bahwa tanggal tersebut tersedia
-                ];
+        try {
+            if (!$startDate || !$endDate) {
+                return collect();
             }
-    
-            // Jika ada booking, kirimkan data booking dengan waktu mulai dan akhir
-            return $booked;
-        });
 
-        return $allDates;
+            // Ambil semua tanggal dalam rentang yang dicari
+            $dateRange = CarbonPeriod::create($startDate, '1 day', $endDate)->toArray();
+
+            // Mengambil booked times per ruangan
+            $bookedTimes = $ruangans->flatMap(function ($ruangan) use ($startDate, $endDate) {
+                return $ruangan->menggunakanRuangan->flatMap(function ($booking) use ($startDate, $endDate, $ruangan) {
+                    try {
+                        // Parsing tanggal dan waktu mulai dan akhir booking
+                        $startBooking = Carbon::createFromFormat('Y-m-d H:i:s', $booking->tanggal_mulai . ' ' . $booking->waktu_mulai);
+                        $endBooking = Carbon::createFromFormat('Y-m-d H:i:s', $booking->tanggal_akhir . ' ' . $booking->waktu_akhir);
+
+                        // Membuat rentang tanggal yang dibooking
+                        $bookedDates = CarbonPeriod::create($startBooking, '1 day', $endBooking);
+
+                        // Filter tanggal berdasarkan rentang yang diminta
+                        return collect(iterator_to_array($bookedDates))->filter(function ($date) use ($startDate, $endDate) {
+                            return $date->startOfDay()->gte($startDate->startOfDay()) && $date->startOfDay()->lte($endDate->startOfDay());
+                        })->map(function ($date) use ($startBooking, $endBooking, $ruangan) {
+                            return [
+                                'id_ruangan' => $ruangan->id_ruangan,
+                                'date' => $date->isoFormat('DD MMMM YYYY'),
+                                'start' => $startBooking->format('H:i'),
+                                'end' => $endBooking->format('H:i')
+                            ];
+                        });
+                    } catch (\Exception $e) {
+                        \Log::error("Error in booking for room {$ruangan->id_ruangan}: {$e->getMessage()}");
+                        return collect();
+                    }
+                });
+            })->values();
+
+            // Dapatkan semua tanggal dalam rentang yang dicari, dengan status "Kosong" jika tidak ada booking
+            $allDates = collect($dateRange)->map(function ($date) use ($bookedTimes, $ruangans) {
+                try {
+                    // Ambil ruangan pertama untuk id_ruangan
+                    $ruangan = $ruangans->first(); // Ambil ruangan pertama, bisa disesuaikan dengan kebutuhan
+
+                    // Cek apakah tanggal tersebut ada dalam data booking
+                    $booked = $bookedTimes->firstWhere('date', $date->isoFormat('DD MMMM YYYY'));
+
+                    // Jika tidak ada booking, kirimkan tanggal dengan status "Kosong"
+                    if (!$booked) {
+                        return [
+                            'id_ruangan' => $ruangan->id_ruangan, // Menggunakan id_ruangan dari ruangan
+                            'date' => $date->isoFormat('DD MMMM YYYY'),
+                            'status' => 'Kosong' // Menandakan bahwa tanggal tersebut tersedia
+                        ];
+                    }
+
+                    // Jika ada booking, kirimkan data booking dengan waktu mulai dan akhir
+                    return $booked;
+                } catch (\Exception $e) {
+                    \Log::error("Error processing date {$date->isoFormat('DD MMMM YYYY')}: {$e->getMessage()}");
+                    return [
+                        'date' => $date->isoFormat('DD MMMM YYYY'),
+                        'status' => 'Error' // Status error jika terjadi pengecualian
+                    ];
+                }
+            });
+
+            return $allDates;
+        } catch (\Exception $e) {
+            \Log::error("Error in getBookedTimes: {$e->getMessage()}");
+            return collect(); // Kembalikan koleksi kosong jika terjadi kesalahan umum
+        }
     }
 }

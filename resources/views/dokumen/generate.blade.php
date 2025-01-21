@@ -175,33 +175,33 @@
 
         <table class="table">
             <tr>
-                <th>Nama Kegiatan:</th>
-                <td>{{ $nama_kegiatan }}</td>
+                <th>Nama Kegiatan</th>
+                <td>: {{ $nama_kegiatan }}</td>
                 <td></td>
             </tr>
             <tr>
-                <th>Nama Ketua Pelaksana:</th>
-                <td>{{ $nama_ketua_pelaksana }}</td>
+                <th>Nama Ketua Pelaksana</th>
+                <td>: {{ $nama_ketua_pelaksana }}</td>
                 <td></td>
             </tr>
             <tr>
-                <th>Nama Ormawa:</th>
-                <td>{{ $nama_ormawa }}</td>
+                <th>Nama Ormawa</th>
+                <td>: {{ $nama_ormawa }}</td>
                 <td></td>
             </tr>
             <tr>
-                <th>BEM:</th>
-                <td>{{ $sekum_bem }}</td>
+                <th>BEM</th>
+                <td>: {{ $sekum_bem }}</td>
                 <td></td>
             </tr>
             <tr>
-                <th>KLI:</th>
-                <td>{{ $kli }}</td>
+                <th>KLI</th>
+                <td>: {{ $kli }}</td>
                 <td></td>
             </tr>
             <tr>
-                <th>Wakil Direktur 3:</th>
-                <td>{{ $wd3 }}</td>
+                <th>Wakil Direktur 3</th>
+                <td>: {{ $wd3 }}</td>
                 <td></td>
             </tr>
         </table>

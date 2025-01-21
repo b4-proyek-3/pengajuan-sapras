@@ -77,19 +77,19 @@
 </div>
 
 <script>
-    $(document).ready(function() {
+    document.addEventListener('DOMContentLoaded', function () {
         // Scroll button functionality
-        const scrollButton = document.getElementById('scrollToCalendarBtn');
-        const calendarSection = document.getElementById('calendarSection');
+        const scrollButton = document.getElementById('scrollToCalendarBtn'); // Tombol
+        const calendarSection = document.getElementById('calendarSection'); // Section target
 
-        scrollButton.addEventListener('click', function(e) {
+        scrollButton.addEventListener('click', function (e) {
             e.preventDefault();
             const yOffset = -50;
             const y = calendarSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
-            
+
             window.scrollTo({
                 top: y,
-                behavior: 'smooth'
+                behavior: 'smooth',
             });
         });
     });
@@ -109,7 +109,7 @@
                 title: info.event.title,
                 html: `
                     <p><strong>Waktu Mulai:</strong> ${info.event.start.toLocaleString()}</p>
-                    <p><strong>Waktu Selesai:</strong> ${info.event.end ? info.event.end.toLocaleString() : 'Tidak ditentukan'}</p>
+                    <p><strong>Waktu Akhir:</strong> ${info.event.end ? info.event.end.toLocaleString() : 'Tidak ditentukan'}</p>
                 `,
                 icon: 'info',
                 confirmButtonText: 'Tutup',

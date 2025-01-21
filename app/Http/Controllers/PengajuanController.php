@@ -63,12 +63,7 @@ class PengajuanController extends Controller
     {
         $pengajuans = Pengajuan::with(['pengaju', 'reviewers', 'latestReview', 'dokumen', 'ruangan'])->findOrFail($id_pengajuan);
         $tempatList = Ruangan::all();
-        $ruanganData = MenggunakanRuangan::where('id_pengajuan', $id_pengajuan)->get();
-        foreach ($pengajuans->ruangan as $ruangan) {
-            $ruangan->pivot->waktu_mulai = Carbon::parse($ruangan->pivot->waktu_mulai)->format('H:i');
-            $ruangan->pivot->waktu_akhir = Carbon::parse($ruangan->pivot->waktu_akhir)->format('H:i');
-        }
-        return view('pengajuan.detail', compact('pengajuans', 'tempatList', 'ruanganData'));
+        return view('pengajuan.detail', compact('pengajuans', 'tempatList'));
     }
 
     public function create()
