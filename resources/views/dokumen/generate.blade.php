@@ -122,6 +122,30 @@
             margin-top: 30px;
             font-size: 0.9em;
         }
+
+        .usage-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 12pt;
+            text-align: left;
+        }
+
+        .usage-table th,
+        .usage-table td {
+            border: 1px solid black; /* Menambahkan border */
+            padding: 8px; /* Memberikan padding */
+        }
+
+        .usage-table th {
+            background-color: #f2f2f2; /* Warna latar untuk header tabel */
+            font-weight: bold; /* Menonjolkan teks header */
+        }
+
+        .usage-table td {
+            background-color: #ffffff; /* Warna latar untuk data */
+        }
+
     </style>
 </head>
 
@@ -150,63 +174,54 @@
             ketua pelaksana kegiatan {{ $nama_kegiatan }}, meminjam sarana dengan detail sebagai berikut:</p>
 
         <table class="table">
-            <!-- <tr>
-                <th>ID Pengajuan:</th>
-                <td>{{ $id_pengajuan }}</td>
-                <td></td>
-            </tr> -->
             <tr>
-                <th>Nama Kegiatan:</th>
-                <td>{{ $nama_kegiatan }}</td>
+                <th>Nama Kegiatan</th>
+                <td>: {{ $nama_kegiatan }}</td>
                 <td></td>
             </tr>
             <tr>
-                <th>Nama Ketua Pelaksana:</th>
-                <td>{{ $nama_ketua_pelaksana }}</td>
+                <th>Nama Ketua Pelaksana</th>
+                <td>: {{ $nama_ketua_pelaksana }}</td>
                 <td></td>
             </tr>
             <tr>
-                <th>Nama Ormawa:</th>
-                <td>{{ $nama_ormawa }}</td>
+                <th>Nama Ormawa</th>
+                <td>: {{ $nama_ormawa }}</td>
                 <td></td>
             </tr>
             <tr>
-                <th>Tempat:</th>
-                @foreach($ruangans as $ruangan)
-                <td>{{ $ruangan->first()->nama_ruangan ?? 'Ruangan tidak ditemukan' }} - {{ $ruangan->gedung->first()->nama_gedung ?? 'Gedung tidak ditemukan' }}</td>
+                <th>BEM</th>
+                <td>: {{ $sekum_bem }}</td>
+                <td></td>
+            </tr>
+            <tr>
+                <th>KLI</th>
+                <td>: {{ $kli }}</td>
+                <td></td>
+            </tr>
+            <tr>
+                <th>Wakil Direktur 3</th>
+                <td>: {{ $wd3 }}</td>
+                <td></td>
+            </tr>
+        </table>
+        <table class="usage-table">
+            <thead>
+                <tr>
+                    <th>Tempat</th>
+                    <th>Tanggal</th>
+                    <th>Waktu</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($usage_details as $index => $usage)
+                    <tr>
+                        <td>{{ $usage['ruangan'] }}, {{ $usage['gedung'] }}</td>
+                        <td>{{ $usage['tanggal_mulai'] }} - {{ $usage['tanggal_akhir'] }}</td>
+                        <td>{{ $usage['waktu_mulai'] }} - {{ $usage['waktu_akhir'] }}</td>
+                    </tr>
                 @endforeach
-                <td></td>
-            </tr>
-            <tr>
-                <th>Tanggal Mulai:</th>
-                <td>{{ $tanggal_mulai }}</td>
-                <td></td>
-            </tr>
-            <tr>
-                <th>Tanggal Akhir:</th>
-                <td>{{ $tanggal_akhir }}</td>
-                <td></td>
-            </tr>
-            <tr>
-                <th>Waktu:</th>
-                <td>{{ $waktu_kegiatan }}</td>
-                <td></td>
-            </tr>
-            <tr>
-                <th>BEM:</th>
-                <td>{{ $sekum_bem }}</td>
-                <td></td>
-            </tr>
-            <tr>
-                <th>KLI:</th>
-                <td>{{ $kli }}</td>
-                <td></td>
-            </tr>
-            <tr>
-                <th>Wakil Direktur 3:</th>
-                <td>{{ $wd3 }}</td>
-                <td></td>
-            </tr>
+            </tbody>
         </table>
 
         <p>Demikian Berita Acara ini dibuat dengan sebenarnya agar dapat dipergunakan sebagaimana mestinya.</p>

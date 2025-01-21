@@ -66,6 +66,7 @@
                                 <option value="" disabled selected>Pilih Jenis Kegiatan</option>
                                 <option value="proker">Program Kerja</option>
                                 <option value="pergerakan">Pergerakan</option>
+                                <option value="latihan_rutin">Latihan Rutin</option>
                             </select>
                             <p class="text-gray-500 text-sm mt-1">File maksimal 2 MB</p>
                         </div>
@@ -311,14 +312,19 @@
         // Reset display styles
         programKerjaFiles.style.display = "none";
         pergerakanFiles.style.display = "none";
-        commonFiles.style.display = "block";
+        commonFiles.style.display = "none";  // Hide common files by default
 
         if (activityType === "proker") {
             programKerjaFiles.style.display = "block";
+            commonFiles.style.display = "block";  // Show common files with proker
         } else if (activityType === "pergerakan") {
             pergerakanFiles.style.display = "block";
+            commonFiles.style.display = "block";  // Show common files with pergerakan
+        } else if (activityType === "latihan_rutin") {
+            pergerakanFiles.style.display = "block";  // Only show Term of Reference
         }
     }
+
     document.addEventListener("DOMContentLoaded", function () {
         showFileInputs();
     });

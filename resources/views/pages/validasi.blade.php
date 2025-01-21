@@ -9,7 +9,7 @@
                         <div class="flex justify-center mb-6">
                             <div
                                 class="bg-white-500 w-24 h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 rounded-full flex items-center justify-center">
-                                <i class="fa-sharp fa-solid fa-badge-check fa-4x md:fa-5x lg:fa-6x text-lime-500"></i>
+                                <img src="{{ asset('assets/img/logo_kemahasiswaan.png') }}" style="width: 400px; height: 150px;">
                             </div>
                         </div>
 
@@ -28,14 +28,6 @@
                                                 class="{{ $status_dokumen === 'Aktif' ? 'text-green-500' : 'text-red-500' }}">
                                                 {{ $status_dokumen }}
                                             </span>
-                                        </td>
-                                    </tr>
-
-                                    {{-- Letter Number --}}
-                                    <tr class="border-b border-gray-200">
-                                        <td class="py-2 font-medium text-gray-700">Nomor Surat</td>
-                                        <td class="py-2 text-right">
-                                            {{ $nomor_surat ?? 'Tidak tersedia' }}
                                         </td>
                                     </tr>
 

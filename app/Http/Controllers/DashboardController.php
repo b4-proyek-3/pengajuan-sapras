@@ -12,83 +12,40 @@ use App\Models\MenggunakanRuangan;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class DashboardController extends Controller
 {
-    public function getDashboardStatistics()
+    public function index()
     {
-        $totalPengajuan = Pengajuan::count();
-        $totalRuangan = Ruangan::count();
-        $totalUsers = User::count();
-        $totalOrmawa = Ormawa::count();
-    
-        $monthlyStatus = Pengajuan::select(
-            DB::raw('EXTRACT(MONTH FROM tanggal_pengajuan) as month'),
-            DB::raw('COUNT(CASE WHEN status = \'selesai\' THEN 1 END) as selesai_count'),
-            DB::raw('COUNT(CASE WHEN status = \'ditolak\' THEN 1 END) as ditolak_count')
-        )
-        ->groupBy('month')
-        ->orderBy('month')
-        ->get();
-    
-        return view('dashboard', compact(
-            'totalPengajuan', 
-            'totalRuangan', 
-            'totalUsers', 
-            'totalOrmawa',
-            'monthlyStatus'
-        ));
-    }
-    
-    public function index(Request $request)
-    {
-        $namaGedung = $request->input('namaGedung');
-        $namaRuangan = $request->input('namaRuangan');
-        $tanggal = $request->input('tanggal');
-        
-        // Query pencarian
-        $ruanganList = Ruangan::with('gedung')
-            ->when($namaGedung, function ($query, $namaGedung) {
-                $query->whereHas('gedung', function ($q) use ($namaGedung) {
-                    $q->where('nama_gedung', 'like', '%' . $namaGedung . '%');
-                });
-            })
-            ->when($namaRuangan, function ($query, $namaRuangan) {
-                $query->where('nama_ruangan', 'like', '%' . $namaRuangan . '%');
-            })
-            ->when($tanggal, function ($query, $tanggal) {
-                // Assuming tanggal is a range "YYYY-MM-DD - YYYY-MM-DD"
-                [$startDate, $endDate] = explode(' - ', $tanggal);
-                $query->whereBetween('tanggal', [$startDate, $endDate]);
-            })
-            ->get();
-
-        return view('dashboard', [
-            'ruanganList' => $ruanganList,
-            'namaGedung' => $namaGedung,
-            'namaRuangan' => $namaRuangan,
-            'tanggal' => $tanggal,
-        ]);
+        $gedungs = Gedung::all();
+        return view('dashboard', compact('gedungs'));
     }
 
     public function getCalendarData()
     {
-        // Ambil semua data dari tabel menggunakan_ruangan
         $menggunakanRuangan = MenggunakanRuangan::with(['ruangan', 'pengajuan'])->get();
 
-        // Format data untuk kalender
-        $events = $menggunakanRuangan->map(function ($item) {
-            return [
-                'id' => $item->id,
-                'id_pengajuan' => $item->id_pengajuan,
-                'id_ruangan' => $item->id_ruangan,
-                'title' => $item->pengajuan->nama_kegiatan . ' (Ruangan: ' . $item->ruangan->nama_ruangan . ')',
-                'start' => $item->tanggal_mulai . 'T' . $item->waktu_mulai,
-                'end' => $item->tanggal_akhir . 'T' . $item->waktu_akhir,
-                'description' => 'Ruangan: ' . $item->ruangan->nama_ruangan,
-            ];
-        });
+        $events = [];
 
+        foreach ($menggunakanRuangan as $item) {
+            $startDate = \Carbon\Carbon::parse($item->tanggal_mulai);
+            $endDate = \Carbon\Carbon::parse($item->tanggal_akhir);
+
+            while ($startDate->lte($endDate)) {
+                $events[] = [
+                    'id' => $item->id,
+                    'id_pengajuan' => $item->id_pengajuan,
+                    'id_ruangan' => $item->id_ruangan,
+                    'title' => $item->pengajuan->nama_kegiatan . ' (Ruangan: ' . $item->ruangan->nama_ruangan . ')',
+                    'start' => $startDate->toDateString() . 'T' . $item->waktu_mulai,
+                    'end' => $startDate->toDateString() . 'T' . $item->waktu_akhir,
+                    'description' => 'Ruangan: ' . $item->ruangan->nama_ruangan,
+                ];
+
+                $startDate->addDay(); // Pindah ke hari berikutnya
+            }
+        }
         return response()->json($events);
     }
 }

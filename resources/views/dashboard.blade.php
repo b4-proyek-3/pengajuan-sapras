@@ -2,9 +2,8 @@
 @section('content')
 
 <div class="dashboard-container min-h-screen bg-gray-50">
-    <main class="dashboard-main p-8 flex flex-col items-center justify-center min-h-screen bg-gray-50">
-        <!-- Title Section -->
-        <div class="mt-24 text-center">
+    <main class="dashboard-main bg-gray-50">        <!-- Title Section -->
+        <div class="pt-24 text-center">
             <h1 class="dashboard-page-title text-4xl font-bold mb-4 text-gray-600">
                 Pengajuan Sarana dan Prasarana
             </h1>
@@ -13,66 +12,60 @@
             </p>
         </div>
 
-        <!-- Search Form -->
-        <div id="searchCard" class="bg-white shadow-md rounded-lg p-8 w-full max-w-6xl">
-            <form method="GET" action="{{ route('dashboard') }}" class="space-y-4">
-                <div class="flex space-x-4">
-
-                    <!-- Filter Nama Gedung -->
-                    <div class="flex-1 relative">
-                        <label for="gedung" class="sr-only">Pilih Gedung:</label>
-                        <select name="gedung_id" id="gedung" class="dashboard-room-select w-full min-w-[300px] pl-6 pr-4 py-2 border rounded-lg">
-                            <option value="">Cari Gedung</option>
-                            @foreach (\App\Models\Gedung::all() as $gedung)
-                                <option value="{{ $gedung->id_gedung }}" 
-                                    {{ request('gedung_id') == $gedung->id_gedung ? 'selected' : '' }}>
+        <!-- Search Form with White Background -->
+        <div class="bg-white rounded-b-lg shadow w-full max-w-5xl mx-auto py-6 px-6 mb-8">
+            <form action="{{ route('dashboard.index') }}" method="GET" class="grid grid-cols-12 gap-4">
+                <!-- Building Selection -->
+                <div class="col-span-4">
+                    <div class="relative">
+                        <select name="gedung" id="gedung" class="w-full h-11 pl-4 pr-1 bg-white rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 appearance-none">
+                            <option value="">Pilih Gedung</option>
+                            @foreach($gedungs as $gedung)
+                                <option value="{{ $gedung->id_gedung }}" {{ request('gedung') == $gedung->id_gedung ? 'selected' : '' }}>
                                     {{ $gedung->nama_gedung }}
                                 </option>
                             @endforeach
                         </select>
-                    </div>
-
-                    <!-- Filter Nama Ruangan -->
-                    <div class="flex-1 relative">
-                        <label for="ruangan" class="sr-only">Pilih Ruangan:</label>
-                        <select name="ruangan_id" id="ruangan" class="dashboard-room-select w-full min-w-[300px] pl-4 pr-4 py-2 border rounded-lg">
-                            <option value="">Cari Ruangan</option>
-                            @foreach (\App\Models\Ruangan::all() as $ruangan)
-                                <option value="{{ $ruangan->id_ruangan }}" 
-                                    {{ request('ruangan_id') == $ruangan->id_ruangan ? 'selected' : '' }}>
-                                    {{ $ruangan->nama_ruangan }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                
-
-                    <!-- Filter Tanggal -->
-                    <div class="flex space-x-4">
-                        <div class="flex-1 relative">
-                            <label for="tanggal" class="sr-only">Pilih Tanggal</label>
-                            <i class="fas fa-calendar absolute left-3 top-2.5 text-gray-400"></i>
-                            <input type="text" name="tanggal" id="tanggal"
-                                class="w-full min-w-[300px] pl-10 pr-4 py-2 border rounded-lg" placeholder="Cari Tanggal"
-                                value="{{ request('tanggal') }}">
+                        <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                            <i class="fas fa-chevron-down text-gray-400"></i>
                         </div>
-
-                        <!-- Submit Button -->
-                        <button type="submit" class="dashboard-search-button px-8 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                            Cari
-                        </button>
                     </div>
                 </div>
+
+                <!-- Date Range -->
+                <div class="col-span-5">
+                    <div class="relative">
+                        <input type="text"
+                            id="daterange"
+                            name="daterange"
+                            class="w-full h-11 pl-4 pr-4 bg-white rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500"
+                            placeholder="13 Jan 2025 - 16 Jan 2025"
+                            value="{{ request('daterange') }}"
+                            readonly>
+                        <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                            <i class="fas fa-calendar text-gray-400"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Search Button -->
+                <div class="col-span-3 flex justify-end">
+                    <button class="w-full md:w-auto bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-800 focus:ring-2 focus:ring-indigo-400">
+                        Cari
+                    </button>
+                </div>
+                <input type="hidden" value="true">
             </form>
         </div>
 
-        <!-- Scroll to Calendar Button -->
-        <button onclick="document.getElementById('calendarSection').scrollIntoView({ behavior: 'smooth' })" 
-            class="mt-12 px-6 py-3 bg-orange-500 text-white rounded-lg shadow hover:bg-orange-600">
-            Lihat Kalender
-        </button>
+        <!-- Scroll button -->
+        <div class="text-center my-8">
+            <button id="scrollToCalendarBtn" class="px-6 py-3 bg-orange-500 text-white rounded-lg shadow hover:bg-orange-600 transition-all">
+                Lihat Kalender
+            </button>
+        </div>
 
-        <!-- Calendar Section -->
+        <!-- Calendar section -->
         <div id="calendarSection" class="w-full mt-40">
             <div class="container mx-auto">
                 <div id="ruanganCard" class="bg-white shadow-md rounded-lg p-6">
@@ -80,11 +73,27 @@
                 </div>
             </div>
         </div>
-
     </main>
 </div>
 
 <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Scroll button functionality
+        const scrollButton = document.getElementById('scrollToCalendarBtn'); // Tombol
+        const calendarSection = document.getElementById('calendarSection'); // Section target
+
+        scrollButton.addEventListener('click', function (e) {
+            e.preventDefault();
+            const yOffset = -50;
+            const y = calendarSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
+
+            window.scrollTo({
+                top: y,
+                behavior: 'smooth',
+            });
+        });
+    });
+
     document.addEventListener('DOMContentLoaded', function () {
         var calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -100,7 +109,7 @@
                 title: info.event.title,
                 html: `
                     <p><strong>Waktu Mulai:</strong> ${info.event.start.toLocaleString()}</p>
-                    <p><strong>Waktu Selesai:</strong> ${info.event.end ? info.event.end.toLocaleString() : 'Tidak ditentukan'}</p>
+                    <p><strong>Waktu Akhir:</strong> ${info.event.end ? info.event.end.toLocaleString() : 'Tidak ditentukan'}</p>
                 `,
                 icon: 'info',
                 confirmButtonText: 'Tutup',
@@ -122,6 +131,35 @@
             }
         });
     });
+
+    $(document).ready(function() {
+        $('#daterange').daterangepicker({
+            opens: 'left',
+            autoApply: true,
+            minDate: moment(),
+            locale: {
+                format: 'DD MMM YYYY',
+                applyLabel: "Pilih",
+                cancelLabel: "Batal",
+                daysOfWeek: ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"],
+                monthNames: [
+                    "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+                    "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+                ],
+            },
+            showDropdowns: true,
+        });
+
+        // Update the input field value on date range selection
+        $('#daterange').on('apply.daterangepicker', function(ev, picker) {
+            $(this).val(picker.startDate.format('DD MMM YYYY') + ' - ' + picker.endDate.format('DD MMM YYYY'));
+        });
+
+        document.getElementById('sort').addEventListener('change', function() {
+            document.getElementById('sortForm').submit();
+        });
+    });
+
 </script>
 
 @endsection
