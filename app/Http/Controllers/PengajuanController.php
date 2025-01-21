@@ -150,7 +150,7 @@ class PengajuanController extends Controller
                 'notelp' => 'required|string|regex:/^\+?[0-9]{10,15}$/',
                 'jumlah_peserta' => 'required|integer',
                 'link_gdrive' => 'nullable|url',
-                'activity_type' => 'required|string|in:proker,pergerakan',
+                'activity_type' => 'required|string|in:proker,pergerakan,latihan_rutin',
                 'dokumen1' => 'nullable|file|mimes:pdf|max:2048',
                 'dokumen2' => 'nullable|file|mimes:pdf|max:2048',
                 'dokumen3' => 'nullable|file|mimes:pdf|max:2048',

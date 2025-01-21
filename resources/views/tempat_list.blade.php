@@ -219,13 +219,47 @@
         detailButtons.forEach((button) => {
             button.addEventListener("click", () => {
                 const idRuangan = button.getAttribute("data-id-ruangan");
-                let dates = JSON.parse(button.getAttribute("data-dates"));
+                let dates = button.getAttribute("data-dates");
+
+                console.log("Original dates string:", dates);
+
+                try {
+                    dates = JSON.parse(dates);
+                } catch (error) {
+                    console.error("JSON parsing error:", error);
+                }
+
+                console.log("Parsed dates:", dates);
+
+                // Pastikan dates adalah array
+                if (!Array.isArray(dates)) {
+                    // Jika dates adalah objek, konversi ke array
+                    if (typeof dates === 'object') {
+                        dates = Object.values(dates);
+                    }
+                }
+
+                console.log("Dates as array:", dates);
+
+                // Jika dates masih bukan array, keluarkan error
+                if (!Array.isArray(dates)) {
+                    console.error("dates masih bukan array setelah konversi:", dates);
+                    return; // Berhenti jika dates bukan array
+                }
+
+                // Filter dates sesuai idRuangan yang dipilih
+                dates = dates.filter((item) => item.id_ruangan === parseInt(idRuangan));
+                dates2 = dates;
+
+                console.log("Filtered dates:", dates);
 
                 // Hilangkan tanggal duplikat
                 dates = dates
-                    .map((item) => item.date) 
+                    .map((item) => item.date)
                     .filter((value, index, self) => self.indexOf(value) === index) // Hilangkan duplikasi
                     .sort();
+
+                console.log("Sorted dates:", dates);
 
                 // State untuk melacak tanggal yang dipilih
                 let selectedIndex = 0;
@@ -241,9 +275,11 @@
                     const timeSlots = generateTimeSlots(startTime, endTime);
 
                     // Cek apakah ada booking untuk tanggal tertentu
-                    const bookingsForDate = JSON.parse(button.getAttribute("data-dates")).filter(
+                    const bookingsForDate = dates2.filter(
                         (booking) => booking.date === selectedDate
                     );
+
+                    console.log("Bookings for date:", bookingsForDate);
 
                     let timeSlotsWithStatus = [];
 
