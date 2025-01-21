@@ -224,24 +224,26 @@
             const dynamicFields = document.createElement("div");
             dynamicFields.classList.add("dynamic-fields");
 
+            const today = new Date().toISOString().split('T')[0];
+
             dynamicFields.innerHTML = `
             <div class="mb-3">
                 <label class="block text-gray-700 mb-2">Tanggal Peminjaman</label>
-                <input type="date" name="tanggal_mulai[]" id="tanggal_mulai" class="form-control">
+                <input type="date" name="tanggal_mulai[]" id="tanggal_mulai" class="form-control" required min="${today}">
             </div>
             <div class="mb-3">
                 <label class="block text-gray-700 mb-2">Tanggal Berakhir</label>
-                <input type="date" name="tanggal_akhir[]" id="tanggal_akhir" class="form-control">
+                <input type="date" name="tanggal_akhir[]" id="tanggal_akhir" class="form-control" required min="${today}">
             </div>
             <div class="mb-3">
                 <label class="block text-gray-700 mb-2">Waktu Mulai Kegiatan</label>
-                <select name="waktu_mulai[]" id="waktu_mulai" class="form-control">
+                <select name="waktu_mulai[]" id="waktu_mulai" class="form-control" required>
                 ${weekdayTimes.map(time => `<option value="${time}">${time}</option>`).join("")}
                 </select>
             </div>
             <div class="mb-3">
                 <label class="block text-gray-700 mb-2">Waktu Selesai Kegiatan</label>
-                <select name="waktu_akhir[]" id="waktu_akhir" class="form-control">
+                <select name="waktu_akhir[]" id="waktu_akhir" class="form-control" required>
                 ${weekdayTimes.map(time => `<option value="${time}">${time}</option>`).join("")}
                 </select>
             </div>
@@ -308,23 +310,45 @@
         const programKerjaFiles = document.getElementById("program_kerja_files");
         const pergerakanFiles = document.getElementById("pergerakan_files");
         const commonFiles = document.getElementById("common_files");
+        const dokumen1 = document.getElementById("dokumen1");
+        const dokumen2 = document.getElementById("dokumen2");
+        const dokumen3 = document.getElementById("dokumen3");
+        const dokumen4 = document.getElementById("dokumen4");
+        const dokumen5 = document.getElementById("dokumen5");
 
-        // Reset display styles
+        // Reset display styles and remove required attribute
         programKerjaFiles.style.display = "none";
         pergerakanFiles.style.display = "none";
-        commonFiles.style.display = "none";  // Hide common files by default
+        commonFiles.style.display = "none";
 
+        dokumen1.removeAttribute("required");
+        dokumen2.removeAttribute("required");
+        dokumen3.removeAttribute("required");
+        dokumen4.removeAttribute("required");
+        dokumen5.removeAttribute("required");
+
+        // Show relevant file inputs and set required attributes
         if (activityType === "proker") {
             programKerjaFiles.style.display = "block";
-            commonFiles.style.display = "block";  // Show common files with proker
+            commonFiles.style.display = "block";
+            dokumen1.setAttribute("required", "true");
+            dokumen3.setAttribute("required", "true");
+            dokumen4.setAttribute("required", "true");
+            dokumen5.setAttribute("required", "true");
         } else if (activityType === "pergerakan") {
             pergerakanFiles.style.display = "block";
-            commonFiles.style.display = "block";  // Show common files with pergerakan
+            commonFiles.style.display = "block";
+            dokumen2.setAttribute("required", "true");
+            dokumen3.setAttribute("required", "true");
+            dokumen4.setAttribute("required", "true");
+            dokumen5.setAttribute("required", "true");
         } else if (activityType === "latihan_rutin") {
-            pergerakanFiles.style.display = "block";  // Only show Term of Reference
+            pergerakanFiles.style.display = "block";
+            dokumen2.setAttribute("required", "true");
         }
     }
 
+    // Call on page load to handle any default state
     document.addEventListener("DOMContentLoaded", function () {
         showFileInputs();
     });
