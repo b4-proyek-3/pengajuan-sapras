@@ -20,43 +20,51 @@ class PengajuanController extends Controller
 {
     public function index(Request $request)
     {
-        $pengaju = auth()->user()->pengaju;
+        try {
+            $pengaju = auth()->user()->pengaju;
 
-        $activeTab = $request->input('active_tab', 'diajukan');
+            $activeTab = $request->input('active_tab', 'diajukan');
 
-        $pengajuanDiajukan = Pengajuan::whereIn('status', ['diajukan', 'direview', 'direvisi', 'diedit'])
-            ->where('nim', $pengaju->nim)
-            ->when($request->input('diajukan_sort_status'), function ($query, $status) {
-                return $query->where('status', $status);
-            })
-            ->when($request->input('search'), function ($query, $search) {
-                return $query->where(function($q) use ($search) {
-                    $q->where('nama_kegiatan', 'like', "%{$search}%")
-                      ->orWhereHas('pengaju.ormawa', function($subQuery) use ($search) {
-                          $subQuery->where('nama_ormawa', 'like', "%{$search}%");
-                      });
-                });
-            })
-            ->paginate(10, ['*'], 'diajukan_page');
-    
-        $pengajuanRiwayat = Pengajuan::whereIn('status', ['selesai', 'ditolak'])
-            ->where('nim', $pengaju->nim)
-            ->when($request->input('riwayat_sort_status'), function ($query, $status) {
-                return $query->where('status', $status);
-            })
-            ->when($request->input('search'), function ($query, $search) {
-                return $query->where(function($q) use ($search) {
-                    $q->where('nama_kegiatan', 'like', "%{$search}%")
-                      ->orWhereHas('pengaju.ormawa', function($subQuery) use ($search) {
-                          $subQuery->where('nama_ormawa', 'like', "%{$search}%");
-                      });
-                });
-            })
-            ->paginate(10, ['*'], 'riwayat_page');
-    
-        $tempatList = Ruangan::all();
-    
-        return view('pengajuan.index', compact('pengajuanDiajukan', 'pengajuanRiwayat', 'tempatList', 'activeTab'));
+            $pengajuanDiajukan = Pengajuan::whereIn('status', ['diajukan', 'direview', 'direvisi', 'diedit'])
+                ->where('nim', $pengaju->nim)
+                ->when($request->input('diajukan_sort_status'), function ($query, $status) {
+                    return $query->where('status', $status);
+                })
+                ->when($request->input('search'), function ($query, $search) {
+                    return $query->where(function($q) use ($search) {
+                        $q->where('nama_kegiatan', 'like', "%{$search}%")
+                        ->orWhereHas('pengaju.ormawa', function($subQuery) use ($search) {
+                            $subQuery->where('nama_ormawa', 'like', "%{$search}%");
+                        });
+                    });
+                })
+                ->paginate(10, ['*'], 'diajukan_page');
+        
+            $pengajuanRiwayat = Pengajuan::whereIn('status', ['selesai', 'ditolak'])
+                ->where('nim', $pengaju->nim)
+                ->when($request->input('riwayat_sort_status'), function ($query, $status) {
+                    return $query->where('status', $status);
+                })
+                ->when($request->input('search'), function ($query, $search) {
+                    return $query->where(function($q) use ($search) {
+                        $q->where('nama_kegiatan', 'like', "%{$search}%")
+                        ->orWhereHas('pengaju.ormawa', function($subQuery) use ($search) {
+                            $subQuery->where('nama_ormawa', 'like', "%{$search}%");
+                        });
+                    });
+                })
+                ->paginate(10, ['*'], 'riwayat_page');
+        
+            $tempatList = Ruangan::all();
+        
+            return view('pengajuan.index', compact('pengajuanDiajukan', 'pengajuanRiwayat', 'tempatList', 'activeTab'));
+
+        } catch (\Exception $e) {
+            \Log::error('Error fetching data in PengajuanController@index: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+            ]);
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat memuat data. Silakan coba lagi nanti.');
+        }
     }
 
     public function show(string $id_pengajuan)

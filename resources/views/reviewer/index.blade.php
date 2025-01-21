@@ -281,6 +281,17 @@
     </div>
 </div>
 
+@if (session('error'))
+<script>
+    Swal.fire({
+        position: "center",
+        title: "{{ session('error') }}",
+        showConfirmButton: false,
+        timer: 1500,
+        icon: "error"
+    });
+</script>
+@endif
 
 <script>
     function showCard(activeTab) {
