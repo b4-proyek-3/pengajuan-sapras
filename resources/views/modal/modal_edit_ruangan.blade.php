@@ -9,21 +9,22 @@
             </div>
             <div class="modal-body">
                 <!-- Form Edit Ruangan -->
-                <form action="{{ route('ruangan.update', $r) }}" method="POST" enctype="multipart/form-data" id="editRuanganForm">
+                <form action="{{ route('ruangan.update', $ruangan) }}" method="POST" enctype="multipart/form-data" id="editRuanganForm">
                     @csrf
                     @method('PUT')
                     
                     <div class="mb-3">
                         <label for="nama_ruangan" class="form-label">Nama Ruangan</label>
                         <input type="text" name="nama_ruangan" id="nama_ruangan"
-                            value="{{ $r->nama_ruangan }}" class="form-control">
+                            value="{{ isset($r) ? $r->nama_ruangan : old('nama_ruangan') }}" class="form-control">
                     </div>
 
                     <div class="mb-3">
                         <label for="id_gedung">Gedung</label>
                         <select name="id_gedung" id="id_gedung" class="form-control" required>
                             @foreach($gedung as $g)
-                                <option value="{{ $g->id_gedung }}">
+                                <option value="{{ $g->id_gedung }}"
+                                    {{ isset($r) && $r->id_gedung == $g->id_gedung ? 'selected' : '' }}>
                                     {{ $g->nama_gedung }}
                                 </option>
                             @endforeach
@@ -38,7 +39,7 @@
                     <div class="mb-3">
                         <label for="kapasitas" class="form-label">Kapasitas</label>
                         <input type="number" name="kapasitas" id="kapasitas"
-                            value="{{ $r->kapasitas }}"
+                            value="{{ isset($r) ? $r->kapasitas : old('kapasitas') }}"
                             class="form-control" required min="1">
                     </div>
 

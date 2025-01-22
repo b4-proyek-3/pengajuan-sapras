@@ -18,6 +18,16 @@ class UserController extends Controller
         $reviewer = Reviewer::with('user')->paginate(10, ['*'], 'reviewer_page');
         $pengaju = Pengaju::with('user')->paginate(10, ['*'], 'pengaju_page');
         $ormawa = Ormawa::all();
+        $roles = [
+            'sekum-bem' => 'BEM',
+            'kli' => 'KLI',
+            'wd-3' => 'WD3',
+        ];
+    
+        // Menambahkan kolom 'role' yang sudah disesuaikan ke setiap item
+        foreach ($reviewer as $r) {
+            $r->role = $roles[$r->role] ?? $r->role; // Jika tidak ada di array, gunakan nilai asli
+        }
         return view('users.index', compact('pengaju', 'reviewer', 'ormawa', 'activeTab'));
     }
 
@@ -79,54 +89,65 @@ class UserController extends Controller
         return view('users.edit', compact('user'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $id_user)
     {
-        $validatedUser = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $id . ',id_user',
-            'password' => 'nullable|string|min:8',
-        ]);
-        
-        $user = User::findOrFail($id);
-
-        // Update data pengguna
-        $user->update([
-            'name' => $validatedUser['name'],
-            'email' => $validatedUser['email'],
-            'password' => $request->password ? bcrypt($validatedUser['password']) : $user->password,
-        ]);
-
-        // Jika data yang diperbarui adalah Pengaju
-        if ($request->has('nim')) {
-            $validatedPengaju = $request->validate([
-                'nim' => 'required|size:9|unique:pengaju,nim,' . $id . ',id_user',
-                'id_ormawa' => 'required|exists:ormawa,id_ormawa',
+        try {
+            // Validasi input pengguna
+            $validatedUser = $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email,' . $id_user . ',id_user',
+                'password' => 'nullable|string|min:8',
             ]);
 
-            $pengaju = Pengaju::where('id_user', $user->id_user)->firstOrFail();
-            $pengaju->update([
-                'nim' => $validatedPengaju['nim'],
-                'id_ormawa' => $validatedPengaju['id_ormawa'],
+            // Cari pengguna berdasarkan ID
+            $user = User::findOrFail($id_user);
+
+            // Perbarui data pengguna
+            $user->update([
+                'name' => $validatedUser['name'],
+                'email' => $validatedUser['email'],
+                'password' => $request->password ? bcrypt($validatedUser['password']) : $user->password,
             ]);
 
-            return redirect()->route('users.index')->with('success', 'Data Pengaju berhasil diperbarui.');
+            if ($request->has('nim')) {
+                // Validasi data Pengaju
+                $validatedPengaju = $request->validate([
+                    'nim' => 'required|size:9|unique:pengaju,nim,' . $id_user . ',id_user',
+                    'id_ormawa' => 'required|exists:ormawa,id_ormawa',
+                ]);
+
+                // Cari data Pengaju
+                $pengaju = Pengaju::where('id_user', $user->id_user)->firstOrFail();
+
+                // Perbarui data Pengaju
+                $pengaju->update([
+                    'nim' => $validatedPengaju['nim'],
+                    'id_ormawa' => $validatedPengaju['id_ormawa'],
+                ]);
+
+                return redirect()->route('users.index')->with('success', 'Data Pengaju berhasil diperbarui.');
+            } elseif ($request->has('role')) {
+                // Validasi data Reviewer
+                $validatedReviewer = $request->validate([
+                    'role' => 'required|in:sekum-bem,kli,wd-3',
+                ]);
+
+                // Cari data Reviewer
+                $reviewer = Reviewer::where('id_user', $user->id_user)->firstOrFail();
+
+                // Perbarui data Reviewer
+                $reviewer->update([
+                    'role' => $validatedReviewer['role'],
+                ]);
+
+                return redirect()->route('users.index')->with('success', 'Data Reviewer berhasil diperbarui.');
+            }
+
+            return redirect()->route('users.index')->with('error', 'Tidak ada data yang valid untuk diperbarui.');
+
+        } catch (\Exception $e) {
+            return redirect()->route('users.index')->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
-
-        // Jika data yang diperbarui adalah Reviewer
-        if ($request->has('role')) {
-            $validatedReviewer = $request->validate([
-                'role' => 'required|in:sekum-bem,kli,wd-3',
-            ]);
-
-            $reviewer = Reviewer::where('id_user', $user->id_user)->firstOrFail();
-            $reviewer->update([
-                'role' => $validatedReviewer['role'],
-            ]);
-
-            return redirect()->route('users.index')->with('success', 'Data Reviewer berhasil diperbarui.');
-        }
-
-        return redirect()->route('users.index')->with('error', 'Tidak ada data yang valid untuk diperbarui.');
     }
 
     public function destroy($id)

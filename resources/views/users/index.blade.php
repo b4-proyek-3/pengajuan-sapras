@@ -55,8 +55,13 @@
                                     <td class="py-3 px-4 border">{{ $p->ormawa->nama_ormawa }}</td>
                                     <td class="py-3 px-4 border flex items-center space-x-2">
                                         <button
-                                        data-bs-toggle="modal" data-bs-target="#pengajuEditModal"
-                                            class="bg-blue-600 text-white px-4 py-2 rounded-lg">
+                                        data-bs-toggle="modal" data-bs-target="#editPengajuModal"
+                                            class="bg-blue-600 text-white px-4 py-2 rounded-lg"
+                                            data-id="{{ $p->user->id_user }}"
+                                            data-name="{{ $p->user->name }}"
+                                            data-nim="{{ $p->nim }}"
+                                            data-id-ormawa="{{ $p->ormawa->id_ormawa }}"
+                                            data-email="{{ $p->user->email }}">
                                             Edit
                                         </button>
                                         <form id="delete-form-{{ $p->id_user }}" action="{{ route('users.destroy', $p->id_user) }}" method="POST">
@@ -158,8 +163,12 @@
                                         <td class="py-3 px-4 border">{{ $r->role }}</td>
                                         <td class="py-3 px-4 border flex items-center space-x-2">
                                             <button
-                                            data-bs-toggle="modal" data-bs-target="#reviewerEditModal"
-                                                class="bg-blue-600 text-white px-4 py-2 rounded-lg">
+                                            data-bs-toggle="modal" data-bs-target="#editReviewerModal"
+                                                class="bg-blue-600 text-white px-4 py-2 rounded-lg"
+                                                data-id="{{ $r->user->id_user }}"
+                                                data-name="{{ $r->user->name }}"
+                                                data-role="{{ $r->role }}"
+                                                data-email="{{ $r->user->email }}">
                                                 Edit
                                             </button>
                                             <form id="delete-form-{{ $r->id_reviewer }}" action="{{ route('users.destroy', $r) }}" method="POST">
@@ -257,8 +266,22 @@
   });
 </script>
 @endif
+
+@if (session('error'))
+<script>
+    Swal.fire({
+        position: "center",
+        title: "{{ session('error') }}",
+        showConfirmButton: false,
+        timer: 1500,
+        icon: "error"
+    });
+</script>
+@endif
 @include('modal.modal_tambah_pengaju')
 @include('modal.modal_tambah_reviewer')
+@include('modal.modal_edit_pengaju')
+@include('modal.modal_edit_reviewer')
 
 <script>
     function confirmDelete(id) {
@@ -278,6 +301,68 @@
             }
         });
     }
+
+    document.getElementById('formID').addEventListener('submit', function(event) {
+        var password = document.getElementById('password').value;
+        var passwordError = document.getElementById('passwordError');
+
+        // Cek apakah password panjangnya kurang dari 8 karakter
+        if (password.length < 8) {
+            event.preventDefault(); // Mencegah form dari pengiriman
+            passwordError.style.display = 'block'; // Menampilkan pesan error
+        } else {
+            passwordError.style.display = 'none'; // Menyembunyikan pesan error jika valid
+        }
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const editButtons = document.querySelectorAll('button[data-bs-target="#editPengajuModal"]');
+        const modal = document.getElementById('editPengajuModal');
+
+        editButtons.forEach((button) => {
+            button.addEventListener('click', () => {
+                const id = button.getAttribute('data-id');
+                const name = button.getAttribute('data-name');
+                const nim = button.getAttribute("data-nim");
+                const idOrmawa = button.getAttribute("data-id-ormawa");
+                const email = button.getAttribute("data-email");
+
+                // Set nilai ke input di modal
+                modal.querySelector("#name").value = name;
+                modal.querySelector("#nim").value = nim;
+                modal.querySelector("#id_ormawa").value = idOrmawa;
+                modal.querySelector("#email").value = email;
+
+                // Update form action URL
+                const form = modal.querySelector('#editPengajuForm');
+                form.action = form.action.replace(/\/\d+$/, `/${id}`);
+            });
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const editButtons = document.querySelectorAll('button[data-bs-target="#editReviewerModal"]');
+        const modal = document.getElementById('editReviewerModal');
+
+        editButtons.forEach((button) => {
+            button.addEventListener('click', () => {
+                const id = button.getAttribute('data-id');
+                const name = button.getAttribute('data-name');
+                const role = button.getAttribute("data-role");
+                const email = button.getAttribute("data-email");
+
+                // Set nilai ke input di modal
+                modal.querySelector("#name").value = name;
+                modal.querySelector("#nim").value = nim;
+                modal.querySelector("#role").value = role;
+                modal.querySelector("#email").value = email;
+
+                // Update form action URL
+                const form = modal.querySelector('#editReviewerForm');
+                form.action = form.action.replace(/\/\d+$/, `/${id}`);
+            });
+        });
+    });
 
     document.addEventListener('DOMContentLoaded', function () {
         const alertMessage = "{{ session('alert') }}";

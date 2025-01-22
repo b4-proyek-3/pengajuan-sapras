@@ -45,20 +45,20 @@
 
                         <tbody>
                             @foreach ($ruangan as $key => $r)
-                                @include('modal.modal_edit_ruangan')
                                 <tr>
                                     <td class="py-3 px-4 border">{{ $ruangan->firstItem() + $key }}</td>
                                     <td class="py-3 px-4 border">{{ $r->nama_ruangan }}</td>
                                     <td class="py-3 px-4 border">{{ $r->gedung->nama_gedung ?? '-' }}</td>
                                     <td class="py-3 px-4 border flex items-center space-x-2">
                                         <button
-                                        data-bs-toggle="modal" data-bs-target="#ruanganEditModal"
-                                        data-id="{{ $r->id_ruangan }}" 
-                                        data-nama="{{ $r->nama_ruangan }}"
-                                        data-id_gedung="{{ $r->gedung->id_gedung }}"
-                                        data-kapasitas="{{ $r->kapasitas }}"
-                                        data-foto="{{ $r->foto }}"
-                                            class="bg-blue-600 text-white px-4 py-2 rounded-lg">
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#ruanganEditModal"
+                                            class="bg-blue-600 text-white px-4 py-2 rounded-lg"
+                                            data-id="{{ $r->id_ruangan }}"
+                                            data-nama="{{ $r->nama_ruangan }}"
+                                            data-id_gedung="{{ $r->gedung->id_gedung }}"
+                                            data-kapasitas="{{ $r->kapasitas }}"
+                                            data-foto="{{ $r->foto }}">
                                             Edit
                                         </button>
                                         <form id="delete-form-{{ $r->id_ruangan}}" action="{{ route('ruangan.destroy', $r) }}" method="POST">
@@ -157,7 +157,9 @@
                                         <td class="py-3 px-4 border flex items-center space-x-2">
                                             <button
                                             data-bs-toggle="modal" data-bs-target="#gedungEditModal"
-                                                class="bg-blue-600 text-white px-4 py-2 rounded-lg">
+                                                class="bg-blue-600 text-white px-4 py-2 rounded-lg"
+                                                data-id="{{ $g->id_gedung }}"
+                                                data-nama="{{ $g->nama_gedung }}">
                                                 Edit
                                             </button>
                                             <form id="delete-form-{{ $g->id_gedung }}" action="{{ route('gedung.destroy', $g) }}" method="POST">
@@ -257,6 +259,7 @@
 @endif
 @include('modal.modal_tambah_ruangan')
 @include('modal.modal_tambah_gedung')
+@include('modal.modal_edit_ruangan')
 @include('modal.modal_edit_gedung')
 <script>
     function confirmDelete(id) {
@@ -276,6 +279,49 @@
             }
         });
     }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const editButtons = document.querySelectorAll('button[data-bs-target="#ruanganEditModal"]');
+        const modal = document.getElementById('ruanganEditModal');
+
+        editButtons.forEach((button) => {
+            button.addEventListener('click', () => {
+                const id = button.getAttribute('data-id');
+                const nama = button.getAttribute('data-nama');
+                const idGedung = button.getAttribute('data-id_gedung');
+                const kapasitas = button.getAttribute('data-kapasitas');
+                const foto = button.getAttribute('data-foto');
+
+                // Set nilai ke input di modal
+                modal.querySelector('#nama_ruangan').value = nama;
+                modal.querySelector('#id_gedung').value = idGedung;
+                modal.querySelector('#kapasitas').value = kapasitas;
+
+                // Update form action URL
+                const form = modal.querySelector('#editRuanganForm');
+                form.action = form.action.replace(/\/\d+$/, `/${id}`);
+            });
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const editButtons = document.querySelectorAll('button[data-bs-target="#gedungEditModal"]');
+        const modal = document.getElementById('gedungEditModal');
+
+        editButtons.forEach((button) => {
+            button.addEventListener('click', () => {
+                const id = button.getAttribute('data-id');
+                const nama = button.getAttribute('data-nama');
+
+                // Set nilai ke input di modal
+                modal.querySelector('#nama_gedung').value = nama;
+
+                // Update form action URL
+                const form = modal.querySelector('#editGedungForm');
+                form.action = form.action.replace(/\/\d+$/, `/${id}`);
+            });
+        });
+    });
 
     document.addEventListener('DOMContentLoaded', function () {
         const alertMessage = "{{ session('alert') }}";
