@@ -15,7 +15,6 @@ class GedungController extends Controller
 
         $gedung = Gedung::create($validated);
 
-        // Jika permintaan dari AJAX, kembalikan response JSON
         if ($request->wantsJson()) {
             return response()->json(['success' => true, 'gedung' => $gedung]);
         }

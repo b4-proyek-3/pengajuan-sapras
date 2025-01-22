@@ -13,7 +13,9 @@ class User extends Authenticatable
     use HasFactory, Notifiable, CanResetPassword;
 
     protected $primaryKey = 'id_user';
-    protected $fillable = ['email', 'password'];
+    protected $fillable = [
+        'name', 'email', 'password', 'email_verified_at', 'remember_token'
+    ];
 
     public function pengaju()
     {
