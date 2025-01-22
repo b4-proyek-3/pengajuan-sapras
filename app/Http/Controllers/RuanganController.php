@@ -23,8 +23,8 @@ class RuanganController extends Controller
         $validated = $request->validate([
             'nama_ruangan' => 'required|string|max:255|unique:ruangan',
             'id_gedung' => 'required|exists:gedung,id_gedung',
-            'foto' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'kapasitas' => 'required|integer|min:1',
+            'foto' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Validasi foto
+            'kapasitas' => 'required|integer|min:1', // Validasi kapasitas
         ]);
 
         // Proses unggah foto
@@ -42,38 +42,34 @@ class RuanganController extends Controller
 
     public function edit(Ruangan $ruangan)
     {
-        return response()->json($ruangan);
+        return response()->json($ruangan); // Mengembalikan data ruangan dalam format JSON
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, Ruangan $ruangan)
     {
-        // Ambil data ruangan yang akan diperbarui
-        $ruangan = Ruangan::findOrFail($id);
-
         // Validasi input
         $validated = $request->validate([
-            'nama_ruangan' => 'required|string|max:255|unique:ruangan,nama_ruangan,' . $id . ',id_ruangan',
+            'nama_ruangan' => 'required|string|max:255|unique:ruangan,nama_ruangan,' . $ruangan->id_ruangan . ',id_ruangan',
             'id_gedung' => 'required|exists:gedung,id_gedung',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Foto bersifat opsional
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'kapasitas' => 'required|integer|min:1',
         ]);
 
-        // Proses unggah foto (jika ada)
+        // Perbarui data ruangan
         if ($request->hasFile('foto')) {
-            // Hapus foto lama jika ada
-            if ($ruangan->foto && \Storage::disk('public')->exists($ruangan->foto)) {
-                \Storage::disk('public')->delete($ruangan->foto);
+            if ($ruangan->foto && \Storage::exists('public/' . $ruangan->foto)) {
+                \Storage::delete('public/' . $ruangan->foto);
             }
 
             // Simpan foto baru
             $fotoPath = $request->file('foto')->store('uploads/ruangan', 'public');
-            $validated['foto'] = $fotoPath; // Update path foto di database
+            $validated['foto'] = $fotoPath;
         }
 
-        // Update data di database
         $ruangan->update($validated);
 
-        return redirect()->route('ruangan.index')->with('success', 'Data ruangan berhasil diperbarui.');
+        // Redirect ke halaman index dengan pesan sukses
+        return redirect()->route('ruangan.index')->with('success', 'Ruangan berhasil diperbarui.');
     }
 
     public function destroy(Ruangan $ruangan)

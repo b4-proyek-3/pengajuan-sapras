@@ -45,6 +45,7 @@
 
                         <tbody>
                             @foreach ($ruangan as $key => $r)
+                                @include('modal.modal_edit_ruangan')
                                 <tr>
                                     <td class="py-3 px-4 border">{{ $ruangan->firstItem() + $key }}</td>
                                     <td class="py-3 px-4 border">{{ $r->nama_ruangan }}</td>
@@ -52,6 +53,11 @@
                                     <td class="py-3 px-4 border flex items-center space-x-2">
                                         <button
                                         data-bs-toggle="modal" data-bs-target="#ruanganEditModal"
+                                        data-id="{{ $r->id_ruangan }}" 
+                                        data-nama="{{ $r->nama_ruangan }}"
+                                        data-id_gedung="{{ $r->gedung->id_gedung }}"
+                                        data-kapasitas="{{ $r->kapasitas }}"
+                                        data-foto="{{ $r->foto }}"
                                             class="bg-blue-600 text-white px-4 py-2 rounded-lg">
                                             Edit
                                         </button>
@@ -251,7 +257,6 @@
 @endif
 @include('modal.modal_tambah_ruangan')
 @include('modal.modal_tambah_gedung')
-@include('modal.modal_edit_ruangan')
 @include('modal.modal_edit_gedung')
 <script>
     function confirmDelete(id) {

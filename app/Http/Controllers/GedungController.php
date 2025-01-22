@@ -28,6 +28,7 @@ class GedungController extends Controller
             'nama_gedung' => 'required|string|max:255|unique:gedung,nama_gedung,' . $gedung->id_gedung . ',id_gedung',
         ]);
 
+        dd($validated);
         $gedung->update($validated);
         return redirect()->route('ruangan.index')->with('success', 'Gedung berhasil diperbarui.');
     }

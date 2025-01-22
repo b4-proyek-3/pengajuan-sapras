@@ -9,23 +9,21 @@
             </div>
             <div class="modal-body">
                 <!-- Form Edit Ruangan -->
-                <form action="{{ route('ruangan.update', $ruangan->id_ruangan) }}" method="POST" enctype="multipart/form-data" id="editRuanganForm">
+                <form action="{{ route('ruangan.update', $r) }}" method="POST" enctype="multipart/form-data" id="editRuanganForm">
                     @csrf
-                    @method('PUT') <!-- Digunakan untuk method PUT -->
+                    @method('PUT')
                     
                     <div class="mb-3">
                         <label for="nama_ruangan" class="form-label">Nama Ruangan</label>
                         <input type="text" name="nama_ruangan" id="nama_ruangan"
-                            value="{{ isset($r) ? $r->nama_ruangan : old('nama_ruangan') }}"
-                            class="form-control">
+                            value="{{ $r->nama_ruangan }}" class="form-control">
                     </div>
 
                     <div class="mb-3">
                         <label for="id_gedung">Gedung</label>
                         <select name="id_gedung" id="id_gedung" class="form-control" required>
                             @foreach($gedung as $g)
-                                <option value="{{ $g->id_gedung }}"
-                                    {{ isset($r) && $r->id_gedung == $g->id_gedung ? 'selected' : '' }}>
+                                <option value="{{ $g->id_gedung }}">
                                     {{ $g->nama_gedung }}
                                 </option>
                             @endforeach
@@ -34,14 +32,14 @@
 
                     <div class="mb-3">
                         <label for="foto" class="form-label">Foto</label>
-                        <input type="file" name="foto" id="foto" class="form-control" accept="image/*" 
-                        value="{{ isset($r) ? $r->foto : old('foto') }}"required>
+                        <input type="file" name="foto" id="foto" class="form-control">
                     </div>
 
                     <div class="mb-3">
                         <label for="kapasitas" class="form-label">Kapasitas</label>
-                        <input type="number" name="kapasitas" id="kapasitas" class="form-control" min="1" 
-                        value="{{ isset($r) ? $r->kapasitas : old('kapasitas') }}"required>
+                        <input type="number" name="kapasitas" id="kapasitas"
+                            value="{{ $r->kapasitas }}"
+                            class="form-control" required min="1">
                     </div>
 
                     <div class="flex justify-center mt-6 space-x-4">

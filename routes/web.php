@@ -63,15 +63,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/calendar-data', [DashboardController::class, 'getCalendarData'])->name('dashboard.calendar.data');
 
-
-    Route::resource('menggunakan-ruangan', MenggunakanRuanganController::class);
     Route::get('/status-pengajuan', [StatusPengajuanController::class, 'index'])->name('layout.status');
 
     // Rute untuk CRUD Ruangan
     Route::get('/ruangan', [RuanganController::class, 'index'])->name('ruangan.index');
     Route::post('/ruangan', [RuanganController::class, 'store'])->name('ruangan.store');
     Route::get('/ruangan/{ruangan}/edit', [RuanganController::class, 'edit'])->name('ruangan.edit');
-    Route::put('/ruangan/{id}', [RuanganController::class, 'update'])->name('ruangan.update');
+    Route::put('/ruangan/{ruangan}', [RuanganController::class, 'update'])->name('ruangan.update');
     Route::delete('/ruangan/{ruangan}', [RuanganController::class, 'destroy'])->name('ruangan.destroy');
 
     // Rute untuk CRUD Gedung

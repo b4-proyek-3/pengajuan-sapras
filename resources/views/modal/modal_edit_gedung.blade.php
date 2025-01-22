@@ -9,14 +9,14 @@
             </div>
             <div class="modal-body">
                 <!-- Form Edit gedung -->
-                <form action="" method="POST" enctype="multipart/form-data" id="editgedungForm">
+                <form action="{{ route('gedung.update', $g->id_gedung) }}" method="POST" enctype="multipart/form-data" id="editgedungForm">
                     @csrf
-                    @method('PUT') <!-- Digunakan untuk method PUT -->
+                    @method('PUT')
                     
                     <div class="mb-3">
                         <label for="nama_gedung" class="form-label">Nama Gedung</label>
                         <input type="text" name="nama_gedung" id="nama_gedung"
-                            value="{{ isset($g) ? $g->nama_gedung : old('nama_gedung') }}"
+                            value="{{ $g->nama_gedung }}"
                             class="form-control">
                     </div>
 
