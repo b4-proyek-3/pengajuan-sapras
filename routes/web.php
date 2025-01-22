@@ -15,6 +15,7 @@ use App\Http\Controllers\RuanganController;
 use App\Http\Controllers\GedungController;
 use App\Http\Controllers\JadwalUjianController;
 use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\UserController;
 use App\Models\Dokumen;
 
 
@@ -36,6 +37,10 @@ Route::controller(AuthController::class)->group(function () {
 
 // PROTECTED ROUTES (Require Authentication)
 Route::middleware(['auth'])->group(function () {
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::post('/users', [UserController::class, 'store'])->name('users.store');
+    Route::delete('/users/{id_user}', [UserController::class, 'destroy'])->name('users.destroy');
+
     Route::get('/pengajuan', [PengajuanController::class, 'index'])->name('pengajuan.index');
     Route::post('/pengajuan', [PengajuanController::class, 'store'])->name('pengajuan.store');
     Route::delete('/pengajuan/{id_pengajuan}', [PengajuanController::class, 'destroy'])->name('pengajuan.destroy');
