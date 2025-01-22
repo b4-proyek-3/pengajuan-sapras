@@ -26,7 +26,12 @@ class TrackingController extends Controller
         $pengajuan = Pengajuan::findOrFail($id_pengajuan);
         
         // Ambil data dari tabel menggunakan_ruangan
-        $penggunaan = MenggunakanRuangan::where('id_pengajuan', $id_pengajuan)->first();
+        $penggunaan = MenggunakanRuangan::where('id_pengajuan', $id_pengajuan)
+        ->selectRaw('
+            MIN(tanggal_mulai) as tanggal_mulai,
+            MAX(tanggal_akhir) as tanggal_akhir
+        ')
+        ->first();
     
         $reviews = Review::with('reviewer')
             ->where('id_pengajuan', $id_pengajuan)

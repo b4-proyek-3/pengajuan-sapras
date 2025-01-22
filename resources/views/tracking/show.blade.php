@@ -38,9 +38,9 @@
                         \Carbon\Carbon::parse($penggunaan->tanggal_mulai)->format('m Y') === 
                         \Carbon\Carbon::parse($penggunaan->tanggal_akhir)->format('m Y') 
                         ? 
-                        '-' . \Carbon\Carbon::parse($penggunaan->tanggal_akhir)->format('d F Y')
+                        ' - ' . \Carbon\Carbon::parse($penggunaan->tanggal_akhir)->format('d F Y')
                         : 
-                        ' ' . \Carbon\Carbon::parse($penggunaan->tanggal_mulai)->format('F') . 
+                        ' ' . \Carbon\Carbon::parse($penggunaan->tanggal_mulai)->format('F Y') . 
                         ' - ' . 
                         \Carbon\Carbon::parse($penggunaan->tanggal_akhir)->format('d F Y')
                     )
