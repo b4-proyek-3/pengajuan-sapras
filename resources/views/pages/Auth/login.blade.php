@@ -170,7 +170,7 @@
         .then(response => {
             console.log(response);
             if (!response.ok) {
-                return response.text().then(text => { 
+                return response.text().then(text => {
                     console.error('Response not JSON:', text); // Menampilkan teks HTML error
                     throw new Error('Server response was not in JSON format');
                 });
@@ -187,7 +187,7 @@
             }
         })
         .catch(error => {
-            console.log(error);
+            console.log("Error:", error);
             console.error('Error:', error);
             alert('An unexpected error occurred. Please try again.');
         });
