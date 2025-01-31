@@ -189,21 +189,6 @@
                 <td>: {{ $nama_ormawa }}</td>
                 <td></td>
             </tr>
-            <tr>
-                <th>BEM</th>
-                <td>: {{ $sekum_bem }}</td>
-                <td></td>
-            </tr>
-            <tr>
-                <th>KLI</th>
-                <td>: {{ $kli }}</td>
-                <td></td>
-            </tr>
-            <tr>
-                <th>Wakil Direktur 3</th>
-                <td>: {{ $wd3 }}</td>
-                <td></td>
-            </tr>
         </table>
         <table class="usage-table">
             <thead>
@@ -222,6 +207,24 @@
                     </tr>
                 @endforeach
             </tbody>
+        </table>
+        <p>Adapun berita acara ini sudah divalidasi dan disetujui oleh beberapa pihak, yaitu :</p>
+        <table class="table">
+            <tr>
+                <th>BEM</th>
+                <td>: {{ $sekum_bem }}</td>
+                <td></td>
+            </tr>
+            <tr>
+                <th>KLI</th>
+                <td>: {{ $kli }}</td>
+                <td></td>
+            </tr>
+            <tr>
+                <th>Wakil Direktur 3</th>
+                <td>: {{ $wd3 }}</td>
+                <td></td>
+            </tr>
         </table>
 
         <p>Demikian Berita Acara ini dibuat dengan sebenarnya agar dapat dipergunakan sebagaimana mestinya.</p>

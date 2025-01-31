@@ -9,7 +9,7 @@
             </div>
             <div class="modal-body">
                 <!-- Form Edit Ruangan -->
-                <form action="{{ route('ruangan.update', $ruangan) }}" method="POST" enctype="multipart/form-data" id="editRuanganForm">
+                <form action="{{ route('ruangan.update', $r->id_ruangan) }}" method="POST" enctype="multipart/form-data" id="editRuanganForm">
                     @csrf
                     @method('PUT')
                     

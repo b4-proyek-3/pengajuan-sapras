@@ -19,7 +19,7 @@
                 <div class="col-span-4">
                     <div class="relative">
                         <select name="gedung" id="gedung" class="w-full h-11 pl-4 pr-1 bg-white rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 appearance-none">
-                            <option value="">Pilih Gedung</option>
+                            <option value="">Pilih Lokasi</option>
                             @foreach($gedungs as $gedung)
                                 <option value="{{ $gedung->id_gedung }}" {{ request('gedung') == $gedung->id_gedung ? 'selected' : '' }}>
                                     {{ $gedung->nama_gedung }}
@@ -96,27 +96,71 @@
 
     document.addEventListener('DOMContentLoaded', function () {
         var calendarEl = document.getElementById('calendar');
+
         var calendar = new FullCalendar.Calendar(calendarEl, {
+            locale: 'id', // Bahasa Indonesia
             initialView: 'dayGridMonth',
             headerToolbar: {
                 left: 'prev,next today',
                 center: 'title',
                 right: 'dayGridMonth,timeGridWeek,timeGridDay'
             },
-            events: '{{ route('dashboard.calendar.data') }}',
+            businessHours: [ // Jam kerja weekday & weekend
+                {
+                    daysOfWeek: [1, 2, 3, 4, 5], // Senin - Jumat
+                    startTime: '07:30',
+                    endTime: '20:00'
+                },
+                {
+                    daysOfWeek: [0, 6], // Sabtu - Minggu
+                    startTime: '07:30',
+                    endTime: '17:00'
+                }
+            ],
+            events: '{{ route('dashboard.calendar.data') }}', // API dari Laravel
+            eventDidMount: function (info) {
+                let status = info.event.extendedProps.status; // Ambil status dari API
+
+                // Tentukan warna berdasarkan status
+                let warna;
+                switch (status.toLowerCase()) {
+                    case 'selesai':
+                        warna = '#28a745'; // Hijau
+                        break;
+                    case 'ditolak':
+                        warna = '#dc3545'; // Merah
+                        break;
+                    default:
+                        warna = '#007bff'; // Biru (default)
+                        break;
+                }
+
+                // Ubah warna dot (titik bulat)
+                let dot = info.el.querySelector('.fc-daygrid-event-dot');
+                if (dot) {
+                    dot.style.backgroundColor = warna;
+                }
+
+                // Ubah warna teks event
+                info.el.style.color = warna;
+                info.el.style.fontWeight = 'bold'; // Supaya lebih jelas
+
+            },
             eventClick: function (info) {
-            Swal.fire({
-                title: info.event.title,
-                html: `
-                    <p><strong>Waktu Mulai:</strong> ${info.event.start.toLocaleString()}</p>
-                    <p><strong>Waktu Akhir:</strong> ${info.event.end ? info.event.end.toLocaleString() : 'Tidak ditentukan'}</p>
-                `,
-                icon: 'info',
-                confirmButtonText: 'Tutup',
-                confirmButtonColor: "#3085d6",
-            });
-        }
+                Swal.fire({
+                    title: info.event.title,
+                    html: `
+                        <p><strong>Status:</strong> <span style="color:${info.el.style.color}; font-weight: bold;">${info.event.extendedProps.status}</span></p>
+                        <p><strong>Waktu Mulai:</strong> ${info.event.start.toLocaleString('id-ID')}</p>
+                        <p><strong>Waktu Akhir:</strong> ${info.event.end ? info.event.end.toLocaleString('id-ID') : 'Tidak ditentukan'}</p>
+                    `,
+                    icon: 'info',
+                    confirmButtonText: 'Tutup',
+                    confirmButtonColor: "#3085d6",
+                });
+            }
         });
+
         calendar.render();
     });
 

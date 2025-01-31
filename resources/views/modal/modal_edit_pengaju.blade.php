@@ -7,21 +7,21 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="{{ route('users.update', $p->user->id_user) }}" method="POST" enctype="multipart/form-data" id="formID">
+                <form action="{{ route('users.update', '__ID__') }}" method="POST" enctype="multipart/form-data" class="form-class" id="formEditPengaju">
                     @csrf
                     @method('PUT')
 
                     <div class="mb-3">
                         <label for="name" class="form-label">Nama</label>
-                        <input type="text" name="name" id="name" value="{{ isset($p) ? $p->user->name : old('name') }}" class="form-control" required>
+                        <input type="text" name="name" id="name" class="form-control">
                     </div>
                     <div class="mb-3">
                         <label for="nim" class="form-label">NIM</label>
-                        <input type="text" name="nim" id="nim" value="{{ isset($p) ? $p->nim : old('nim') }}" class="form-control" required>
+                        <input type="text" name="nim" id="nim" class="form-control">
                     </div>
                     <div class="mb-3">
                         <label for="id_ormawa">Ormawa</label>
-                        <select name="id_ormawa" id="id_ormawa" class="form-control" required>
+                        <select name="id_ormawa" id="id_ormawa" class="form-control">
                             <option value=""> Pilih Ormawa </option>
                             @foreach($ormawa as $o)
                                 <option value="{{ $o->id_ormawa }}"
@@ -32,14 +32,13 @@
                     </div>
                     <div class="mb-3">
                         <label for="email" class="form-label">Email</label>
-                        <input type="email" name="email" id="email" value="{{ isset($p) ? $p->user->email : old('email') }}" class="form-control" required>
+                        <input type="email" name="email" id="email" class="form-control">
                     </div>
                     <div class="mb-3">
                         <label for="password" class="form-label">Password</label>
                         <input type="password" name="password" id="password" class="form-control">
+                        <div id="passwordError" class="password-error" style="display: none;">Password harus terdiri dari minimal 8 karakter.</div>
                     </div>
-                    <div id="passwordError" class="text-danger" style="display: none;">Password harus terdiri dari minimal 8 karakter.</div>
-
                     <div class="flex justify-center mt-6 space-x-4">
                         <button type="submit"
                             class="bg-blue-600 text-white py-2 px-6 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"

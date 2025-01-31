@@ -49,25 +49,47 @@
                                     <tr class="border-b border-gray-200">
                                         <td class="py-2 font-medium text-gray-700">Tempat</td>
                                         <td class="py-2 text-right">
-                                        @foreach ($pengajuan->ruangan as $ruangan)
-                                            {{ $ruangan->nama_ruangan }}, {{ $ruangan->gedung->nama_gedung }}
-                                        @endforeach
+                                            @foreach ($pengajuan->ruangan as $ruangan)
+                                                {{ $ruangan->nama_ruangan }}, {{ $ruangan->gedung->nama_gedung }}
+                                                @unless ($loop->last)<br>@endunless
+                                            @endforeach
                                         </td>
                                     </tr>
 
-                                    {{-- Start Date --}}
+                                    {{-- Date --}}
                                     <tr class="border-b border-gray-200">
-                                        <td class="py-2 font-medium text-gray-700">Tanggal Mulai</td>
+                                        <td class="py-2 font-medium text-gray-700">Tanggal</td>
                                         <td class="py-2 text-right">
-                                            {{ $pengajuan->tanggal_pinjam }}
+                                            @foreach ($pengajuan->menggunakanRuangan as $menggunakan)
+                                                @php
+                                                    $tanggalMulai = \Carbon\Carbon::parse($menggunakan->tanggal_mulai);
+                                                    $tanggalAkhir = \Carbon\Carbon::parse($menggunakan->tanggal_akhir);
+
+                                                    // Logika Format Tanggal
+                                                    if ($tanggalMulai->format('F Y') === $tanggalAkhir->format('F Y')) {
+                                                        // Bulan dan tahun sama
+                                                        echo $tanggalMulai->format('d') . ' - ' . $tanggalAkhir->format('d F Y');
+                                                    } elseif ($tanggalMulai->year === $tanggalAkhir->year) {
+                                                        // Tahun sama, tapi bulan berbeda
+                                                        echo $tanggalMulai->format('d F') . ' - ' . $tanggalAkhir->format('d F Y');
+                                                    } else {
+                                                        // Tahun berbeda
+                                                        echo $tanggalMulai->format('d F Y') . ' - ' . $tanggalAkhir->format('d F Y');
+                                                    }
+                                                @endphp
+                                                @unless ($loop->last)<br>@endunless
+                                            @endforeach
                                         </td>
                                     </tr>
 
-                                    {{-- End Date --}}
+                                    {{-- Time --}}
                                     <tr class="border-b border-gray-200">
-                                        <td class="py-2 font-medium text-gray-700">Tanggal Akhir</td>
+                                        <td class="py-2 font-medium text-gray-700">Waktu</td>
                                         <td class="py-2 text-right">
-                                            {{ $pengajuan->tanggal_akhir }}
+                                            @foreach ($pengajuan->menggunakanRuangan as $menggunakan)
+                                                {{ $menggunakan->waktu_mulai ?? 'N/A' }} - {{ $menggunakan->waktu_akhir ?? 'N/A' }}
+                                                @unless ($loop->last)<br>@endunless
+                                            @endforeach
                                         </td>
                                     </tr>
 

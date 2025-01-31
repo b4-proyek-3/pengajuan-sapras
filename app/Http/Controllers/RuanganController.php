@@ -23,8 +23,8 @@ class RuanganController extends Controller
         $validated = $request->validate([
             'nama_ruangan' => 'required|string|max:255|unique:ruangan',
             'id_gedung' => 'required|exists:gedung,id_gedung',
-            'foto' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Validasi foto
-            'kapasitas' => 'required|integer|min:1', // Validasi kapasitas
+            'foto' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'kapasitas' => 'required|integer|min:1',
         ]);
 
         // Proses unggah foto
@@ -42,18 +42,19 @@ class RuanganController extends Controller
 
     public function edit(Ruangan $ruangan)
     {
-        return response()->json($ruangan); // Mengembalikan data ruangan dalam format JSON
+        return response()->json($ruangan);
     }
 
-    public function update(Request $request, Ruangan $ruangan)
+    public function update(Request $request, $id_ruangan)
     {
-        // Validasi input
         $validated = $request->validate([
-            'nama_ruangan' => 'required|string|max:255|unique:ruangan,nama_ruangan,' . $ruangan->id_ruangan . ',id_ruangan',
+            'nama_ruangan' => 'required|string|max:255|unique:ruangan,nama_ruangan,' . $id_ruangan . ',id_ruangan',
             'id_gedung' => 'required|exists:gedung,id_gedung',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'kapasitas' => 'required|integer|min:1',
         ]);
+
+        $ruangan = Ruangan::findOrFail($id_ruangan);
 
         // Perbarui data ruangan
         if ($request->hasFile('foto')) {

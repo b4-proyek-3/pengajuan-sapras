@@ -11,13 +11,13 @@
                 id="ruanganBtn"
                 onclick="showCard('ruangan')"
                 class="tab-button {{ $activeTab === 'ruangan' ? 'bg-white text-gray-800 shadow-md' : 'bg-gray-200 text-gray-400' }} font-bold py-2 px-6 rounded-t-lg shadow-md mr-2">
-                Ruangan
+                Tempat
             </button>
             <button
                 id="gedungBtn"
                 onclick="showCard('gedung')"
                 class="tab-button {{ $activeTab === 'gedung' ? 'bg-white text-gray-800 shadow-md' : 'bg-gray-200 text-gray-400' }} font-bold py-2 px-6 rounded-t-lg shadow-md mr-2">
-                Gedung
+                Lokasi
             </button>
         </div>
 
@@ -26,7 +26,7 @@
             <!-- Tombol Pengajuan -->
             <div class="flex flex-col items-start">
                 <button data-bs-toggle="modal" data-bs-target="#ruanganModal" class="flex items-center bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg transition duration-200 ease-in-out">
-                    <span class="mr-2 text-lg font-bold">+</span>Tambah Ruangan
+                    <span class="mr-2 text-lg font-bold">+</span>Tambah Tempat
                 </button>
             </div>
             <div class="bg-orange-500 p-4 border-b border-orange-500 mt-4"></div>
@@ -37,8 +37,8 @@
                         <thead class="bg-gray-200 text-gray-600">
                             <tr>
                                 <th class="py-3 px-4 border">No</th>
-                                <th class="py-3 px-4 border">Nama Ruangan</th>
-                                <th class="py-3 px-4 border">Gedung</th>
+                                <th class="py-3 px-4 border">Nama Tempat</th>
+                                <th class="py-3 px-4 border">Lokasi</th>
                                 <th class="py-3 px-4 border">Aksi</th>
                             </tr>
                         </thead>
@@ -51,7 +51,7 @@
                                     <td class="py-3 px-4 border">{{ $r->gedung->nama_gedung ?? '-' }}</td>
                                     <td class="py-3 px-4 border flex items-center space-x-2">
                                         <button
-                                            data-bs-toggle="modal" 
+                                            data-bs-toggle="modal"
                                             data-bs-target="#ruanganEditModal"
                                             class="bg-blue-600 text-white px-4 py-2 rounded-lg"
                                             data-id="{{ $r->id_ruangan }}"
@@ -132,7 +132,7 @@
                 <!-- Tombol Gedung -->
                 <div class="flex flex-col items-start">
                     <button data-bs-toggle="modal" data-bs-target="#gedungModal" class="flex items-center bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg transition duration-200 ease-in-out">
-                        <span class="mr-2 text-lg font-bold">+</span>Tambah Gedung
+                        <span class="mr-2 text-lg font-bold">+</span>Tambah Lokasi
                     </button>
                 </div>
                 <div class="relative">
@@ -144,7 +144,7 @@
                             <thead class="bg-gray-200 text-gray-600">
                                 <tr>
                                     <th class="py-3 px-4 border">No</th>
-                                    <th class="py-3 px-4 border">Nama Gedung</th>
+                                    <th class="py-3 px-4 border">Nama Lokasi</th>
                                     <th class="py-3 px-4 border">Aksi</th>
                                 </tr>
                             </thead>

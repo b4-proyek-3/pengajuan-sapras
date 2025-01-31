@@ -7,7 +7,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="{{ route('users.store') }}" method="POST" enctype="multipart/form-data" id="formID">
+                <form action="{{ route('users.store') }}" method="POST" enctype="multipart/form-data" class="form-class" id="formTambahPengaju">
                     @csrf
                     <div class="mb-3">
                         <label for="name" class="form-label">Nama</label>
@@ -33,8 +33,8 @@
                     <div class="mb-3">
                         <label for="password" class="form-label">Password</label>
                         <input type="password" name="password" id="password" class="form-control" required>
+                        <div id="passwordError" class="password-error" style="display: none;">Password harus terdiri dari minimal 8 karakter.</div>
                     </div>
-                    <div id="passwordError" class="text-danger" style="display: none;">Password harus terdiri dari minimal 8 karakter.</div>
 
                     <div class="flex justify-center mt-6 space-x-4">
                         <button type="submit"

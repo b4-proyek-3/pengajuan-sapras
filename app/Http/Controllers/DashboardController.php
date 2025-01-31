@@ -32,6 +32,8 @@ class DashboardController extends Controller
             $startDate = \Carbon\Carbon::parse($item->tanggal_mulai);
             $endDate = \Carbon\Carbon::parse($item->tanggal_akhir);
 
+            $statusPengajuan = $item->pengajuan->status ?? 'Tidak Diketahui';
+
             while ($startDate->lte($endDate)) {
                 $events[] = [
                     'id' => $item->id,
@@ -41,6 +43,7 @@ class DashboardController extends Controller
                     'start' => $startDate->toDateString() . 'T' . $item->waktu_mulai,
                     'end' => $startDate->toDateString() . 'T' . $item->waktu_akhir,
                     'description' => 'Ruangan: ' . $item->ruangan->nama_ruangan,
+                    'status' => $statusPengajuan,
                 ];
 
                 $startDate->addDay(); // Pindah ke hari berikutnya

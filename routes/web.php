@@ -16,11 +16,11 @@ use App\Http\Controllers\GedungController;
 use App\Http\Controllers\JadwalUjianController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\UserController;
-use App\Models\Dokumen;
+use App\Http\Controllers\OrmawaController;
 use App\Http\Middleware\CheckReviewerRole;
 use App\Http\Middleware\CheckPengaju;
 use App\Http\Middleware\CheckReviewer;
-
+use App\Models\Dokumen;
 
 // ========================================================================================
 // AUTHENTICATION ROUTES ==================================================================
@@ -42,6 +42,7 @@ Route::controller(AuthController::class)->group(function () {
 Route::middleware(['auth'])->group(function () {
  
     Route::middleware([CheckReviewerRole::class])->group(function () {
+        Route::resource('ormawa', OrmawaController::class);
         Route::get('/users', [UserController::class, 'index'])->name('users.index');
         Route::post('/users', [UserController::class, 'store'])->name('users.store');
         Route::delete('/users/{id_user}', [UserController::class, 'destroy'])->name('users.destroy');
@@ -50,8 +51,7 @@ Route::middleware(['auth'])->group(function () {
         // Rute untuk CRUD Ruangan
         Route::get('/ruangan', [RuanganController::class, 'index'])->name('ruangan.index');
         Route::post('/ruangan', [RuanganController::class, 'store'])->name('ruangan.store');
-        Route::get('/ruangan/{ruangan}/edit', [RuanganController::class, 'edit'])->name('ruangan.edit');
-        Route::put('/ruangan/{ruangan}', [RuanganController::class, 'update'])->name('ruangan.update');
+        Route::put('/ruangan/{id_ruangan}', [RuanganController::class, 'update'])->name('ruangan.update');
         Route::delete('/ruangan/{ruangan}', [RuanganController::class, 'destroy'])->name('ruangan.destroy');
 
         // Rute untuk CRUD Gedung
@@ -68,6 +68,7 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('/{id}', [JadwalUjianController::class, 'destroy'])->name('jadwal.destroy');
         });
     });
+    
     Route::middleware([CheckPengaju::class])->group(function () {
         Route::get('/pengajuan', [PengajuanController::class, 'index'])->name('pengajuan.index');
         Route::post('/pengajuan', [PengajuanController::class, 'store'])->name('pengajuan.store');

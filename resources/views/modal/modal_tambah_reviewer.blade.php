@@ -7,7 +7,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="{{ route('users.store') }}" method="POST" enctype="multipart/form-data" id="formId">
+                <form action="{{ route('users.store') }}" method="POST" enctype="multipart/form-data" class="form-class" id="formTambahReviewer">
                     @csrf
                     <div class="mb-3">
                         <label for="name" class="form-label">Nama</label>
@@ -30,8 +30,8 @@
                     <div class="mb-3">
                         <label for="password" class="form-label">Password</label>
                         <input type="password" name="password" id="password" class="form-control" required>
+                        <div id="passwordError" class="password-error" style="display: none;">Password harus terdiri dari minimal 8 karakter.</div>
                     </div>
-                    <div id="passwordError2" class="text-danger" style="display: none;">Password harus terdiri dari minimal 8 karakter.</div>
 
                     <div class="flex justify-center mt-6 space-x-4">
                         <button type="submit"
@@ -46,18 +46,3 @@
         </div>
     </div>
 </div>
-
-<script>
-    document.getElementById('formId').addEventListener('submit', function(event) {
-        var password = document.getElementById('password').value;
-        var passwordError = document.getElementById('passwordError2');
-
-        // Cek apakah password panjangnya kurang dari 8 karakter
-        if (password.length < 8) {
-            event.preventDefault(); // Mencegah form dari pengiriman
-            passwordError.style.display = 'block'; // Menampilkan pesan error
-        } else {
-            passwordError.style.display = 'none'; // Menyembunyikan pesan error jika valid
-        }
-    });
-</script>

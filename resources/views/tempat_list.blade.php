@@ -62,7 +62,7 @@
                     <!-- Header -->
                     <div class="flex justify-between items-center mb-6">
                         <h2 class="text-lg font-medium text-gray-900">
-                            {{ $selectedGedung ? $selectedGedung->nama_gedung : 'Semua Gedung' }}: {{ $ruangans->count() }} ruangan ditemukan
+                            {{ $selectedGedung ? $selectedGedung->nama_gedung : 'Semua Gedung' }}: {{ $ruangans->count() }} tempat ditemukan
                         </h2>
 
                         <!-- Sort Dropdown -->

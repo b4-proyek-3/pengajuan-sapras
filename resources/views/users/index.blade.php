@@ -302,24 +302,66 @@
         });
     }
 
-    document.getElementById('formID').addEventListener('submit', function(event) {
-        var password = document.getElementById('password').value;
-        var passwordError = document.getElementById('passwordError');
+    document.addEventListener("DOMContentLoaded", function() {
+        // Fungsi untuk validasi password
+        function validatePassword(formId) {
+            const form = document.getElementById(formId);
+            const passwordField = form.querySelector('#password');
+            const passwordError = form.querySelector('#passwordError');
+            const password = passwordField.value;
 
-        // Cek apakah password panjangnya kurang dari 8 karakter
-        if (password.length < 8) {
-            event.preventDefault(); // Mencegah form dari pengiriman
-            passwordError.style.display = 'block'; // Menampilkan pesan error
-        } else {
-            passwordError.style.display = 'none'; // Menyembunyikan pesan error jika valid
+            if (password.length < 8) {
+                passwordError.style.display = 'block'; // Menampilkan pesan error
+                return false;
+            } else {
+                passwordError.style.display = 'none'; // Menyembunyikan pesan error
+                return true;
+            }
+        }
+
+        // Menambahkan event listener untuk tiap form
+        const formTambahPengaju = document.getElementById('formTambahPengaju');
+        const formEditPengaju = document.getElementById('formEditPengaju');
+        const formTambahReviewer = document.getElementById('formTambahReviewer');
+        const formEditReviewer = document.getElementById('formEditReviewer');
+
+        // Setiap kali form dikirim, validasi password
+        if (formTambahPengaju) {
+            formTambahPengaju.addEventListener('submit', function(event) {
+                if (!validatePassword('formTambahPengaju')) {
+                    event.preventDefault(); // Menghentikan pengiriman form jika password kurang dari 8 karakter
+                }
+            });
+        }
+        if (formEditPengaju) {
+            formEditPengaju.addEventListener('submit', function(event) {
+                if (!validatePassword('formEditPengaju')) {
+                    event.preventDefault();
+                }
+            });
+        }
+        if (formTambahReviewer) {
+            formTambahReviewer.addEventListener('submit', function(event) {
+                if (!validatePassword('formTambahReviewer')) {
+                    event.preventDefault();
+                }
+            });
+        }
+        if (formEditReviewer) {
+            formEditReviewer.addEventListener('submit', function(event) {
+                if (!validatePassword('formEditReviewer')) {
+                    event.preventDefault();
+                }
+            });
         }
     });
 
     document.addEventListener("DOMContentLoaded", () => {
-        const editButtons = document.querySelectorAll('button[data-bs-target="#editPengajuModal"]');
-        const modal = document.getElementById('editPengajuModal');
+        // Handle modal editPengajuModal
+        const editPengajuButtons = document.querySelectorAll('button[data-bs-target="#editPengajuModal"]');
+        const editPengajuModal = document.getElementById('editPengajuModal');
 
-        editButtons.forEach((button) => {
+        editPengajuButtons.forEach((button) => {
             button.addEventListener('click', () => {
                 const id = button.getAttribute('data-id');
                 const name = button.getAttribute('data-name');
@@ -327,39 +369,52 @@
                 const idOrmawa = button.getAttribute("data-id-ormawa");
                 const email = button.getAttribute("data-email");
 
+                console.log("ID User dari Tombol:", id);
+
                 // Set nilai ke input di modal
-                modal.querySelector("#name").value = name;
-                modal.querySelector("#nim").value = nim;
-                modal.querySelector("#id_ormawa").value = idOrmawa;
-                modal.querySelector("#email").value = email;
+                editPengajuModal.querySelector("#name").value = name;
+                editPengajuModal.querySelector("#nim").value = nim;
+                editPengajuModal.querySelector("#id_ormawa").value = idOrmawa;
+                editPengajuModal.querySelector("#email").value = email;
 
                 // Update form action URL
-                const form = modal.querySelector('#editPengajuForm');
-                form.action = form.action.replace(/\/\d+$/, `/${id}`);
+                const form = editPengajuModal.querySelector('#formEditPengaju');
+                form.action = form.action.replace('__ID__', id);
             });
         });
-    });
 
-    document.addEventListener("DOMContentLoaded", () => {
-        const editButtons = document.querySelectorAll('button[data-bs-target="#editReviewerModal"]');
-        const modal = document.getElementById('editReviewerModal');
+        // Handle modal editReviewerModal
+        const editReviewerButtons = document.querySelectorAll('button[data-bs-target="#editReviewerModal"]');
+        const editReviewerModal = document.getElementById('editReviewerModal');
 
-        editButtons.forEach((button) => {
+        editReviewerButtons.forEach((button) => {
             button.addEventListener('click', () => {
                 const id = button.getAttribute('data-id');
                 const name = button.getAttribute('data-name');
                 const role = button.getAttribute("data-role");
                 const email = button.getAttribute("data-email");
 
+                console.log("Role dari tombol:", role);
+
                 // Set nilai ke input di modal
-                modal.querySelector("#name").value = name;
-                modal.querySelector("#nim").value = nim;
-                modal.querySelector("#role").value = role;
-                modal.querySelector("#email").value = email;
+                editReviewerModal.querySelector("#name").value = name;
+                editReviewerModal.querySelector("#email").value = email;
+
+                // Set nilai role sebagai selected
+                const roleSelect = editReviewerModal.querySelector("#role");
+                if (roleSelect) {
+                    for (let option of roleSelect.options) {
+                        if (option.value === role) {
+                            option.selected = true;
+                        } else {
+                            option.selected = false; // Pastikan opsi lain tidak selected
+                        }
+                    }
+                }
 
                 // Update form action URL
-                const form = modal.querySelector('#editReviewerForm');
-                form.action = form.action.replace(/\/\d+$/, `/${id}`);
+                const form = editReviewerModal.querySelector('#formEditReviewer');
+                form.action = form.action.replace('__ID__', id);
             });
         });
     });
