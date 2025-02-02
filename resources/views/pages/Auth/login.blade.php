@@ -54,11 +54,21 @@
                 </div>
                 <form id="forgotPasswordFormSubmit">
                     @csrf
-                    <div class="space-y-5"> 
+                    <div class="space-y-5">
                         <div>
                             <label for="reset-email" class="block pb-3 text-sm font-medium text-gray-700">Email</label>
                             <input type="email" name="email" id="reset-email" class="focus:shadow-soft-primary-outline text-sm block w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700" placeholder="example@polban.ac.id" required>
                         </div>
+                    </div>
+                    <div class="mt-6">
+                        <button type="submit" class="inline-block w-full px-6 py-3 font-bold text-white uppercase bg-orange-500 hover:bg-orange-700 rounded-lg">
+                            Verify Email
+                        </button>
+                    </div>
+                </form>
+                <form id="verificationCodeFormSubmit">
+                    @csrf
+                    <div class="space-y-5">
                         <div>
                             <label for="auth_code" class="block pb-3 text-sm font-medium text-gray-700">Kode Autentikasi</label>
                             <input type="text" name="auth_code" id="auth_code" class="border border-gray-300 rounded-lg w-full px-4 py-2" placeholder="123456" required>
@@ -107,6 +117,7 @@
     </section>
 </main>
 
+
 <script>
     const forgotPasswordLink = document.getElementById('forgotPasswordLink');
     const backToLogin = document.getElementById('backToLogin');
@@ -127,10 +138,9 @@
     });
 
     // Handle Forgot Password Form Submission
-    document.getElementById('forgotPasswordFormSubmit').addEventListener('submit', function(event) {
+    document.getElementById('forgotPasswordForm').addEventListener('submit', function(event) {
         event.preventDefault();
         const email = document.getElementById('reset-email').value;
-        const authCode = document.getElementById('auth_code').value;
 
         fetch('{{ route('password.forgot') }}', {
             method: 'POST',
@@ -138,23 +148,64 @@
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
-            body: JSON.stringify({ email, auth_code: authCode })
+            body: JSON.stringify({ email })
         })
         .then(response => response.json())
         .then(data => {
-            if (data.message === 'Verified!') {
+            if (data.message === 'Code sent!') {  // Menambahkan kode pengiriman sebagai respon
+                // Jika berhasil, tampilkan form untuk verifikasi kode
                 forgotPasswordForm.classList.add('hidden');
-                resetPasswordForm.classList.remove('hidden');
-                resetPasswordForm.classList.remove('translate-x-full');
+                verificationCodeForm.classList.remove('hidden');
+                verificationCodeForm.classList.remove('translate-x-full');
+                Swal.fire({
+                    title: 'Success!',
+                    text: data.message,
+                    icon: 'success',
+                    timer: 1000,
+                    showConfirmButton: false
+                });
             } else {
-                alert(data.message);
+                Swal.fire({
+                    title: 'Oops!',
+                    text: 'Terjadi kesalahan: ' + data.message,
+                    icon: 'error',
+                    timer: 1000,
+                    showConfirmButton: false
+                });
             }
         })
         .catch(error => console.error('Error:', error));
     });
 
-    // Handle Reset Password Form Submission
-    document.getElementById('resetPasswordFormSubmit').addEventListener('submit', function(event) {
+    // Formulir Verification Code
+    document.getElementById('verificationCodeFormSubmit').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const authCode = document.getElementById('auth_code').value;
+
+        fetch('{{ route('password.verifyCode') }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ auth_code: authCode })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message === 'Verified!') {
+                // Jika kode autentikasi valid, tampilkan form reset password
+                verificationCodeForm.classList.add('hidden');
+                resetPasswordForm.classList.remove('hidden');
+                resetPasswordForm.classList.remove('translate-x-full');
+            } else {
+                alert(data.message);  // Tampilkan pesan kesalahan jika kode tidak valid
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+
+    // Formulir Reset Password
+    document.getElementById('resetPasswordForm').addEventListener('submit', function(event) {
         event.preventDefault();
         const password = document.getElementById('password').value;
         const passwordConfirmation = document.getElementById('password_confirmation').value;
@@ -168,7 +219,6 @@
             body: JSON.stringify({ password, password_confirmation: passwordConfirmation })
         })
         .then(response => {
-            console.log(response);
             if (!response.ok) {
                 return response.text().then(text => {
                     console.error('Response not JSON:', text); // Menampilkan teks HTML error
@@ -178,12 +228,11 @@
             return response.json();
         })
         .then(data => {
-            console.log(data);
             if (data.message === 'Password updated successfully!') {
                 resetPasswordForm.classList.add('hidden');
                 resetSuccess.classList.remove('hidden');
             } else {
-                alert(data.message);
+                alert(data.message);  // Tampilkan pesan kesalahan jika tidak berhasil
             }
         })
         .catch(error => {

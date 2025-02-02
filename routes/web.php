@@ -29,7 +29,7 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('/login', 'login')->name('login.submit');
 
     // Forgot password process
-    Route::post('/forgot-password', 'forgotPassword')->name('password.forgot');
+    Route::post('/forgot-password', 'sendVerificationCode')->name('password.forgot');
     Route::post('/verify-code', 'verifyCode')->name('password.verifyCode');
     Route::get('/reset-password', 'showResetPasswordForm')->name('password.reset');
     Route::post('/reset-password', 'resetPassword')->name('password.update');
