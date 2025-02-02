@@ -61,11 +61,11 @@
                         <div class="dynamic-fields">
                             <div class="mb-3">
                                 <label class="block text-sm font-medium text-gray-900">Tanggal Mulai</label>
-                                <input type="date" name="tanggal_mulai[]" value="{{ $ruangan->pivot->tanggal_mulai }}" class="form-control">
+                                <input type="text" name="tanggal_mulai[]" value="{{ $ruangan->pivot->tanggal_mulai }}" class="form-control tanggal-input">
                             </div>
                             <div class="mb-3">
                                 <label class="block text-sm font-medium text-gray-900">Tanggal Berakhir</label>
-                                <input type="date" name="tanggal_akhir[]" value="{{ $ruangan->pivot->tanggal_akhir }}" class="form-control">
+                                <input type="text" name="tanggal_akhir[]" value="{{ $ruangan->pivot->tanggal_akhir }}" class="form-control tanggal-input">
                             </div>
                             <div class="mb-3">
                                 <label class="block text-sm font-medium text-gray-900">Waktu Mulai</label>
@@ -238,38 +238,72 @@
         }
     }
 
+    async function fetchDisabledDates(callback) {
+        try {
+            const response = await fetch("/get-disabled-dates");
+            const disabledDates = await response.json();
+            callback(disabledDates);
+        } catch (error) {
+            console.error("Error fetching disabled dates:", error);
+        }
+    }
+
+    function applyFlatpickr(disabledDates) {
+        // Terapkan flatpickr pada setiap input dengan kelas .tanggal-input
+        document.querySelectorAll(".tanggal-input").forEach(input => {
+            flatpickr(input, {
+                dateFormat: "Y-m-d",
+                minDate: "today",
+                disable: disabledDates
+            });
+        });
+    }
+
+    // Fungsi untuk menangani perubahan pada dropdown ruangan
     function onRoomChange(select) {
         const formItem = select.closest(".form-item");
+
+        // Cek apakah input form sudah ada, jika belum, tambahkan
         if (select.value && !formItem.querySelector(".dynamic-fields")) {
             const dynamicFields = document.createElement("div");
             dynamicFields.classList.add("dynamic-fields");
 
             dynamicFields.innerHTML = `
-            <div class="mb-3">
-                <label class="block text-sm font-medium text-gray-900">Tanggal Peminjaman</label>
-                <input type="date" name="tanggal_mulai[]" id="tanggal_mulai" class="form-control">
-            </div>
-            <div class="mb-3">
-                <label class="block text-sm font-medium text-gray-900">Tanggal Berakhir</label>
-                <input type="date" name="tanggal_akhir[]" id="tanggal_akhir" class="form-control">
-            </div>
-            <div class="mb-3">
-                <label class="block text-sm font-medium text-gray-900">Waktu Mulai Kegiatan</label>
-                <select name="waktu_mulai[]" id="waktu_mulai" class="form-control">
-                ${weekdayTimes.map(time => `<option value="${time}">${time}</option>`).join("")}
-                </select>
-            </div>
-            <div class="mb-3">
-                <label class="block text-sm font-medium text-gray-900">Waktu Selesai Kegiatan</label>
-                <select name="waktu_akhir[]" id="waktu_akhir" class="form-control">
-                ${weekdayTimes.map(time => `<option value="${time}">${time}</option>`).join("")}
-                </select>
-            </div>
+                <div class="mb-3">
+                    <label class="block text-sm font-medium text-gray-900">Tanggal Peminjaman</label>
+                    <input type="text" name="tanggal_mulai[]" class="form-control tanggal-input" required>
+                </div>
+                <div class="mb-3">
+                    <label class="block text-sm font-medium text-gray-900">Tanggal Berakhir</label>
+                    <input type="text" name="tanggal_akhir[]" class="form-control tanggal-input" required>
+                </div>
+                <div class="mb-3">
+                    <label class="block text-sm font-medium text-gray-900">Waktu Mulai Kegiatan</label>
+                    <select name="waktu_mulai[]" class="form-control" required>
+                        ${weekdayTimes.map(time => `<option value="${time}">${time}</option>`).join("")}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="block text-sm font-medium text-gray-900">Waktu Selesai Kegiatan</label>
+                    <select name="waktu_akhir[]" class="form-control" required>
+                        ${weekdayTimes.map(time => `<option value="${time}">${time}</option>`).join("")}
+                    </select>
+                </div>
             `;
+
+            fetchDisabledDates(applyFlatpickr);
             formItem.appendChild(dynamicFields);
             moveRemoveButtonToLast(formItem);
         }
     }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // Ambil disabled dates pertama kali
+        fetchDisabledDates(function(disabledDates) {
+            // Terapkan flatpickr pada input yang ada
+            applyFlatpickr(disabledDates);
+        });
+    });
 
     function openPengajuanModal() {
         document.getElementById('editPengajuanModal').classList.remove('hidden');

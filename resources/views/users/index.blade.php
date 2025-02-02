@@ -171,7 +171,7 @@
                                                 data-email="{{ $r->user->email }}">
                                                 Edit
                                             </button>
-                                            <form id="delete-form-{{ $r->id_reviewer }}" action="{{ route('users.destroy', $r) }}" method="POST">
+                                            <form id="delete-form-{{ $r->id_user }}" action="{{ route('users.destroy', $r->id_user) }}" method="POST">
                                                 @csrf
                                                 @method('DELETE')
                                             
@@ -180,7 +180,7 @@
                                                     type="button"
                                                     class="text-white px-4 py-2 rounded-lg"
                                                     style="background-color: #ff7f00 !important;"
-                                                    onclick="confirmDelete({{ $r->id_reviewer }})">
+                                                    onclick="confirmDelete({{ $r->id_user }})">
                                                     Hapus
                                                 </button>
                                             </form>

@@ -32,7 +32,7 @@
 
   </head>
 
-<body class="m-0 font-sans text-base antialiased font-normal leading-default bg-gray-50 text-slate-500"
+<body class="m-0 font-sans text-base antialiased font-normal leading-default bg-gray-50 text-slate-500 !scroll-smooth"
       data-success-message="{{ session('success') ?? '' }}"
       data-error-message="{{ session('error') ?? '' }}">
     @include('layout.partial.header')

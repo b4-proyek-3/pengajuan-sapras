@@ -20,6 +20,7 @@
         "@fullcalendar/interaction": "^6.1.15",
         "@fullcalendar/timegrid": "^6.1.15",
         "@preline/overlay": "^2.5.0",
+        "flatpickr": "^4.6.13",
         "fullcalendar": "^6.1.15",
         "pg": "^8.13.0",
         "sweetalert2": "^11.15.0"

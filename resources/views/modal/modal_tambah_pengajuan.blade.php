@@ -187,8 +187,6 @@
                 </button>
             </div>
         `;
-
-        // Tambahkan form-item baru sebelum tombol "Tambah Tempat"
         container.appendChild(newForm);
 
         // Pindahkan tombol "Tambah Tempat" ke bawah form-item terakhir
@@ -201,14 +199,12 @@
         const formItem = button.closest(".form-item");
         formItem.remove();
 
-        // Pastikan tombol "Tambah Tempat" tetap di bawah form terakhir
         const container = document.getElementById("form-container");
         const addPlaceBtnContainer = document.getElementById("add-place-btn-container");
         container.appendChild(addPlaceBtnContainer);
     }
 
     function moveRemoveButtonToLast(formItem) {
-        // Pastikan tombol hapus berada di bawah semua input dalam form item
         const removeButtonContainer = formItem.querySelector(".remove-btn-container");
         const lastInput = formItem.querySelector("select, input, textarea");
 
@@ -218,36 +214,60 @@
         }
     }
 
+    // Fungsi untuk mengambil daftar tanggal yang dinonaktifkan dari server
+    async function fetchDisabledDates(callback) {
+        try {
+            const response = await fetch("/get-disabled-dates");
+            const disabledDates = await response.json();
+            callback(disabledDates);
+        } catch (error) {
+            console.error("Error fetching disabled dates:", error);
+        }
+    }
+
+    function applyFlatpickr(disabledDates) {
+        document.querySelectorAll(".tanggal-input").forEach(input => {
+            flatpickr(input, {
+                dateFormat: "Y-m-d",
+                minDate: "today",
+                disable: disabledDates
+            });
+        });
+    }
+
+    // Fungsi untuk menangani perubahan pada dropdown ruangan
     function onRoomChange(select) {
         const formItem = select.closest(".form-item");
+
+        // Cek apakah input form sudah ada, jika belum, tambahkan
         if (select.value && !formItem.querySelector(".dynamic-fields")) {
             const dynamicFields = document.createElement("div");
             dynamicFields.classList.add("dynamic-fields");
 
-            const today = new Date().toISOString().split('T')[0];
-
             dynamicFields.innerHTML = `
-            <div class="mb-3">
-                <label class="block text-gray-700 mb-2">Tanggal Peminjaman</label>
-                <input type="date" name="tanggal_mulai[]" id="tanggal_mulai" class="form-control" required min="${today}">
-            </div>
-            <div class="mb-3">
-                <label class="block text-gray-700 mb-2">Tanggal Berakhir</label>
-                <input type="date" name="tanggal_akhir[]" id="tanggal_akhir" class="form-control" required min="${today}">
-            </div>
-            <div class="mb-3">
-                <label class="block text-gray-700 mb-2">Waktu Mulai Kegiatan</label>
-                <select name="waktu_mulai[]" id="waktu_mulai" class="form-control" required>
-                ${weekdayTimes.map(time => `<option value="${time}">${time}</option>`).join("")}
-                </select>
-            </div>
-            <div class="mb-3">
-                <label class="block text-gray-700 mb-2">Waktu Selesai Kegiatan</label>
-                <select name="waktu_akhir[]" id="waktu_akhir" class="form-control" required>
-                ${weekdayTimes.map(time => `<option value="${time}">${time}</option>`).join("")}
-                </select>
-            </div>
+                <div class="mb-3">
+                    <label class="block text-gray-700 mb-2">Tanggal Peminjaman</label>
+                    <input type="text" name="tanggal_mulai[]" class="form-control tanggal-input" required>
+                </div>
+                <div class="mb-3">
+                    <label class="block text-gray-700 mb-2">Tanggal Berakhir</label>
+                    <input type="text" name="tanggal_akhir[]" class="form-control tanggal-input" required>
+                </div>
+                <div class="mb-3">
+                    <label class="block text-gray-700 mb-2">Waktu Mulai Kegiatan</label>
+                    <select name="waktu_mulai[]" class="form-control" required>
+                        ${weekdayTimes.map(time => `<option value="${time}">${time}</option>`).join("")}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="block text-gray-700 mb-2">Waktu Selesai Kegiatan</label>
+                    <select name="waktu_akhir[]" class="form-control" required>
+                        ${weekdayTimes.map(time => `<option value="${time}">${time}</option>`).join("")}
+                    </select>
+                </div>
             `;
+
+            fetchDisabledDates(applyFlatpickr);
             formItem.appendChild(dynamicFields);
             moveRemoveButtonToLast(formItem);
         }
@@ -257,7 +277,7 @@
         const namaKegiatanInput = document.getElementById("nama_kegiatan");
 
         namaKegiatanInput.addEventListener("input", function () {
-            const maxLength = 100; // Batas maksimal karakter
+            const maxLength = 100; 
             const errorMessage = document.getElementById("error_nama_kegiatan");
 
             if (namaKegiatanInput.value.length > maxLength) {

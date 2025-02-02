@@ -8,7 +8,7 @@
                 Pengajuan Sarana dan Prasarana
             </h1>
             <p class="dashboard-subtitle text-lg text-gray-600">
-                Mau cari ruangan apa? Temukan ruangan yang sesuai untuk kegiatan Anda.
+                Mau cari ruangan apa? Temukan tempat yang sesuai untuk kegiatan Anda.
             </p>
         </div>
 
@@ -65,8 +65,8 @@
             </button>
         </div>
 
-        <!-- Calendar section -->
-        <div id="calendarSection" class="w-full mt-40">
+        <!-- Calendar section (tambah id untuk scroll) -->
+        <div id="calendarSection" class="w-full overflow-auto mt-80">
             <div class="container mx-auto">
                 <div id="ruanganCard" class="bg-white shadow-md rounded-lg p-6">
                     <div class="mt-6" id="calendar"></div>
@@ -77,21 +77,14 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Scroll button functionality
-        const scrollButton = document.getElementById('scrollToCalendarBtn'); // Tombol
-        const calendarSection = document.getElementById('calendarSection'); // Section target
-
-        scrollButton.addEventListener('click', function (e) {
-            e.preventDefault();
-            const yOffset = -50;
-            const y = calendarSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
-
-            window.scrollTo({
-                top: y,
-                behavior: 'smooth',
-            });
-        });
+    document.getElementById('scrollToCalendarBtn').addEventListener('click', function () {
+        const calendarSection = document.getElementById('calendarSection');
+        
+        // Menggunakan scrollIntoView untuk scroll ke bagian calendarSection
+        calendarSection.scrollIntoView({ behavior: 'smooth' });
+        
+        // Setelah itu scroll lebih jauh menggunakan scrollBy
+        window.scrollBy(0, -500); 
     });
 
     document.addEventListener('DOMContentLoaded', function () {
@@ -117,6 +110,13 @@
                     endTime: '17:00'
                 }
             ],
+            buttonText: {
+                today: 'Hari Ini',
+                month: 'Bulan',
+                week: 'Minggu',
+                day: 'Hari',
+                list: 'Agenda'
+            },
             events: '{{ route('dashboard.calendar.data') }}', // API dari Laravel
             eventDidMount: function (info) {
                 let status = info.event.extendedProps.status; // Ambil status dari API
@@ -151,6 +151,7 @@
                     title: info.event.title,
                     html: `
                         <p><strong>Status:</strong> <span style="color:${info.el.style.color}; font-weight: bold;">${info.event.extendedProps.status}</span></p>
+                        <p><strong>Ormawa:</strong> ${info.event.extendedProps.ormawa}</p>
                         <p><strong>Waktu Mulai:</strong> ${info.event.start.toLocaleString('id-ID')}</p>
                         <p><strong>Waktu Akhir:</strong> ${info.event.end ? info.event.end.toLocaleString('id-ID') : 'Tidak ditentukan'}</p>
                     `,

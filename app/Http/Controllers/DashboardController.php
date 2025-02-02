@@ -24,7 +24,7 @@ class DashboardController extends Controller
 
     public function getCalendarData()
     {
-        $menggunakanRuangan = MenggunakanRuangan::with(['ruangan', 'pengajuan'])->get();
+        $menggunakanRuangan = MenggunakanRuangan::with(['ruangan', 'pengajuan.pengaju.ormawa'])->get();
 
         $events = [];
 
@@ -33,6 +33,7 @@ class DashboardController extends Controller
             $endDate = \Carbon\Carbon::parse($item->tanggal_akhir);
 
             $statusPengajuan = $item->pengajuan->status ?? 'Tidak Diketahui';
+            $ormawa = $item->pengajuan->pengaju->ormawa->nama_ormawa ?? 'Tidak Diketahui';
 
             while ($startDate->lte($endDate)) {
                 $events[] = [
@@ -44,6 +45,11 @@ class DashboardController extends Controller
                     'end' => $startDate->toDateString() . 'T' . $item->waktu_akhir,
                     'description' => 'Ruangan: ' . $item->ruangan->nama_ruangan,
                     'status' => $statusPengajuan,
+                    'ormawa' => $ormawa,
+                    'extendedProps' => [
+                        'status' => $statusPengajuan,
+                        'ormawa' => $ormawa
+                    ]
                 ];
 
                 $startDate->addDay(); // Pindah ke hari berikutnya

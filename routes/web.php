@@ -77,7 +77,8 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/pengajuan/detail/{id_pengajuan}', [PengajuanController::class, 'update'])->name('pengajuan.update');
         Route::post('/pengajuan/{id_pengajuan}/submit', [PengajuanController::class, 'submitPengajuan'])->name('pengajuan.submit');
         Route::put('/pengajuan/{id_pengajuan}/update', [DokumenController::class, 'update'])->name('dokumen.update');
-        Route::get('/dokumen/generate/{id_pengajuan}', [DokumenController::class, 'generate'])->name('dokumen.generate');    
+        Route::get('/dokumen/generate/{id_pengajuan}', [DokumenController::class, 'generate'])->name('dokumen.generate');
+        Route::get('/get-disabled-dates', [JadwalUjianController::class, 'getDisabledDates']);
     });
 
     Route::middleware([CheckReviewer::class])->group(function () {
