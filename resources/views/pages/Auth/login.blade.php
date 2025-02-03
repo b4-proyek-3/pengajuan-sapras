@@ -203,7 +203,7 @@
     });
 
     // Formulir Reset Password
-    document.getElementById('resetPasswordForm').addEventListener('submit', function(event) {
+    document.getElementById('resetPasswordFormSubmit').addEventListener('submit', function(event) {
         event.preventDefault();
         const password = document.getElementById('password').value;
         const passwordConfirmation = document.getElementById('password_confirmation').value;
