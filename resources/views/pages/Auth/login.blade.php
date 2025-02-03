@@ -91,8 +91,8 @@
                     @csrf
                     <div class="space-y-5">
                         <div>
-                            <label for="password" class="block pb-3 text-sm font-medium text-gray-700">Password Baru</label>
-                            <input type="password" name="password" id="password" class="focus:shadow-soft-primary-outline text-sm block w-full rounded-lg border border-gray-300 px-3 py-2" required>
+                            <label for="password1" class="block pb-3 text-sm font-medium text-gray-700">Password Baru</label>
+                            <input type="password1" name="password1" id="password1" class="focus:shadow-soft-primary-outline text-sm block w-full rounded-lg border border-gray-300 px-3 py-2" required>
                         </div>
                         <div>
                             <label for="password_confirmation" class="block pb-3 text-sm font-medium text-gray-700">Konfirmasi Password</label>
@@ -208,38 +208,40 @@
     // Formulir Reset Password
     document.getElementById('resetPasswordFormSubmit').addEventListener('submit', function(event) {
         event.preventDefault();
-        const password = document.getElementById('password').value;
+
+        const password = document.getElementById('password1').value;
         const passwordConfirmation = document.getElementById('password_confirmation').value;
 
         fetch('{{ route('password.update') }}', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Accept': 'application/json', // Paksa Laravel merespons JSON
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
-            body: JSON.stringify({ password, password_confirmation: passwordConfirmation })
+            body: JSON.stringify({
+                password: password,
+                password_confirmation: passwordConfirmation
+            })
         })
         .then(response => {
-            if (!response.ok) {
+            return response.json().catch(() => {
                 return response.text().then(text => {
-                    console.error('Response not JSON:', text); // Menampilkan teks HTML error
+                    console.error('Response not JSON:', text); // Menampilkan teks HTML error jika ada
                     throw new Error('Server response was not in JSON format');
                 });
-            }
-            return response.json();
+            });
         })
         .then(data => {
-            if (data.message === 'Password updated successfully!') {
-                resetPasswordForm.classList.add('hidden');
-                resetSuccess.classList.remove('hidden');
+            if (data.message) {
+                alert(data.message); // Tampilkan pesan sukses
             } else {
-                alert(data.message);  // Tampilkan pesan kesalahan jika tidak berhasil
+                alert(data.error || 'Terjadi kesalahan, silakan coba lagi.');
             }
         })
         .catch(error => {
-            console.log("Error:", error);
             console.error('Error:', error);
-            alert('An unexpected error occurred. Please try again.');
+            alert('Terjadi kesalahan saat reset password.');
         });
     });
 

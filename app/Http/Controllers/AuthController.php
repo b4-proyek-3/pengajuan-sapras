@@ -133,19 +133,23 @@ class AuthController extends Controller
         session(['reset_token' => $request->auth_code]);
 
         // Return success message
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Kode verifikasi berhasil.'
-        ], 200);
+        return response()->json(['message' => 'Verified!'], 200);
     }
 
     // 3. Melakukan reset password
     public function resetPassword(Request $request)
     {
+        // Pastikan permintaan menerima JSON
+        if (!$request->expectsJson()) {
+            return response()->json(['error' => 'Request must accept JSON'], 406);
+        }
+
+        // Validasi input
         $request->validate([
             'password' => 'required|confirmed|min:8',
         ]);
 
+        // Ambil email dan token dari session
         $email = session('reset_email');
         $token = session('reset_token');
 
@@ -156,10 +160,9 @@ class AuthController extends Controller
             ->first();
 
         if (!$tokenData) {
-            // Mengembalikan respon JSON jika token tidak valid atau sudah kedaluwarsa
             return response()->json([
                 'error' => 'Token reset password tidak valid atau telah kedaluwarsa.'
-            ], 400); // 400 untuk bad request
+            ], 400);
         }
 
         // Reset password pengguna
@@ -175,10 +178,9 @@ class AuthController extends Controller
         // Logout pengguna jika ada sesi aktif
         Auth::logout();
 
-        // Mengembalikan respon JSON setelah reset password berhasil
         return response()->json([
             'message' => 'Password berhasil direset. Silakan login dengan password baru.'
-        ]);
+        ], 200);
     }
 
     /**
