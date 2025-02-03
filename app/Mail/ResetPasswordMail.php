@@ -20,7 +20,7 @@ class ResetPasswordMail extends Mailable
 
     public function build()
     {
-        return $this->subject('Reset Password')
+        return $this->subject('Kode Verifikasi untuk Reset Password')
                     ->view('pages.Auth.reset_password')
                     ->with([
                         'email' => $this->email,

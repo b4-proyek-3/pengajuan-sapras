@@ -5,14 +5,11 @@
     <title>Reset Password</title>
 </head>
 <body>
-    <p>Halo,</p>
-    <p>Anda menerima email ini karena kami menerima permintaan reset password untuk akun Anda.</p>
-    <p>Silakan klik link di bawah ini untuk mereset password Anda:</p>
-    <p>
-        <a href="{{ url('password/reset', $token) }}?email={{ $email }}">
-            Reset Password
-        </a>
-    </p>
+<p>Halo,</p>
+    <p>Anda menerima email ini karena kami menerima permintaan untuk verifikasi kode reset password untuk akun Anda.</p>
+    <p>Berikut adalah kode verifikasi Anda:</p>
+    <h2>{{ $token }}</h2>
+    <p>Masukkan kode ini pada halaman verifikasi untuk mereset password Anda.</p>
     <p>Jika Anda tidak meminta reset password, tidak ada tindakan lebih lanjut yang diperlukan.</p>
     <p>Terima kasih,</p>
     <p>{{ config('app.name') }}</p>

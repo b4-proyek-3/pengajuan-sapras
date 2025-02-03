@@ -154,6 +154,7 @@
         .then(data => {
             if (data.message === 'Code sent!') {  // Menambahkan kode pengiriman sebagai respon
                 // Jika berhasil, tampilkan form untuk verifikasi kode
+                forgotPasswordForm.classList.remove('hidden');
                 Swal.fire({
                     title: 'Success!',
                     text: data.message,
@@ -191,7 +192,6 @@
         .then(data => {
             if (data.message === 'Verified!') {
                 // Jika kode autentikasi valid, tampilkan form reset password
-                verificationCodeForm.classList.add('hidden');
                 resetPasswordForm.classList.remove('hidden');
                 resetPasswordForm.classList.remove('translate-x-full');
             } else {
