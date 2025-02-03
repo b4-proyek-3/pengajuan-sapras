@@ -83,7 +83,7 @@
             </div>
 
             <!-- Reset Password Form -->
-            <div id="resetPasswordForm" class="absolute inset-0 transform translate-x-full transition-transform duration-700 ease-in-out flex flex-col justify-between p-10 bg-white hidden">
+            <div id="resetPasswordForm" class="absolute inset-0 transform translate-x-full transition-transform duration-700 ease-in-out flex flex-col justify-between p-10 bg-white">
                 <div class="title mb-6">
                     <h1 class="text-2xl font-bold">Reset Password</h1>
                 </div>
@@ -192,9 +192,12 @@
         .then(data => {
             if (data.message === 'Verified!') {
                 // Jika kode autentikasi valid, tampilkan form reset password
-                forgotPasswordForm.classList.add('hidden');
-                resetPasswordForm.classList.remove('hidden');
-                resetPasswordForm.classList.remove('translate-x-full');
+                forgotPasswordForm.classList.add('hidden');  // Sembunyikan form forgot password
+                resetPasswordForm.classList.remove('hidden');  // Tampilkan form reset password
+
+                // Tambahkan kelas untuk animasi atau transisi, jika perlu
+                resetPasswordForm.classList.remove('translate-x-full');  // Pastikan form muncul dengan benar
+                resetPasswordForm.classList.add('translate-x-0');
             } else {
                 alert(data.message);  // Tampilkan pesan kesalahan jika kode tidak valid
             }

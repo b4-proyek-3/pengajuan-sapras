@@ -110,8 +110,10 @@ class AuthController extends Controller
         $email = session('reset_email');  // Email yang sudah disimpan di session
 
         if (!$email) {
-            return redirect()->route('password.request')
-                ->withErrors(['email' => 'Email tidak ditemukan dalam sesi.']);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Email tidak ditemukan dalam sesi.'
+            ], 400);
         }
 
         // Cek apakah token dan email valid
@@ -121,14 +123,20 @@ class AuthController extends Controller
             ->first();
 
         if (!$token) {
-            return back()->withErrors(['auth_code' => 'Kode verifikasi tidak valid atau telah kedaluwarsa.']);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Kode verifikasi tidak valid atau telah kedaluwarsa.'
+            ], 400);
         }
 
         // Simpan token yang valid untuk proses reset password
         session(['reset_token' => $request->auth_code]);
 
-        // Redirect ke halaman reset password
-        return redirect()->route('password.reset');
+        // Return success message
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Kode verifikasi berhasil.'
+        ], 200);
     }
 
     // 3. Melakukan reset password
