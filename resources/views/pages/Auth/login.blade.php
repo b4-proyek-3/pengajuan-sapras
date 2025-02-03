@@ -192,6 +192,7 @@
         .then(data => {
             if (data.message === 'Verified!') {
                 // Jika kode autentikasi valid, tampilkan form reset password
+                forgotPasswordForm.classList.add('hidden');
                 resetPasswordForm.classList.remove('hidden');
                 resetPasswordForm.classList.remove('translate-x-full');
             } else {
