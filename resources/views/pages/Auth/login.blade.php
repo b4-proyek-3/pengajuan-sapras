@@ -62,7 +62,7 @@
                     </div>
                     <div class="mt-6">
                         <button type="submit" class="inline-block w-full px-6 py-3 font-bold text-white uppercase bg-orange-500 hover:bg-orange-700 rounded-lg">
-                            Verify Email
+                            Verify Code
                         </button>
                     </div>
                 </form>
@@ -138,7 +138,7 @@
     });
 
     // Handle Forgot Password Form Submission
-    document.getElementById('forgotPasswordForm').addEventListener('submit', function(event) {
+    document.getElementById('forgotPasswordFormSubmit').addEventListener('submit', function(event) {
         event.preventDefault();
         const email = document.getElementById('reset-email').value;
 
@@ -154,9 +154,6 @@
         .then(data => {
             if (data.message === 'Code sent!') {  // Menambahkan kode pengiriman sebagai respon
                 // Jika berhasil, tampilkan form untuk verifikasi kode
-                forgotPasswordForm.classList.add('hidden');
-                verificationCodeForm.classList.remove('hidden');
-                verificationCodeForm.classList.remove('translate-x-full');
                 Swal.fire({
                     title: 'Success!',
                     text: data.message,

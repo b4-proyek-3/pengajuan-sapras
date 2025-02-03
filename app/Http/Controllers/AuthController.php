@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use App\Mail\ResetPasswordMail;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -67,31 +68,35 @@ class AuthController extends Controller
     {
         $request->validate(['email' => 'required|email']);
 
-        // Mencari user berdasarkan email
+        // Cek apakah email ada di database
         $user = User::where('email', $request->email)->first();
-        dd($user);
 
         if (!$user) {
-            // Mengirim respons JSON jika email tidak ditemukan
             return response()->json(['message' => 'Email tidak ditemukan.'], 400);
         }
 
-        // Simpan email dalam session untuk verifikasi lebih lanjut
+        // Simpan email dalam session
         session(['reset_email' => $user->email]);
 
-        // Generate token verifikasi (kode unik)
-        $token = Str::random(60);
+        // Generate token
+        $token = Str::random(6);
 
-        // Simpan token ke tabel password_reset_tokens
+        // Simpan ke database
         DB::table('password_reset_tokens')->updateOrInsert(
             ['email' => $user->email],
             ['token' => $token, 'created_at' => now()]
         );
 
         // Kirim email verifikasi
-        Mail::to($user->email)->send(new ResetPasswordMail($user->email, $token));
+        try {
+            Mail::to($user->email)->send(new ResetPasswordMail($user->email, $token));
+        } catch (\Exception $e) {
+            Log::error('Gagal mengirim email:', ['error' => $e->getMessage()]);
+            return response()->json(['message' => 'Gagal mengirim email.'], 500);
+        }
 
-        return back()->with('status', 'Kode verifikasi telah dikirim ke email Anda.');
+        Log::info('Kode verifikasi dikirim ke: ' . $user->email);
+        return response()->json(['message' => 'Code sent!'], 200);
     }
 
     // 2. Verifikasi kode yang dimasukkan pengguna

@@ -31,7 +31,6 @@ Route::controller(AuthController::class)->group(function () {
     // Forgot password process
     Route::post('/forgot-password', 'sendVerificationCode')->name('password.forgot');
     Route::post('/verify-code', 'verifyCode')->name('password.verifyCode');
-    Route::get('/reset-password', 'showResetPasswordForm')->name('password.reset');
     Route::post('/reset-password', 'resetPassword')->name('password.update');
 
     // Logout route should be outside the '/home' route

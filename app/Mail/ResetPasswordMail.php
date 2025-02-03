@@ -21,7 +21,7 @@ class ResetPasswordMail extends Mailable
     public function build()
     {
         return $this->subject('Reset Password')
-                    ->view('emails.reset_password')
+                    ->view('pages.Auth.reset_password')
                     ->with([
                         'email' => $this->email,
                         'token' => $this->token,
