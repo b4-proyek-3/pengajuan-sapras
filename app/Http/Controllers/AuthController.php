@@ -37,7 +37,7 @@ class AuthController extends Controller
             'email' => [
                 'required',
                 'email',
-                'regex:/^[a-zA-Z0-9._%+-]+@polban\.ac\.id$/',
+                'regex:/^[a-zA-Z0-9._%+-]+@polban\.ac\.id$/i',
             ],
             'password' => 'required|min:6',
         ], [

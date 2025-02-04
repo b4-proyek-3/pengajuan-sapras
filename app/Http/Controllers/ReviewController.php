@@ -24,29 +24,33 @@ class ReviewController extends Controller
             $activeTab = $request->input('active_tab', 'diajukan'); 
 
             $queryDiajukan = Pengajuan::with(['pengaju.ormawa', 'reviewers'])
-                ->where(function ($query) use ($role) {
-                    if ($role == 'sekum-bem') {
-                        $query->where('status', 'diajukan')->orWhere('status', 'diedit');
-                    } elseif ($role == 'kli') {
-                        $query->where('status', 'direview')->orWhere('status', 'diedit')
-                            ->whereHas('reviewers', function ($subQuery) {
-                                $subQuery->where('role', 'sekum-bem')->where('reviews.status', 'diterima');
-                            });
-                    } elseif ($role == 'wd-3') {
-                        $query->where('status', 'direview')->orWhere('status', 'diedit')
-                            ->whereHas('reviewers', function ($subQuery) {
-                                $subQuery->where('role', 'kli')->where('reviews.status', 'diterima');
-                            });
-                    }
-                })
-                ->where(function ($query) use ($id_reviewer) {
-                    $query->whereDoesntHave('reviewers', function ($subQuery) use ($id_reviewer) {
-                        $subQuery->where('reviewers.id_reviewer', $id_reviewer);
+            ->where(function ($query) use ($role) {
+                if ($role == 'sekum-bem') {
+                    $query->where('status', 'diajukan')->orWhere('status', 'diedit');
+                } elseif ($role == 'kli') {
+                    $query->where(function ($subQuery) {
+                        $subQuery->where('status', 'direview')->orWhere('status', 'diedit');
                     })
-                    ->orWhereHas('reviewers', function ($subQuery) use ($id_reviewer) {
-                        $subQuery->where('reviewers.id_reviewer', $id_reviewer)->where('reviews.status', 'direvisi');
+                    ->whereHas('reviewers', function ($subQuery) {
+                        $subQuery->where('role', 'sekum-bem')->where('reviews.status', 'diterima');
                     });
+                } elseif ($role == 'wd-3') {
+                    $query->where(function ($subQuery) {
+                        $subQuery->where('status', 'direview')->orWhere('status', 'diedit'); // Tetap periksa status diedit
+                    })
+                    ->whereHas('reviewers', function ($subQuery) {
+                        $subQuery->where('role', 'kli')->where('reviews.status', 'diterima');
+                    });
+                }
+            })
+            ->where(function ($query) use ($id_reviewer) {
+                $query->whereDoesntHave('reviewers', function ($subQuery) use ($id_reviewer) {
+                    $subQuery->where('reviewers.id_reviewer', $id_reviewer);
+                })
+                ->orWhereHas('reviewers', function ($subQuery) use ($id_reviewer) {
+                    $subQuery->where('reviewers.id_reviewer', $id_reviewer)->where('reviews.status', 'direvisi');
                 });
+            });
 
             $queryRiwayat = Pengajuan::with(['pengaju.ormawa', 'reviewers' => function ($query) use ($id_reviewer) {
                     $query->where('reviewers.id_reviewer', $id_reviewer)->withPivot('status');
