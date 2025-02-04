@@ -4,16 +4,12 @@
     <div class="h-19.5">
         <i class="absolute top-0 right-0 hidden p-4 opacity-50 cursor-pointer fas text-slate-400 xl:hidden"
             sidenav-close></i>
-        <a class="flex items-center px-8 py-4 m-0 text-sm whitespace-nowrap text-slate-700" href="javascript:;"
-            target="_blank">
-            <img src={{ asset('assets/img/logo-polban.png') }}
-                class="inline h-full max-w-full transition-all duration-200 ease-nav-brand max-h-15 w-10"
-                alt="main_logo" />
-            <div class="ml-2">
-                <span class="block font-semibold transition-all duration-200 ease-nav-brand">Pengajuan</span>
-                <span class="block font-semibold transition-all duration-200 ease-nav-brand">Sarana dan Prasarana</span>
-            </div>
-        </a>
+            <a class="flex items-center justify-center px-8 py-4 m-0 text-sm whitespace-nowrap text-slate-700"
+                href="javascript:;" target="_blank">
+                <img src="{{ asset('assets/img/logo_kemahasiswaan.png') }}"
+                    class="h-20 w-45 max-w-full transition-all duration-200 ease-nav-brand"
+                    alt="main_logo" />
+            </a>
     </div>
 
     <hr class="h-px mt-0 bg-transparent bg-gradient-to-r from-transparent via-black/40 to-transparent" />
@@ -90,7 +86,6 @@
                 </a>
             </li>
 
-            @if (auth()->user()->pengaju)
             <li class="mt-0.5 w-full">
                 <a class="{{ request()->routeIs('layout.status') ? 'shadow-lg bg-white text-slate-700 ring-2 ring-purple-200 transition-all duration-300 transform hover:scale-105' : 'text-slate-700 hover:shadow-md' }} 
                 py-2.7 text-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap rounded-lg 
@@ -128,7 +123,6 @@
                     <span class="ml-1 duration-300 opacity-100 pointer-events-none ease-soft">Status Pengajuan</span>
                 </a>
             </li>
-            @endif
             
             @if (auth()->user()->reviewer && auth()->user()->reviewer->role == 'wd-3')
             <li class="mt-0.5 w-full">
@@ -317,6 +311,8 @@
                             Kelola Tempat
                         @elseif(request()->routeIs('jadwal.index'))
                             Kelola Jadwal
+                        @elseif(request()->routeIs('dashboard.index'))
+                            List Tempat
                         @else
                             Pages
                         @endif
@@ -341,6 +337,8 @@
                         Kelola Tempat
                     @elseif(request()->routeIs('jadwal.index'))
                         Kelola Jadwal
+                    @elseif(request()->routeIs('dashboard.index'))
+                        List Tempat
                     @else
                         Pages
                     @endif

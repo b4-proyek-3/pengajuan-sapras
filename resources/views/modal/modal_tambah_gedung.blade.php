@@ -21,7 +21,7 @@
                             style="background-color: #2563eb !important;">Simpan</button>
                         <button type="button"
                             class="bg-gray-600 text-white py-2 px-6 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400"
-                            onclick="window.location.href='{{ url('/ruangan?active_tab=gedung') }}'">Batal</button>
+                            data-bs-dismiss="modal">Batal</button>
                     </div>
                 </form>
             </div>

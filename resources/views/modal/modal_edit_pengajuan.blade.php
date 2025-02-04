@@ -40,6 +40,13 @@
                 <input type="text" id="jumlah-peserta" name="jumlah_peserta" value="{{ $pengajuans->jumlah_peserta }}"
                 class="form-control"/>
             </div>
+            @if (!is_null($pengajuans->link_drive))
+            <div class="flex flex-col">
+                <label for="link" class="block text-sm font-medium text-gray-900">Surat Izin Orang Tua</label>
+                <input type="url" id="link_gdrive" name="link_gdrive" value="{{ $pengajuans->link_drive }}"
+                class="form-control"/>
+            </div>
+            @endif
             <div id="form-container">
                 @foreach ($pengajuans->ruangan as $index => $ruangan)
                     <div class="form-item border-b mb-3">
@@ -104,7 +111,7 @@
                 <button type="submit" class="bg-gradient-to-tl from-blue-600 to-teal-400 px-2.5 text-xs rounded-1.8 py-1.4 inline-block whitespace-nowrap text-center align-baseline font-bold uppercase leading-none">
                     update
                 </button>
-                <button type="button" class="bg-gradient-to-tl from-slate-600 to-slate-300 px-2.5 text-xs rounded-1.8 py-1.4 inline-block whitespace-nowrap text-center align-baseline font-bold uppercase leading-none ml-2" onclick="window.location='{{ route('pengajuan.show', ['id_pengajuan' => $pengajuans->id_pengajuan]) }}'">
+                <button type="button" class="bg-gradient-to-tl from-slate-600 to-slate-300 px-2.5 text-xs rounded-1.8 py-1.4 inline-block whitespace-nowrap text-center align-baseline font-bold uppercase leading-none ml-2" onclick="closePengajuanModal()">
                     batal
                 </button>
             </div>

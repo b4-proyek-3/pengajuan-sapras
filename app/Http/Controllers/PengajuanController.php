@@ -70,6 +70,10 @@ class PengajuanController extends Controller
     public function show(string $id_pengajuan)
     {
         $pengajuans = Pengajuan::with(['pengaju', 'reviewers', 'latestReview', 'dokumen', 'ruangan'])->findOrFail($id_pengajuan);
+        foreach ($pengajuans->ruangan as $ruangan) {
+            $ruangan->pivot->waktu_awal = date('H:i', strtotime($ruangan->pivot->waktu_awal));
+            $ruangan->pivot->waktu_akhir = date('H:i', strtotime($ruangan->pivot->waktu_akhir));
+        }
         $tempatList = Ruangan::all();
         return view('pengajuan.detail', compact('pengajuans', 'tempatList'));
     }
@@ -203,7 +207,7 @@ class PengajuanController extends Controller
                         'waktu_akhir' => $waktuAkhir,
                     ]);
                 } catch (\Exception $e) {
-                    dd($e->getMessage()); // Menampilkan error jika ada
+                    $e->getMessage(); // Menampilkan error jika ada
                 }
             }
 
@@ -263,6 +267,7 @@ class PengajuanController extends Controller
                 'nama_ketuplak' => 'sometimes|string|max:50',
                 'notelp' => 'sometimes|string|regex:/^\+?[0-9]{10,15}$/',
                 'jumlah_peserta' => 'sometimes|integer',
+                'link_gdrive' => 'nullable|url',
                 'tanggal_mulai' => 'sometimes|array|min:1',
                 'tanggal_akhir' => 'sometimes|array|min:1',
                 'tanggal_mulai.*' => 'required_with:tanggal_akhir.*|date',
@@ -281,6 +286,7 @@ class PengajuanController extends Controller
                 'nama_ketuplak' => $request->nama_ketuplak ?? $pengajuan->nama_ketuplak,
                 'notelp' => $request->notelp ?? $pengajuan->notelp,
                 'jumlah_peserta' => $request->jumlah_peserta ?? $pengajuan->jumlah_peserta,
+                'link_gdrive' => $request->link_drive ?? $pengajuan->link_drive,
                 'updated_at' => now(),
             ]);
 

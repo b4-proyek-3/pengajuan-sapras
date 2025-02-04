@@ -1,5 +1,5 @@
 <div class="modal fade overflow-y-auto" id="timeSlotsModal" tabindex="-1" aria-labelledby="timeSlotsModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
+    <div class="modal-dialog modal-md">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="timeSlotsModalLabel">Detail Jadwal</h5>

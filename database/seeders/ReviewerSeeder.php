@@ -25,7 +25,7 @@ class ReviewerSeeder extends Seeder
         }
 
         // Role yang akan digunakan untuk reviewer
-        $roles = ['sekum-bem', 'kli', 'ketua_jurusan', 'wd-3'];
+        $roles = ['sekum-bem', 'kli', 'wd-3'];
 
         // Menambahkan data reviewer ke tabel reviewers
         foreach ($roles as $role) {

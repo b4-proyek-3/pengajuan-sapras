@@ -62,7 +62,7 @@
                     </div>
                     <div class="mt-6">
                         <button type="submit" class="inline-block w-full px-6 py-3 font-bold text-white uppercase bg-orange-500 hover:bg-orange-700 rounded-lg">
-                            Verify Code
+                            Kirim Kode Verifikasi
                         </button>
                     </div>
                 </form>
@@ -76,10 +76,11 @@
                     </div>
                     <div class="mt-6">
                         <button type="submit" class="inline-block w-full px-6 py-3 font-bold text-white uppercase bg-orange-500 hover:bg-orange-700 rounded-lg">
-                            Verify Code
+                            Verifikasi Kode
                         </button>
                     </div>
                 </form>
+                <a href="#" id="backToLogin" class="text-blue-500"><strong>Back to Login</strong></a>
             </div>
 
             <!-- Reset Password Form -->
@@ -97,6 +98,7 @@
                         <div>
                             <label for="password_confirmation" class="block pb-3 text-sm font-medium text-gray-700">Konfirmasi Password</label>
                             <input type="password" name="password_confirmation" id="password_confirmation" class="focus:shadow-soft-primary-outline text-sm block w-full rounded-lg border border-gray-300 px-3 py-2" required>
+                            <p id="passwordError" style="color: red; font-size: 14px; display: none;"></p>
                         </div>
                     </div>
                     <div class="mt-6">
@@ -126,6 +128,11 @@
     const resetPasswordForm = document.getElementById('resetPasswordForm');
     const resetSuccess = document.getElementById('resetSuccess');
     const backToLoginAfterSuccess = document.getElementById('backToLoginAfterSuccess');
+    const errorText = document.getElementById('passwordError');
+
+    // Reset error text
+    errorText.textContent = '';
+    errorText.style.display = 'none';
 
     // Transition to Forgot Password Form
     forgotPasswordLink.addEventListener('click', function (event) {
@@ -135,6 +142,12 @@
             loginForm.classList.add('translate-x-full');
             forgotPasswordForm.classList.remove('translate-x-full');
         }, 50);
+    });
+
+    backToLogin.addEventListener('click', function (event) {
+        event.preventDefault();
+        forgotPasswordForm.classList.add('hidden');
+        loginForm.classList.remove('translate-x-full');
     });
 
     // Handle Forgot Password Form Submission
@@ -212,6 +225,18 @@
         const password = document.getElementById('password1').value;
         const passwordConfirmation = document.getElementById('password_confirmation').value;
 
+        if (password !== passwordConfirmation) {
+            errorText.textContent = 'Password dan konfirmasi password tidak sesuai.';
+            errorText.style.display = 'block';
+            return;
+        }
+
+        if (password.length < 8) {
+            errorText.textContent = 'Password harus minimal 8 karakter.';
+            errorText.style.display = 'block';
+            return;
+        }
+
         fetch('{{ route('password.update') }}', {
             method: 'POST',
             headers: {
@@ -234,7 +259,8 @@
         })
         .then(data => {
             if (data.message) {
-                alert(data.message); // Tampilkan pesan sukses
+                resetPasswordForm.classList.add('hidden');
+                resetSuccess.classList.remove('hidden');
             } else {
                 alert(data.error || 'Terjadi kesalahan, silakan coba lagi.');
             }

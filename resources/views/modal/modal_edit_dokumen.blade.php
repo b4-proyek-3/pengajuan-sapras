@@ -20,16 +20,16 @@
               <div style="display:none;" id="dokumen1-ch">
                 <input type="checkbox" id="dokumen1-checkbox" name="dokumen1_checkbox" onclick="toggleFileInput('dokumen1')"> Proposal
               </div>
-              <div  style="display:none;" id="dokumen2-ch">
+              <div style="display:none;" id="dokumen2-ch">
                 <input type="checkbox" id="dokumen2-checkbox" name="dokumen2_checkbox" onclick="toggleFileInput('dokumen2')"> Term of Reference
               </div>
-              <div>
+              <div style="display:none;" id="dokumen3-ch">
                 <input type="checkbox" id="dokumen3-checkbox" name="dokumen3_checkbox" onclick="toggleFileInput('dokumen3')"> Surat Peminjaman Sarana Prasarana
               </div>
-              <div>
+              <div style="display:none;" id="dokumen4-ch">
                 <input type="checkbox" id="dokumen4-checkbox" name="dokumen4_checkbox" onclick="toggleFileInput('dokumen4')"> Lembar Pengesahan Kegiatan
               </div>
-              <div>
+              <div style="display:none;" id="dokumen5-ch">
                 <input type="checkbox" id="dokumen5-checkbox" name="dokumen5_checkbox" onclick="toggleFileInput('dokumen5')"> Lampiran Daftar Peserta
               </div>
             </div>
@@ -69,7 +69,7 @@
               </button>
             </div>
           </form>
-        </div> 
+        </div>
       </div>
     </div>
   </div>
@@ -90,15 +90,29 @@
   function showFilesForJenisKegiatan(jenisKegiatan) {
       const dokumen1Checkbox = document.getElementById('dokumen1-ch');
       const dokumen2Checkbox = document.getElementById('dokumen2-ch');
-      const dokumen3Checkbox = document.getElementById('dokumen3-checkbox');
+      const dokumen3Checkbox = document.getElementById('dokumen3-ch');
+      const dokumen4Checkbox = document.getElementById('dokumen4-ch');
+      const dokumen5Checkbox = document.getElementById('dokumen5-ch');
+
       // Reset semua visibility
       dokumen1Checkbox.style.display = 'none';
       dokumen2Checkbox.style.display = 'none';
+      dokumen3Checkbox.style.display = 'none';
+      dokumen4Checkbox.style.display = 'none';
+      dokumen5Checkbox.style.display = 'none';
 
       // Atur visibility berdasarkan jenis kegiatan
       if (jenisKegiatan === 'proker') {
           dokumen1Checkbox.style.display = 'block';
+          dokumen3Checkbox.style.display = 'block';
+          dokumen4Checkbox.style.display = 'block';
+          dokumen5Checkbox.style.display = 'block';
       } else if (jenisKegiatan === 'pergerakan') {
+          dokumen2Checkbox.style.display = 'block';
+          dokumen3Checkbox.style.display = 'block';
+          dokumen4Checkbox.style.display = 'block';
+          dokumen5Checkbox.style.display = 'block';
+      } else if (jenisKegiatan === 'latihan_rutin') {
           dokumen2Checkbox.style.display = 'block';
       }
   }

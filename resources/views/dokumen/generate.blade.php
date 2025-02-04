@@ -98,7 +98,7 @@
         }
 
         .table td:last-child {
-            width: 30%;
+            width: 10%
         }
 
         .signature-section {

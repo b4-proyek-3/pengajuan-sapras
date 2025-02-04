@@ -272,9 +272,11 @@
                           <div class="flex flex-col justify-center">
                             <!-- Link dokumen untuk Card 1 -->
                             <h6 class="mb-0 text-sm leading-normal">
-                            <a href="{{ $pengajuan->link_drive }}" target="_blank" rel="noopener noreferrer">
-                                Surat Izin Orang Tua
-                            </a>
+                            @if (!is_null($pengajuan->link_drive))
+                                <a href="{{ $pengajuan->link_drive }}" target="_blank" rel="noopener noreferrer">
+                                    Surat Izin Orang Tua
+                                </a>
+                            @endif
                             </h6>
                           </div>
                         </div>
