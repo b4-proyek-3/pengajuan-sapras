@@ -44,6 +44,7 @@
                         </thead>
 
                         <tbody>
+                        @if ($ruangan->isNotEmpty()) 
                             @foreach ($ruangan as $key => $r)
                                 <tr>
                                     <td class="py-3 px-4 border">{{ $ruangan->firstItem() + $key }}</td>
@@ -77,6 +78,7 @@
                                     </td>
                                 </tr>
                             @endforeach
+                        @endif
 
                             @if($ruangan->isEmpty())
                                 <tr>

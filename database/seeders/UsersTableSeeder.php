@@ -46,7 +46,53 @@ class UsersTableSeeder extends Seeder
             ['name' => 'Aulia Muthmainah', 'email' => 'UKM-KSRPMI@POLBAN.AC.ID', 'nim' => '221410103', 'ormawa' => 'UKM Korp Sukarela (KSR) PMI'],
             ['name' => 'Alda Pratista', 'email' => 'UKM-PRAMUKA@POLBAN.AC.ID', 'nim' => '221234003', 'ormawa' => 'UKM Pramuka'],
             ['name' => 'Najla Khairunnisa Permana', 'email' => 'UKM-FELLAS@POLBAN.AC.ID', 'nim' => '225110025', 'ormawa' => 'UKM Fellas']
-        ];        
+        ];
+        
+        $password = 'password'; 
+        // Password plaintext untuk testing 
+        $hashedPassword = Hash::make($password);
+        DB::table('users')->insert([
+                [ 
+                    'name' => 'John Doe',
+                    'email' => 'john.doe@polban.ac.id',
+                    'email_verified_at' => now(),
+                    'password' => $hashedPassword,
+                    // Menggunakan hashed password 
+                    'remember_token' => Str::random(10), 
+                    'created_at' => now(), 
+                    'updated_at' => now(), 
+                ], 
+                [ 
+                    'name' => 'Jane Smith', 
+                    'email' => 'jane.smith@polban.ac.id', 
+                    'email_verified_at' => now(), 
+                    'password' => $hashedPassword, 
+                    // Menggunakan hashed password 
+                    'remember_token' => Str::random(10), 
+                    'created_at' => now(), 
+                    'updated_at' => now(), 
+                ], 
+                [ 
+                    'name' => 'James Johnson', 
+                    'email' => 'james.johnson@polban.ac.id', 
+                    'email_verified_at' => now(), 
+                    'password' => $hashedPassword, 
+                    // Menggunakan hashed password 
+                    'remember_token' => Str::random(10), 
+                    'created_at' => now(), 
+                    'updated_at' => now(), 
+                ], 
+                [   
+                    'name' => 'Alice Williams', 
+                    'email' => 'alice.williams@polban.ac.id', 
+                    'email_verified_at' => now(), 
+                    'password' => $hashedPassword, 
+                    // Menggunakan hashed password 
+                    'remember_token' => Str::random(10), 
+                    'created_at' => now(), 
+                    'updated_at' => now(), 
+            ], 
+        ]); 
 
         foreach ($users as $user) {
             $randomPassword = 'Polban' . rand(1000, 9999);

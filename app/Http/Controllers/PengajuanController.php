@@ -206,8 +206,9 @@ class PengajuanController extends Controller
                         'waktu_mulai' => $waktuMulai,
                         'waktu_akhir' => $waktuAkhir,
                     ]);
+
                 } catch (\Exception $e) {
-                    $e->getMessage(); // Menampilkan error jika ada
+                    dd($e->getMessage()); // Menampilkan error jika ada
                 }
             }
 
@@ -216,6 +217,7 @@ class PengajuanController extends Controller
 
             return redirect()->route('pengajuan.index')->with('success', 'Pengajuan berhasil ditambahkan!');
         } catch (\Exception $e) {
+            dd($e->getMessage());
             return redirect()->route('pengajuan.index')->with('error', 'Terjadi kesalahan saat menambahkan pengajuan: ' . $e->getMessage());
         }
     }
@@ -286,7 +288,7 @@ class PengajuanController extends Controller
                 'nama_ketuplak' => $request->nama_ketuplak ?? $pengajuan->nama_ketuplak,
                 'notelp' => $request->notelp ?? $pengajuan->notelp,
                 'jumlah_peserta' => $request->jumlah_peserta ?? $pengajuan->jumlah_peserta,
-                'link_gdrive' => $request->link_drive ?? $pengajuan->link_drive,
+                'link_drive' => $request->link_gdrive ?? $pengajuan->link_drive,
                 'updated_at' => now(),
             ]);
 

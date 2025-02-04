@@ -13,6 +13,8 @@ class User extends Authenticatable
     use HasFactory, Notifiable, CanResetPassword;
 
     protected $primaryKey = 'id_user';
+    public $incrementing = true;
+    protected $keyType = 'int';
     protected $fillable = [
         'name', 'email', 'password', 'email_verified_at', 'remember_token'
     ];

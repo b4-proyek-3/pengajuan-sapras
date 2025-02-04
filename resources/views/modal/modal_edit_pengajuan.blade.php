@@ -40,13 +40,11 @@
                 <input type="text" id="jumlah-peserta" name="jumlah_peserta" value="{{ $pengajuans->jumlah_peserta }}"
                 class="form-control"/>
             </div>
-            @if (!is_null($pengajuans->link_drive))
             <div class="flex flex-col">
                 <label for="link" class="block text-sm font-medium text-gray-900">Surat Izin Orang Tua</label>
-                <input type="url" id="link_gdrive" name="link_gdrive" value="{{ $pengajuans->link_drive }}"
+                <input type="url" id="link_gdrive" name="link_gdrive" value="{{ $pengajuans->link_drive }}" placeholder="https://drive.google.com/drive/folders/surat_izin_orang_tua"
                 class="form-control"/>
             </div>
-            @endif
             <div id="form-container">
                 @foreach ($pengajuans->ruangan as $index => $ruangan)
                     <div class="form-item border-b mb-3">

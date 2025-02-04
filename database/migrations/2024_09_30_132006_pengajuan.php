@@ -22,7 +22,7 @@ return new class extends Migration
             $table->integer('jumlah_peserta');
             $table->enum('jenis_kegiatan', ['proker', 'pergerakan', 'latihan_rutin']);
             $table->enum('status', ['diedit', 'direview', 'direvisi', 'ditolak', 'selesai', 'diajukan'])->default('diajukan');
-            $table->string('link_drive');
+            $table->string('link_drive')->nullable();
             $table->boolean('edited')->default(false);
             $table->dateTime('updated_at');
         });

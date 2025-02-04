@@ -1,4 +1,5 @@
 <!-- Modal Edit Ruangan -->
+@if(isset($r))
 <div class="modal fade overflow-y-auto" id="ruanganEditModal" tabindex="-1" aria-labelledby="ruanganEditModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -56,3 +57,4 @@
         </div>
     </div>
 </div>
+@endif

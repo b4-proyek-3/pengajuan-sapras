@@ -29,7 +29,7 @@ class OrmawaSeeder extends Seeder
             'UKM Kewirausahaan',
             'UKM The Education and Entertainment Line Transmitter Radio Stations (ELTRAS)',
             'UKM Asosiasi Mahasiswa Islam (Assalam)',
-            'UKM Persatuan Mahasiswa Kristen (PMK)',
+            'UKM Persekutuan Mahasiswa Kristen (PMK)',
             'UKM Keluarga Mahasiswa Katholik (KMK)',
             'UKM Kebudayaan Baraya Sunda (Kabayan)',
             'UKM Paduan Suara Mahasiswa (PSM)',

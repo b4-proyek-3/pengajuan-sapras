@@ -62,7 +62,7 @@
 
                             @if($jadwals->isEmpty())
                                 <tr>
-                                    <td colspan="7" class="text-center">Tidak ada data ruangan</td>
+                                    <td colspan="7" class="text-center">Tidak ada data jadwal</td>
                                 </tr>
                             @endif
                         </tbody>

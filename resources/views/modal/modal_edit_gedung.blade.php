@@ -1,4 +1,5 @@
 <!-- Modal Edit gedung -->
+@if(isset($g))
 <div class="modal fade overflow-y-auto" id="gedungEditModal" tabindex="-1" aria-labelledby="gedungEditModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -33,3 +34,4 @@
         </div>
     </div>
 </div>
+@endif
