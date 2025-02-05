@@ -208,21 +208,18 @@
                 @endforeach
             </tbody>
         </table>
-        <p>Adapun berita acara ini sudah divalidasi dan disetujui oleh beberapa pihak, yaitu :</p>
+        <p>Adapun berita acara ini sudah divalidasi dan disetujui oleh beberapa pihak dengan rincian sebagai berikut:</p>
         <table class="table">
             <tr>
-                <th>BEM</th>
-                <td>: {{ $sekum_bem }}</td>
+                <th>1.  Badan Eksekutif Mahasiswa Politeknik Negeri Bandung</th>
                 <td></td>
             </tr>
             <tr>
-                <th>KLI</th>
-                <td>: {{ $kli }}</td>
+                <th>2.  Koordinator Layanan Internal</th>
                 <td></td>
             </tr>
             <tr>
-                <th>Wakil Direktur 3</th>
-                <td>: {{ $wd3 }}</td>
+                <th>3.  Wakil Direktur III Bidang Kemahasiswaan</th>
                 <td></td>
             </tr>
         </table>
