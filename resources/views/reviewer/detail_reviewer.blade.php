@@ -257,9 +257,10 @@
                         <div class="flex px-4 py-1">
                           <div class="flex flex-col justify-center">
                             <h6 class="mb-0 text-sm leading-normal">
-                              <a href="javascript:void(0);" class="dokumen-link" data-file="{{ asset('storage/' . $dokumen->path ?? 'N/A') }}">
-                                {{ $dokumen->nama_dokumen ?? 'N/A'}}
-                              </a>
+                            <a href="javascript:void(0);" class="dokumen-link"
+                              data-file="{{ route('file.show', ['id_pengajuan' => $pengajuan->id_pengajuan, 'filename' => basename($dokumen->path)]) }}">
+                                {{ $dokumen->nama_dokumen ?? 'N/A' }}
+                            </a>
                             </h6>
                           </div>
                         </div>
@@ -321,7 +322,7 @@
       <div class="border-black/12.5 shadow-soft-xl relative flex h-full min-w-0 flex-col break-words rounded-2xl border-0 border-solid bg-white bg-clip-border">
         <div class="flex-auto p-2">
           <div class="before:border-r-solid relative before:absolute before:top-0 before:left-4 before:h-full before:border-r-2 before:border-r-slate-100 before:content-[''] before:lg:-ml-px">
-            <iframe id="dokumen-frame" src="{{ asset('storage/' . $pengajuan->dokumen->first()?->path  ?? 'N/A' ) }}" style="width:100%; height:700px;" frameborder="0"></iframe>
+          <iframe id="dokumen-frame" src="{{ $firstDocument ? route('file.show', ['id_pengajuan' => $pengajuan->id_pengajuan, 'filename' => basename($firstDocument->path)]) : '' }}" style="width:100%; height:700px;" frameborder="0"></iframe>
           </div>
         </div>
       </div>

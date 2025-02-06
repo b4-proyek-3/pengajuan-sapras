@@ -86,8 +86,8 @@
                                 <!-- Foto Ruangan -->
                                 <div class="flex-shrink-0">
                                     @if($ruangan->foto)
-                                        <img src="{{ asset('storage/' . $ruangan->foto) }}" alt="Foto Ruangan"
-                                            class="w-32 h-32 object-cover rounded-lg">
+                                        <img src="{{ route('file.ruangan', ['filename' => basename($ruangan->foto)]) }}" alt="Foto Ruangan"
+                                        class="w-32 h-32 object-cover rounded-lg">
                                     @else
                                         <div class="w-32 h-32 bg-gray-200 flex items-center justify-center rounded-lg">
                                             <span class="text-gray-500 text-sm">Tidak Ada Foto</span>

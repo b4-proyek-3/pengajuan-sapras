@@ -20,18 +20,18 @@ use App\Http\Controllers\OrmawaController;
 use App\Http\Middleware\CheckReviewerRole;
 use App\Http\Middleware\CheckPengaju;
 use App\Http\Middleware\CheckReviewer;
+use App\Http\Controllers\FileController;
 use App\Models\Dokumen;
+
+Route::get('/', function () {
+    return redirect()->route('login');
+});
 
 // ========================================================================================
 // AUTHENTICATION ROUTES ==================================================================
 Route::controller(AuthController::class)->group(function () {
     Route::get('/login', 'index')->name('login');
     Route::post('/login', 'login')->name('login.submit');
-
-    // Forgot password process
-    Route::post('/forgot-password', 'sendVerificationCode')->name('password.forgot');
-    Route::post('/verify-code', 'verifyCode')->name('password.verifyCode');
-    Route::post('/reset-password', 'resetPassword')->name('password.update');
 
     // Logout route should be outside the '/home' route
     Route::post('/logout', 'logout')->name('logout');
@@ -93,6 +93,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/calendar-data', [DashboardController::class, 'getCalendarData'])->name('dashboard.calendar.data');
     Route::get('/status-pengajuan', [StatusPengajuanController::class, 'index'])->name('layout.status');
+    Route::get('/dokumen/show/{id_pengajuan}/{filename}', [DokumenController::class, 'show'])
+        ->name('file.show');
+    Route::get('/file/ruangan/{filename}', [FileController::class, 'showRuangan'])->name('file.ruangan');
 });
 
 Route::get('/validasi/{id_pengajuan}', [ValidasiController::class, 'show'])->name('validasi.show');

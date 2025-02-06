@@ -269,21 +269,22 @@
             <table class="items-center mb-2 mt-2 align-top border-gray-200 text-slate-500">
               <td class="mb-4 mt-4 align-middle bg-transparent border-b whitespace-nowrap">
               <tbody>
-                  @foreach ($pengajuans->dokumen as $dokumen)
-                    <tr>
+              @foreach ($pengajuans->dokumen as $dokumen)
+                  <tr>
                       <td class="p-2 align-middle bg-transparent whitespace-nowrap">
-                        <div class="flex px-4 py-1">
-                          <div class="flex flex-col justify-center">
-                            <h6 class="mb-0 text-sm leading-normal">
-                              <a href="javascript:void(0);" class="dokumen-link" data-file="{{ asset('storage/' . $dokumen->path ?? 'N/A') }}">
-                                {{ $dokumen->nama_dokumen ?? 'N/A'}}
-                              </a>
-                            </h6>
+                          <div class="flex px-4 py-1">
+                              <div class="flex flex-col justify-center">
+                                  <h6 class="mb-0 text-sm leading-normal">
+                                  <a href="javascript:void(0);" class="dokumen-link" 
+                                    data-file="{{ route('file.show', ['id_pengajuan' => $pengajuans->id_pengajuan, 'filename' => basename($dokumen->path)]) }}">
+                                     {{ $dokumen->nama_dokumen ?? 'N/A' }}
+                                  </a>
+                                  </h6>
+                              </div>
                           </div>
-                        </div>
                       </td>
-                    </tr>
-                  @endforeach
+                  </tr>
+              @endforeach
                     <tr>
                       <td class="p-2 align-middle bg-transparent whitespace-nowrap">
                         <div class="flex px-4 py-1">
@@ -333,7 +334,7 @@
       <div class="border-black/12.5 shadow-soft-xl relative flex h-full min-w-0 flex-col break-words rounded-2xl border-0 border-solid bg-white bg-clip-border">
         <div class="flex-auto p-2">
           <div class="before:border-r-solid relative before:absolute before:top-0 before:left-4 before:h-full before:border-r-2 before:border-r-slate-100 before:content-[''] before:lg:-ml-px">
-            <iframe id="dokumen-frame" src="{{ asset('storage/' . $pengajuans->dokumen->first()?->path  ?? 'N/A' ) }}" style="width:100%; height:700px;" frameborder="0"></iframe>
+            <iframe id="dokumen-frame" src="{{ $firstDocument ? route('file.show', ['id_pengajuan' => $pengajuans->id_pengajuan, 'filename' => basename($firstDocument->path)]) : '' }}" style="width:100%; height:700px;" frameborder="0"></iframe>
           </div>
         </div>
       </div>

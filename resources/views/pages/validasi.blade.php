@@ -101,25 +101,25 @@
 
                                     {{-- BEM Secretary --}}
                                     <tr class="border-b border-gray-200">
-                                        <td class="py-2 font-medium text-gray-700">BEM</td>
+                                        <td class="py-2 font-medium text-gray-700">Badan Eksekutif Mahasiswa Politeknik Negeri Bandung</td>
                                         <td class="py-2 text-right">
-                                            {{ $sekum->user->name }}
+                                            {{ $sekum }}
                                         </td>
                                     </tr>
 
                                     {{-- KLI --}}
                                     <tr class="border-b border-gray-200">
-                                        <td class="py-2 font-medium text-gray-700">KLI</td>
+                                        <td class="py-2 font-medium text-gray-700">Koordinator Layanan Internal</td>
                                         <td class="py-2 text-right">
-                                            {{ $kli->user->name }}
+                                            {{ $kli }}
                                         </td>
                                     </tr>
 
                                     {{-- WD-3 --}}
                                     <tr>
-                                        <td class="py-2 font-medium text-gray-700">WD-3</td>
+                                        <td class="py-2 font-medium text-gray-700">Wakil Direktur III Bidang Kemahasiswaan</td>
                                         <td class="py-2 text-right">
-                                            {{ $wd3->user->name }}
+                                            {{ $wd3 }}
                                         </td>
                                     </tr>
                                 </tbody>

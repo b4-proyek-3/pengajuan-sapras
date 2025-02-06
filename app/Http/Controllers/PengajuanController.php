@@ -70,12 +70,18 @@ class PengajuanController extends Controller
     public function show(string $id_pengajuan)
     {
         $pengajuans = Pengajuan::with(['pengaju', 'reviewers', 'latestReview', 'dokumen', 'ruangan'])->findOrFail($id_pengajuan);
+        $firstDocument = $pengajuans->dokumen->first();
         foreach ($pengajuans->ruangan as $ruangan) {
             $ruangan->pivot->waktu_awal = date('H:i', strtotime($ruangan->pivot->waktu_awal));
             $ruangan->pivot->waktu_akhir = date('H:i', strtotime($ruangan->pivot->waktu_akhir));
         }
+        
+        $files = [];
+        foreach ($pengajuans->dokumen as $dokumen) {
+            $files[$dokumen->nama_dokumen] = $dokumen->path;
+        }
         $tempatList = Ruangan::all();
-        return view('pengajuan.detail', compact('pengajuans', 'tempatList'));
+        return view('pengajuan.detail', compact('pengajuans', 'tempatList', 'files', 'firstDocument'));
     }
 
     public function create()

@@ -12,6 +12,7 @@
     <p>Masukkan kode ini pada halaman verifikasi untuk mereset password Anda.</p>
     <p>Jika Anda tidak meminta reset password, tidak ada tindakan lebih lanjut yang diperlukan.</p>
     <p>Terima kasih,</p>
-    <p>{{ config('app.name') }}</p>
+    <p>Pengajuan Sarana Prasarana</p>
+    <p>Politeknik Negeri Bandung</p>
 </body>
 </html>

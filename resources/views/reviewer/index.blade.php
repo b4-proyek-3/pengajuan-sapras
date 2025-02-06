@@ -207,7 +207,7 @@
                                         <td class="py-3 px-4 border">{{ $pengajuan->nama_kegiatan }}</td>
                                         <td class="py-3 px-4 border">{{ $pengajuan->pengaju->ormawa->nama_ormawa }}</td>
                                         <td class="py-3 px-4 border">
-                                            <span class="inline-block py-1 px-3 rounded-lg 
+                                            <span class="inline-block py-1 px-3 rounded-lg
                                                 @if($pengajuan->reviewers->first()->pivot->status == 'diterima')
                                                     bg-green-200 text-green-800
                                                 @elseif($pengajuan->reviewers->first()->pivot->status == 'ditolak')
@@ -219,8 +219,82 @@
                                             </span>
                                         </td>
                                         <td class="py-3 px-4 border">{{ $pengajuan->latestReview->first()->catatan ?? '-' }}</td>
-                                        <td class="py-3 px-4 border">
+                                        <td class="py-3 px-4 border items-center space-y-2">
                                             <button onclick="window.location='{{ route('reviewer.detail_reviewer', ['id_pengajuan' => $pengajuan->id_pengajuan, 'id_reviewer' => auth()->user()->reviewer->id_reviewer]) }}'" class="bg-blue-600 text-white px-4 py-2 rounded-lg">Detail</button>
+                                            @if (auth()->user()->reviewer->role == 'wd-3' && in_array($pengajuan->status, ['ditolak', 'selesai']))
+                                            <form
+                                                action="{{ route('pengajuan.destroy', ['id_pengajuan' => $pengajuan->id_pengajuan]) }}"
+                                                method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                            
+                                                <!-- Button Hapus -->
+                                                <button
+                                                    type="button"
+                                                    data-id="{{ $pengajuan->id_pengajuan }}"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#deleteModal"
+                                                    class="text-white px-4 py-2 rounded-lg"
+                                                    style="background-color: #ff7f00 !important;"
+                                                    onclick="openModal('{{ $pengajuan->id_pengajuan }}')">
+                                                    Hapus
+                                                </button>
+
+                                                <!-- Modal -->
+                                                <div class="modal fade overflow-y-auto" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog flex items-center justify-center min-h-screen">
+                                                        <div class="modal-content">
+                                                            <!-- Header Modal -->
+                                                            <div class="modal-header bg-gray-100">
+                                                                <h5 class="modal-title text-xl font-bold text-gray-800" id="deleteModalLabel">
+                                                                Hapus Pengajuan
+                                                                </h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            
+                                                            <div class="modal-body">
+                                                                <p class="text-gray-700 text-lg">
+                                                                    Apakah Anda yakin ingin menghapus pengajuan ini?
+                                                                </p>
+                                                            </div>
+                                                            
+                                                            <div class="modal-footer flex justify-end space-x-4">
+                                                                <button type="button"
+                                                                    class="text-white px-4 py-2 rounded hover:bg-gray-500" 
+                                                                    style="background-color: #808080 !important;"
+                                                                    data-bs-dismiss="modal">
+                                                                    Batal
+                                                                </button>
+                                                                
+                                                                <form id="deleteForm" method="POST" action="/pengajuan/1">
+                                                                    <button type="submit"
+                                                                        class="text-white px-4 py-2 rounded hover:bg-red-700"
+                                                                        style="background-color: #ff0000 !important;">
+                                                                        Hapus
+                                                                    </button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                            @endif
+                                            
+                                            <script>
+                                                function openModal(id) {
+                                                    const modal = document.getElementById('deleteModal');
+                                                    const form = document.getElementById('deleteForm');
+                                                    
+                                                    form.action = `/pengajuan/${id}`;
+                                                    
+                                                    modal.classList.remove('hidden');
+                                                }
+
+                                                function closeModal() {
+                                                    const modal = document.getElementById('deleteModal');
+                                                    modal.classList.add('hidden');
+                                                }
+                                            </script>
                                         </td>
                                     </tr>
                                     @empty

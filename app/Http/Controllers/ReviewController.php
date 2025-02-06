@@ -109,10 +109,11 @@ class ReviewController extends Controller
         $review = Review::where('id_pengajuan', $id_pengajuan)
                         ->where('id_reviewer', $id_reviewer)
                         ->first();
+        $firstDocument = $pengajuan->dokumen->first();
 
         $hasReviewed = $review ? $review->status != 'diajukan' : false;
 
-        return view('reviewer.detail_reviewer', compact('pengajuan', 'review', 'hasReviewed', 'id_reviewer'));
+        return view('reviewer.detail_reviewer', compact('pengajuan', 'review', 'hasReviewed', 'id_reviewer', 'firstDocument'));
     }
 
     public function updateReview(Request $request, string $id_pengajuan, string $id_reviewer)

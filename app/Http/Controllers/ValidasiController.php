@@ -18,13 +18,14 @@ class ValidasiController extends Controller
 
         // Mengambil data review terakhir dari reviewer
         $reviews = Review::where('id_pengajuan', $id_pengajuan)
-                        ->orderBy('tanggal_review', 'desc')
-                        ->get();
+                 ->with('reviewer') // Pastikan model Review punya relasi ke Reviewer
+                 ->orderBy('tanggal_review', 'asc') // Urutkan dari yang paling lama
+                 ->get();
 
         // Mengambil nama penandatangan (sekretaris umum, KLI, WD-3)
-        $sekum = Reviewer::where('id_user', 2)->with('user')->first(); // id_user = 2 untuk sekretaris umum
-        $kli = Reviewer::where('id_user', 3)->with('user')->first(); // id_user = 3 untuk KLI
-        $wd3 = Reviewer::where('id_user', 4)->with('user')->first(); // id_user = 4 untuk WD-3
+        $sekum = optional($reviews->where('reviewer.role', 'sekum-bem')->first())->tanggal_review ?? 'Belum Melakukan Review';
+        $kli = optional($reviews->where('reviewer.role', 'kli')->first())->tanggal_review ?? 'Belum Melakukan Review';
+        $wd3 = optional($reviews->where('reviewer.role', 'wd-3')->first())->tanggal_review ?? 'Belum Melakukan Review';
  
         // Cek status dokumen (aktif/tidak aktif)
         $waktu_mulai = Carbon::parse($pengajuan->tanggal_pinjam . ' ' . $pengajuan->waktu_pengajuan);
@@ -34,7 +35,6 @@ class ValidasiController extends Controller
         // Mengirim data ke view
         return view('pages.validasi', [
             'pengajuan' => $pengajuan,
-            'reviews' => $reviews,
             'status_dokumen' => $status_dokumen,
             'sekum' => $sekum,
             'kli' => $kli,

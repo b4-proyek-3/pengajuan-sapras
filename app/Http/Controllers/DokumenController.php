@@ -7,6 +7,8 @@ use App\Models\Pengajuan;
 use App\Models\MenggunakanRuangan;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
+use GuzzleHttp\Handler\StreamHandler;
+use GuzzleHttp\HandlerStack;
 use PDF;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
@@ -73,25 +75,37 @@ class DokumenController extends Controller
 
     public function generateQRCode($id_pengajuan)
     {
-        $url = "http://127.0.0.1:8000/validasi/{$id_pengajuan}";
+        $url = "https://birokrasi.kemahasiswaan.polban.ac.id:9009/validasi/{$id_pengajuan}";
 
-        $client = new Client();
-        $response = $client->post('https://plbsh.polban.dev/tes/send', [
-            'json' => ['url' => $url],
-            'verify' => false,
-        ]);
+        $payload = json_encode(['url' => $url]);
 
-        $data = json_decode($response->getBody()->getContents(), true);
+        $options = [
+            'http' => [
+                'header'  => "Content-Type: application/json\r\n",
+                'method'  => 'POST',
+                'content' => $payload,
+                'ignore_errors' => true,
+            ],
+            'ssl' => [
+                'verify_peer' => false, // Matikan SSL verification jika diperlukan
+                'verify_peer_name' => false,
+            ],
+        ];
+
+        $context = stream_context_create($options);
+        $response = file_get_contents('https://plbsh.polban.dev/tes/send', false, $context);
+
+        $data = json_decode($response, true);
 
         if (isset($data['url'])) {
             $qr_code_url = $data['url'];
-    
+
             $qr_image = file_get_contents($qr_code_url);
 
             $qr_image_path = storage_path('app/public/qr_codes/qrcode_' . $id_pengajuan . '.png');
-            
+
             file_put_contents($qr_image_path, $qr_image);
-            
+
             return $qr_image_path;
         }
 
@@ -167,5 +181,21 @@ class DokumenController extends Controller
     {
         $reviewer = $reviewers->firstWhere('role', $role);
         return $reviewer ? $reviewer->user->name : 'Tidak ditentukan';
+    }
+
+    public function show($id_pengajuan, $filename)
+    {
+        // Path lengkap di dalam storage
+        $path = storage_path("app/public/dokumen/{$id_pengajuan}/{$filename}");
+
+        // Cek apakah file ada
+        if (!file_exists($path)) {
+            abort(404, "File tidak ditemukan: $path");
+        }
+
+        // Tampilkan file sebagai response
+        return response()->file($path, [
+            'Content-Type' => 'application/pdf', // Pastikan format benar
+        ]);
     }
 }

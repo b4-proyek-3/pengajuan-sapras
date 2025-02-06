@@ -15,7 +15,7 @@
             @method('PUT')
             <div class="flex flex-col">
               <label for="nama-pengaju" class="block text-sm font-medium text-gray-900">Nama Pengaju</label>
-              <input id="nama-pengaju" value="{{ $pengajuans->pengaju->user->name }}"
+              <input id="nama-pengaju" value="{{ $pengajuans->nama_ketuplak }}"
                 class="form-control"
                 readonly />
             </div>
