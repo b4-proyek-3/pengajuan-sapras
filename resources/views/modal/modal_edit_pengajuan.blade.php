@@ -14,10 +14,9 @@
             @csrf
             @method('PUT')
             <div class="flex flex-col">
-              <label for="nama-pengaju" class="block text-sm font-medium text-gray-900">Nama Pengaju</label>
-              <input id="nama-pengaju" value="{{ $pengajuans->nama_ketuplak }}"
-                class="form-control"
-                readonly />
+              <label for="nama_ketuplak" class="block text-sm font-medium text-gray-900">Nama Pengaju</label>
+              <input id="nama_ketuplak" value="{{ $pengajuans->nama_ketuplak }}"
+                class="form-control"/>
             </div>
             <div class="flex flex-col">
               <label for="ormawa" class="block text-sm font-medium text-gray-900">Ormawa</label>

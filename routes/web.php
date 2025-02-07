@@ -71,7 +71,6 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware([CheckPengaju::class])->group(function () {
         Route::get('/pengajuan', [PengajuanController::class, 'index'])->name('pengajuan.index');
         Route::post('/pengajuan', [PengajuanController::class, 'store'])->name('pengajuan.store');
-        Route::delete('/pengajuan/{id_pengajuan}', [PengajuanController::class, 'destroy'])->name('pengajuan.destroy');
         Route::get('/pengajuan/detail/{id_pengajuan}', [PengajuanController::class, 'show'])->name('pengajuan.show');
         Route::put('/pengajuan/detail/{id_pengajuan}', [PengajuanController::class, 'update'])->name('pengajuan.update');
         Route::post('/pengajuan/{id_pengajuan}/submit', [PengajuanController::class, 'submitPengajuan'])->name('pengajuan.submit');
@@ -96,6 +95,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dokumen/show/{id_pengajuan}/{filename}', [DokumenController::class, 'show'])
         ->name('file.show');
     Route::get('/file/ruangan/{filename}', [FileController::class, 'showRuangan'])->name('file.ruangan');
+    Route::delete('/pengajuan/{id_pengajuan}', [PengajuanController::class, 'destroy'])->name('pengajuan.destroy');
 });
 
 Route::get('/validasi/{id_pengajuan}', [ValidasiController::class, 'show'])->name('validasi.show');

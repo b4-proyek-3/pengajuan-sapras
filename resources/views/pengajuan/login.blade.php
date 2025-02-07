@@ -11,7 +11,7 @@
                     Sistem Informasi Kemahasiswaan Polban
                 </h1>
             </div>
-        </div>        
+        </div>
 
         <!-- Second Column (Login, Forgot Password, and Reset Password Forms) -->
         <div class="w-full lg:w-1/2 flex flex-col p-10 bg-white relative">

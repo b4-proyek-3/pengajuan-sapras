@@ -103,7 +103,11 @@ class PengajuanController extends Controller
 
         try {
             $pengajuan->delete();
-            return redirect()->route('pengajuan.index')->with('success', 'Pengajuan berhasil dihapus.');
+            if (auth()->user()->pengaju) {
+                return redirect()->route('pengajuan.index')->with('success', 'Pengajuan berhasil dihapus.');
+            } else {
+                return redirect()->route('reviewer.index')->with('success', 'Pengajuan berhasil dihapus.');
+            }
         } catch (\Exception $e) {
             return redirect()->route('pengajuan.index')->with('error', 'Pengajuan gagal dihapus.');
         }
