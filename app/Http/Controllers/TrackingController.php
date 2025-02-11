@@ -43,7 +43,7 @@ class TrackingController extends Controller
     
         return view('tracking.show', compact(
             'pengajuan',
-            'penggunaan', // Tambah ini
+            'penggunaan',
             'reviews',
             'ormawa',
             'reviewDates',

@@ -38,46 +38,65 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        // Validasi input pengguna
-        $validatedUser = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8',
-        ]);
+        // Cek apakah user sudah ada berdasarkan email
+        $user = User::where('email', $request->email)->first();
 
-        // Membuat data pengguna
-        $user = User::create([
-            'name' => $validatedUser['name'],
-            'email' => $validatedUser['email'],
-            'password' => bcrypt($validatedUser['password']),
-            'email_verified_at' => now(),
-            'remember_token' => Str::random(10),
-        ]);
+        if (!$user) {
+            // Jika user belum ada, buat user baru
+            $validatedUser = $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email',
+                'password' => 'required|string|min:8',
+            ]);
 
+            $user = User::create([
+                'name' => $validatedUser['name'],
+                'email' => $validatedUser['email'],
+                'password' => bcrypt($validatedUser['password']),
+                'email_verified_at' => now(),
+                'remember_token' => Str::random(10),
+            ]);
+        }
+
+        // Jika menambahkan sebagai Pengaju
         if ($request->has('nim')) {
             $validatedPengaju = $request->validate([
                 'nim' => 'required|size:9|unique:pengaju,nim',
                 'id_ormawa' => 'required|exists:ormawa,id_ormawa',
             ]);
 
-            $pengaju = Pengaju::create([
-                'nim' => $validatedPengaju['nim'],
-                'id_user' => $user->id_user,
-                'id_ormawa' => $validatedPengaju['id_ormawa'],
-            ]);
+            // Cek apakah user sudah jadi pengaju sebelumnya
+            
+            if (!Pengaju::where('id_user', $user->id_user)->exists()) {
+                Pengaju::create([
+                    'nim' => $validatedPengaju['nim'],
+                    'id_user' => $user->id_user,
+                    'id_ormawa' => $validatedPengaju['id_ormawa'],
+                ]);
 
-            return redirect()->route('users.index')->with('success', 'Pengaju berhasil ditambahkan.');
-        } elseif ($request->has('role')) {
+                return redirect()->route('users.index')->with('success', 'Pengaju berhasil ditambahkan.');
+            } else {
+                return redirect()->route('users.index')->with('error', 'User ini sudah terdaftar sebagai pengaju.');
+            }
+        }
+
+        // Jika menambahkan sebagai Reviewer
+        elseif ($request->has('role')) {
             $validatedReviewer = $request->validate([
                 'role' => 'required|in:sekum-bem,kli,wd-3',
             ]);
 
-            $reviewer = Reviewer::create([
-                'id_user' => $user->id_user,
-                'role' => $validatedReviewer['role'],
-            ]);
+            // Cek apakah user sudah jadi reviewer sebelumnya
+            if (!Reviewer::where('id_user', $user->id_user)->exists()) {
+                Reviewer::create([
+                    'id_user' => $user->id_user,
+                    'role' => $validatedReviewer['role'],
+                ]);
 
-            return redirect()->route('users.index')->with('success', 'Reviewer berhasil ditambahkan.');
+                return redirect()->route('users.index')->with('success', 'Reviewer berhasil ditambahkan.');
+            } else {
+                return redirect()->route('users.index')->with('error', 'User ini sudah terdaftar sebagai reviewer.');
+            }
         }
 
         return redirect()->route('users.index')->with('error', 'Tidak ada data yang valid untuk disimpan.');

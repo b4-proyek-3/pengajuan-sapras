@@ -23,6 +23,7 @@
                 <form method="POST" action="{{ route('login.submit') }}">
                     @csrf
                     <div class="space-y-5">
+                        <input type="hidden" name="role" value="{{ request('role') }}">
                         <div>
                             <label for="email" class="block pb-3 text-sm font-medium text-gray-700">Email</label>
                             <input type="email" name="email" id="email" class="focus:shadow-soft-primary-outline text-sm block w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700 focus:border-fuchsia-300 focus:outline-none transition-shadow" placeholder="example@polban.ac.id">
@@ -36,6 +37,7 @@
                             @error('password')
                                 <span class="text-red-500">{{ $message }}</span>
                             @enderror
+                            <span class="pt-2 block">Forgot your password? <a href="#" id="forgotPasswordLink" class="text-blue-500"><strong>Click here</strong></a></span>
                         </div>
                     </div>
                     <div class="mt-6">
@@ -118,5 +120,176 @@
     </section>
 </main>
 
+@if (session('error'))
+    <script>
+        Swal.fire({
+            position: "center",
+            title: "Terjadi Kesalahan!",
+            text: "{{ session('error') }}",  // Menampilkan pesan error dari session
+            showConfirmButton: false,
+            timer: 1000,
+            icon: "error"
+        });
+    </script>
+@endif
+
+<script>
+    const forgotPasswordLink = document.getElementById('forgotPasswordLink');
+    const backToLogin = document.getElementById('backToLogin');
+    const loginForm = document.getElementById('loginForm');
+    const forgotPasswordForm = document.getElementById('forgotPasswordForm');
+    const resetPasswordForm = document.getElementById('resetPasswordForm');
+    const resetSuccess = document.getElementById('resetSuccess');
+    const backToLoginAfterSuccess = document.getElementById('backToLoginAfterSuccess');
+    const errorText = document.getElementById('passwordError');
+
+    // Reset error text
+    errorText.textContent = '';
+    errorText.style.display = 'none';
+
+    // Transition to Forgot Password Form
+    forgotPasswordLink.addEventListener('click', function (event) {
+        event.preventDefault();
+        forgotPasswordForm.classList.remove('hidden');
+        setTimeout(() => {
+            loginForm.classList.add('translate-x-full');
+            forgotPasswordForm.classList.remove('translate-x-full');
+        }, 50);
+    });
+
+    backToLogin.addEventListener('click', function (event) {
+        event.preventDefault();
+        forgotPasswordForm.classList.add('hidden');
+        loginForm.classList.remove('translate-x-full');
+    });
+
+    // Handle Forgot Password Form Submission
+    document.getElementById('forgotPasswordFormSubmit').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const email = document.getElementById('reset-email').value;
+
+        fetch('{{ route('password.forgot') }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ email })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message === 'Code sent!') {  // Menambahkan kode pengiriman sebagai respon
+                // Jika berhasil, tampilkan form untuk verifikasi kode
+                forgotPasswordForm.classList.remove('hidden');
+                Swal.fire({
+                    title: 'Success!',
+                    text: data.message,
+                    icon: 'success',
+                    timer: 1000,
+                    showConfirmButton: false
+                });
+            } else {
+                Swal.fire({
+                    title: 'Oops!',
+                    text: 'Terjadi kesalahan: ' + data.message,
+                    icon: 'error',
+                    timer: 1000,
+                    showConfirmButton: false
+                });
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+
+    // Formulir Verification Code
+    document.getElementById('verificationCodeFormSubmit').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const authCode = document.getElementById('auth_code').value;
+
+        fetch('{{ route('password.verifyCode') }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ auth_code: authCode })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message === 'Verified!') {
+                // Jika kode autentikasi valid, tampilkan form reset password
+                forgotPasswordForm.classList.add('hidden');  // Sembunyikan form forgot password
+                resetPasswordForm.classList.remove('hidden');  // Tampilkan form reset password
+
+                // Tambahkan kelas untuk animasi atau transisi, jika perlu
+                resetPasswordForm.classList.remove('translate-x-full');  // Pastikan form muncul dengan benar
+                resetPasswordForm.classList.add('translate-x-0');
+            } else {
+                alert(data.message);  // Tampilkan pesan kesalahan jika kode tidak valid
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+
+    // Formulir Reset Password
+    document.getElementById('resetPasswordFormSubmit').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const password = document.getElementById('password1').value;
+        const passwordConfirmation = document.getElementById('password_confirmation').value;
+
+        if (password !== passwordConfirmation) {
+            errorText.textContent = 'Password dan konfirmasi password tidak sesuai.';
+            errorText.style.display = 'block';
+            return;
+        }
+
+        if (password.length < 8) {
+            errorText.textContent = 'Password harus minimal 8 karakter.';
+            errorText.style.display = 'block';
+            return;
+        }
+
+        fetch('{{ route('password.update') }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json', // Paksa Laravel merespons JSON
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({
+                password: password,
+                password_confirmation: passwordConfirmation
+            })
+        })
+        .then(response => {
+            return response.json().catch(() => {
+                return response.text().then(text => {
+                    console.error('Response not JSON:', text); // Menampilkan teks HTML error jika ada
+                    throw new Error('Server response was not in JSON format');
+                });
+            });
+        })
+        .then(data => {
+            if (data.message) {
+                resetPasswordForm.classList.add('hidden');
+                resetSuccess.classList.remove('hidden');
+            } else {
+                alert(data.error || 'Terjadi kesalahan, silakan coba lagi.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan saat reset password.');
+        });
+    });
+
+    // Back to Login from Success
+    backToLoginAfterSuccess.addEventListener('click', function (event) {
+        event.preventDefault();
+        resetSuccess.classList.add('hidden');
+        loginForm.classList.remove('translate-x-full');
+    });
+</script>
 
 @endsection

@@ -24,14 +24,20 @@ use App\Http\Controllers\FileController;
 use App\Models\Dokumen;
 
 Route::get('/', function () {
-    return redirect()->route('login');
+    return redirect()->route('select-role');
 });
 
 // ========================================================================================
 // AUTHENTICATION ROUTES ==================================================================
 Route::controller(AuthController::class)->group(function () {
+    Route::get('/select-role', 'showRoleSelection')->name('auth.role');
     Route::get('/login', 'index')->name('login');
     Route::post('/login', 'login')->name('login.submit');
+
+    // Forgot password process
+    Route::post('/forgot-password', 'sendVerificationCode')->name('password.forgot');
+    Route::post('/verify-code', 'verifyCode')->name('password.verifyCode');
+    Route::post('/reset-password', 'resetPassword')->name('password.update');
 
     // Logout route should be outside the '/home' route
     Route::post('/logout', 'logout')->name('logout');
@@ -77,6 +83,8 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/pengajuan/{id_pengajuan}/update', [DokumenController::class, 'update'])->name('dokumen.update');
         Route::get('/dokumen/generate/{id_pengajuan}', [DokumenController::class, 'generate'])->name('dokumen.generate');
         Route::get('/get-disabled-dates', [JadwalUjianController::class, 'getDisabledDates']);
+        Route::get('/disabled-dates', [RuanganController::class, 'disabledDates']);
+
     });
 
     Route::middleware([CheckReviewer::class])->group(function () {

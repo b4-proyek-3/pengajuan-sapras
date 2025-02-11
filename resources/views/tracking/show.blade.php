@@ -33,17 +33,20 @@
             <div class="form-group">
                 <label for="tanggal-kegiatan">Tanggal Kegiatan</label>
                 <input type="text" class="form-control" value="{{ 
-                    \Carbon\Carbon::parse($penggunaan->tanggal_mulai)->format('d') . 
-                    (
-                        \Carbon\Carbon::parse($penggunaan->tanggal_mulai)->format('m Y') === 
-                        \Carbon\Carbon::parse($penggunaan->tanggal_akhir)->format('m Y') 
-                        ? 
-                        '-' . \Carbon\Carbon::parse($penggunaan->tanggal_akhir)->format('d F Y')
-                        : 
-                        ' ' . \Carbon\Carbon::parse($penggunaan->tanggal_mulai)->format('F') . 
-                        ' - ' . 
-                        \Carbon\Carbon::parse($penggunaan->tanggal_akhir)->format('d F Y')
-                    )
+                    isset($penggunaan->tanggal_mulai, $penggunaan->tanggal_akhir) 
+                        ? (\Carbon\Carbon::parse($penggunaan->tanggal_mulai)->format('d') . 
+                            (
+                                \Carbon\Carbon::parse($penggunaan->tanggal_mulai)->format('m Y') === 
+                                \Carbon\Carbon::parse($penggunaan->tanggal_akhir)->format('m Y') 
+                                ? 
+                                '-' . \Carbon\Carbon::parse($penggunaan->tanggal_akhir)->format('d F Y')
+                                : 
+                                ' ' . \Carbon\Carbon::parse($penggunaan->tanggal_mulai)->format('F') . 
+                                ' - ' . 
+                                \Carbon\Carbon::parse($penggunaan->tanggal_akhir)->format('d F Y')
+                            )
+                        )
+                        : ''
                 }}" readonly>
             </div>
             <div class="form-group">

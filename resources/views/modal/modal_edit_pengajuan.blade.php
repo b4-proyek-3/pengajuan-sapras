@@ -1,6 +1,6 @@
-<div id="editPengajuanModal" tabindex="-1" aria-hidden="true" class="hidden fixed inset-0 z-50 flex justify-center items-center overflow-y-auto">
+<div id="editPengajuanModal" tabindex="-1" aria-hidden="true" class="hidden fixed inset-0 z-100 flex justify-center items-center overflow-y-auto">
   <div class="relative w-full h-auto max-h-screen p-4 rounded-lg z-100">
-    <div class="fixed inset-0 bg-gray-800 opacity-50"></div>
+    <div class="fixed inset-0 bg-gray-800 opacity-50 z-100"></div>
     <!-- Modal Content -->
     <div class="relative p-2 w-full max-w-lg mx-auto z-100">
       <div class="relative bg-white text-gray-900 rounded-lg">
@@ -72,14 +72,14 @@
                                 <input type="text" name="tanggal_akhir[]" value="{{ $ruangan->pivot->tanggal_akhir }}" class="form-control tanggal-input">
                             </div>
                             <div class="mb-3">
-                                <label class="block text-sm font-medium text-gray-900">Waktu Mulai</label>
-                                <select name="waktu_mulai[]" class="form-control waktu_mulai" id="waktu_mulai_{{ $index }}">
+                                <label class="block text-sm font-medium text-gray-900">Waktu Mulai Kegiatan</label>
+                                <select name="waktu_mulai[]" class="form-control waktu-mulai" id="waktu_mulai_{{ $index }}" required>
                                     <option value="{{ $ruangan->pivot->waktu_mulai }}" selected>{{ $ruangan->pivot->waktu_mulai }}</option>
                                 </select>
                             </div>
                             <div class="mb-3">
-                                <label class="block text-sm font-medium text-gray-900">Waktu Selesai</label>
-                                <select name="waktu_akhir[]" class="form-control waktu_akhir" id="waktu_akhir_{{ $index }}">
+                                <label class="block text-sm font-medium text-gray-900">Waktu Selesai Kegiatan</label>
+                                <select name="waktu_akhir[]" class="form-control waktu-selesai" id="waktu_akhir_{{ $index }}" required>
                                     <option value="{{ $ruangan->pivot->waktu_akhir }}" selected>{{ $ruangan->pivot->waktu_akhir }}</option>
                                 </select>
                             </div>
@@ -242,6 +242,7 @@
         }
     }
 
+    // Fungsi untuk mengambil daftar tanggal yang dinonaktifkan dari server
     async function fetchDisabledDates(callback) {
         try {
             const response = await fetch("/get-disabled-dates");
@@ -252,22 +253,111 @@
         }
     }
 
-    function applyFlatpickr(disabledDates) {
-        // Terapkan flatpickr pada setiap input dengan kelas .tanggal-input
-        document.querySelectorAll(".tanggal-input").forEach(input => {
+    function applyFlatpickr(formItem, data) {
+        const disabledDates = data.disabledDates || [];
+        const disabledTimes = data.disabledTimes || {};
+
+        const tanggalInputs = formItem.querySelectorAll(".tanggal-input");
+        const waktuMulaiSelects = formItem.querySelectorAll(".waktu-mulai");
+        const waktuSelesaiSelects = formItem.querySelectorAll(".waktu-selesai");
+
+        console.log("🚫 Tanggal yang dinonaktifkan:", disabledDates);
+
+        // Inisialisasi Flatpickr untuk tanggal
+        tanggalInputs.forEach(input => {
+            if (input._flatpickr) {
+                input._flatpickr.destroy();
+            }
             flatpickr(input, {
                 dateFormat: "Y-m-d",
                 minDate: "today",
-                disable: disabledDates
+                disable: disabledDates, // Nonaktifkan tanggal penuh
+                onChange: function (selectedDates, dateStr) {
+                    console.log("📅 Tanggal dipilih:", dateStr);
+                    applyTimeDropdown(waktuMulaiSelects, waktuSelesaiSelects, dateStr, disabledTimes);
+                }
             });
         });
+
+        // Jika ada tanggal pertama, isi dropdown waktu
+        const firstDate = tanggalInputs[0]?.value;
+        if (firstDate) {
+            applyTimeDropdown(waktuMulaiSelects, waktuSelesaiSelects, firstDate, disabledTimes);
+        }
+    }
+
+    // Fungsi untuk mengisi dropdown waktu berdasarkan tanggal yang dipilih
+    function applyTimeDropdown(waktuMulaiSelects, waktuSelesaiSelects, selectedDate, disabledTimes) {
+        if (!selectedDate) return;
+
+        const blockedTimes = disabledTimes[selectedDate] || [];
+        const dateObj = new Date(selectedDate);
+        const isWeekend = dateObj.getDay() === 0 || dateObj.getDay() === 6;
+
+        const fullSlot = isWeekend
+            ? { from: "07:30", to: "17:00" } // Weekend
+            : { from: "07:30", to: "20:00" }; // Weekday
+
+        console.log(`📅 ${selectedDate} adalah ${isWeekend ? "WEEKEND" : "WEEKDAY"}`);
+        console.log(`⏳ Waktu yang diblokir untuk ${selectedDate}:`, blockedTimes);
+
+        // Generate slot waktu berdasarkan blokir
+        let availableSlots = [{ ...fullSlot }];
+        blockedTimes.forEach(({ mulai, akhir }) => {
+            const start = mulai.slice(0, 5);
+            const end = akhir.slice(0, 5);
+
+            availableSlots = availableSlots.flatMap(slot => {
+                if (end <= slot.from || start >= slot.to) return [slot];
+                else if (start > slot.from && end < slot.to) return [{ from: slot.from, to: start }, { from: end, to: slot.to }];
+                else if (start <= slot.from && end < slot.to) return [{ from: end, to: slot.to }];
+                else if (start > slot.from && end >= slot.to) return [{ from: slot.from, to: start }];
+                return [];
+            });
+        });
+
+        console.log(`✅ Waktu yang bisa dipilih untuk ${selectedDate}:`, availableSlots);
+
+        // Buat daftar waktu dalam interval 30 menit
+        function generateTimeOptions(from, to) {
+            let times = [];
+            let currentTime = from;
+            while (currentTime <= to) {
+                times.push(currentTime);
+                let [hours, minutes] = currentTime.split(":").map(Number);
+                minutes += 30;
+                if (minutes >= 60) {
+                    minutes = 0;
+                    hours += 1;
+                }
+                currentTime = `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+            }
+            return times;
+        }
+
+        let availableTimes = [];
+        availableSlots.forEach(slot => {
+            availableTimes.push(...generateTimeOptions(slot.from, slot.to));
+        });
+
+        console.log("⏰ Pilihan waktu:", availableTimes);
+
+        // Isi dropdown waktu mulai dan selesai
+        function fillDropdown(selectElement, times) {
+            selectElement.innerHTML = `<option value="">Pilih Waktu</option>`;
+            times.forEach(time => {
+                selectElement.innerHTML += `<option value="${time}">${time}</option>`;
+            });
+        }
+
+        waktuMulaiSelects.forEach(select => fillDropdown(select, availableTimes));
+        waktuSelesaiSelects.forEach(select => fillDropdown(select, availableTimes));
     }
 
     // Fungsi untuk menangani perubahan pada dropdown ruangan
     function onRoomChange(select) {
         const formItem = select.closest(".form-item");
 
-        // Cek apakah input form sudah ada, jika belum, tambahkan
         if (select.value && !formItem.querySelector(".dynamic-fields")) {
             const dynamicFields = document.createElement("div");
             dynamicFields.classList.add("dynamic-fields");
@@ -283,22 +373,45 @@
                 </div>
                 <div class="mb-3">
                     <label class="block text-sm font-medium text-gray-900">Waktu Mulai Kegiatan</label>
-                    <select name="waktu_mulai[]" class="form-control" required>
-                        ${weekdayTimes.map(time => `<option value="${time}">${time}</option>`).join("")}
+                    <select name="waktu_mulai[]" class="form-control waktu-mulai" required>
+                        <option value="">Pilih Waktu</option>
                     </select>
                 </div>
                 <div class="mb-3">
                     <label class="block text-sm font-medium text-gray-900">Waktu Selesai Kegiatan</label>
-                    <select name="waktu_akhir[]" class="form-control" required>
-                        ${weekdayTimes.map(time => `<option value="${time}">${time}</option>`).join("")}
+                    <select name="waktu_akhir[]" class="form-control waktu-selesai" required>
+                        <option value="">Pilih Waktu</option>
                     </select>
                 </div>
             `;
 
-            fetchDisabledDates(applyFlatpickr);
             formItem.appendChild(dynamicFields);
-            moveRemoveButtonToLast(formItem);
         }
+
+    const roomId = select.value;
+    if (!roomId) return;
+
+    console.log(`Mengambil data disabled dates untuk ruangan ID: ${roomId}`);
+
+    Promise.all([
+        fetch(`/disabled-dates?id_ruangan=${roomId}`).then(res => res.json()),
+        fetch(`/get-disabled-dates`).then(res => res.json())
+    ])
+    .then(([data1, data2]) => {
+        console.log("Response dari /disabled-dates:", data1);
+        console.log("Response dari /get-disabled-dates:", data2);
+
+        // Gabungkan disabledDates dari kedua sumber
+        const allDisabledDates = [
+            ...new Set([...(data1.disabledDates || []), ...(data2 || [])])
+            ];
+
+            // Gunakan disabledTimes hanya dari /disabled-dates
+            const allDisabledTimes = { ...data1.disabledTimes };
+
+            applyFlatpickr(formItem, { disabledDates: allDisabledDates, disabledTimes: allDisabledTimes });
+        })
+        .catch(error => console.error("Error fetching disabled dates:", error));
     }
 
     document.addEventListener("DOMContentLoaded", function () {

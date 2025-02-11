@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Ruangan;
 use App\Models\Pengajuan;
 use App\Models\Review;
 use App\Models\Reviewer;
 use App\Models\User;
+use App\Models\MenggunakanRuangan;
 use Carbon\Carbon;
 
 class ValidasiController extends Controller
@@ -28,9 +30,17 @@ class ValidasiController extends Controller
         $wd3 = optional($reviews->where('reviewer.role', 'wd-3')->first())->tanggal_review ?? 'Belum Melakukan Review';
  
         // Cek status dokumen (aktif/tidak aktif)
-        $waktu_mulai = Carbon::parse($pengajuan->tanggal_pinjam . ' ' . $pengajuan->waktu_pengajuan);
-        $waktu_akhir = Carbon::parse($pengajuan->tanggal_akhir . ' 23:59:59');
-        $status_dokumen = Carbon::now()->between($waktu_mulai, $waktu_akhir) ? 'Aktif' : 'Tidak Aktif';
+        $menggunakanRuangan = MenggunakanRuangan::where('id_pengajuan', $id_pengajuan)->first();
+
+        if ($menggunakanRuangan) {
+            $waktu_mulai = Carbon::parse($menggunakanRuangan->tanggal_mulai . ' ' . $menggunakanRuangan->waktu_mulai);
+            $waktu_akhir = Carbon::parse($menggunakanRuangan->tanggal_akhir . ' ' . $menggunakanRuangan->waktu_akhir);
+        } else {
+            $waktu_mulai = $waktu_akhir = null;
+        }
+        
+        $status_dokumen = ($waktu_mulai && $waktu_akhir) && Carbon::now()->between($waktu_mulai, $waktu_akhir) ? 'Aktif' : 'Tidak Aktif';
+        
 
         // Mengirim data ke view
         return view('pages.validasi', [
