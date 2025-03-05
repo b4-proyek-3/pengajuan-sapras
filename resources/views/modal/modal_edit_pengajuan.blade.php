@@ -10,7 +10,7 @@
         </div>
         <!-- Modal body -->
         <div class="p-3 -mt-2">
-          <form class="space-y-2" action="{{ route('pengajuan.update', $pengajuans->id_pengajuan) }}" method="POST">
+          <form class="space-y-2" action="{{ route('pengajuan.update', $pengajuans->id_pengajuan) }}" method="POST" id="form">
             @csrf
             @method('PUT')
             <div class="flex flex-col">
@@ -26,8 +26,9 @@
             </div>
             <div class="flex flex-col">
                 <label for="nomor-telepon" class="block text-sm font-medium text-gray-900">Nomor Telepon</label>
-                <input type="text" id="nomor-telepon" name="no_telp" value="{{ $pengajuans->notelp }}"
+                <input type="text" id="nomor-telepon" name="notelp" value="{{ $pengajuans->notelp }}"
                 class="form-control"/>
+                <div id="notelperror" class="text-danger mt-1" style="display: none !important;">Nomor telepon harus berupa angka dan minimal 10 digit!</div>
             </div>
             <div class="flex flex-col">
                 <label for="nama-kegiatan" class="block text-sm font-medium text-gray-900">Nama Kegiatan</label>
@@ -120,6 +121,33 @@
 </div>
 
 <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const inputTelp = document.getElementById("nomor-telepon");
+        const errorMsg = document.getElementById("notelperror");
+        const form = document.querySelector("form");
+
+        inputTelp.addEventListener("input", function () {
+            const telpValue = inputTelp.value.trim();
+            const isValid = /^\d{10,15}$/.test(telpValue);
+
+            if (!isValid) {
+                errorMsg.style.display = "block";
+            } else {
+                errorMsg.style.display = "none";
+            }
+        });
+
+        form.addEventListener("submit", function (event) {
+            const telpValue = inputTelp.value.trim();
+            const isValid = /^\d{10,15}$/.test(telpValue);
+
+            if (!isValid) {
+                errorMsg.style.display = "block";
+                event.preventDefault(); 
+            }
+        });
+    });
+
     const weekdayTimes = generateTimeOptions("07:30", "20:00", 30);
     const weekendTimes = generateTimeOptions("07:30", "17:00", 30);
 

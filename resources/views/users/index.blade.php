@@ -53,30 +53,32 @@
                                     <td class="py-3 px-4 border">{{ $p->nim }}</td>
                                     <td class="py-3 px-4 border">{{ $p->user->email }}</td>
                                     <td class="py-3 px-4 border">{{ $p->ormawa->nama_ormawa }}</td>
-                                    <td class="py-3 px-4 border flex items-center space-x-2">
-                                        <button
-                                        data-bs-toggle="modal" data-bs-target="#editPengajuModal"
-                                            class="bg-blue-600 text-white px-4 py-2 rounded-lg"
-                                            data-id="{{ $p->user->id_user }}"
-                                            data-name="{{ $p->user->name }}"
-                                            data-nim="{{ $p->nim }}"
-                                            data-id-ormawa="{{ $p->ormawa->id_ormawa }}"
-                                            data-email="{{ $p->user->email }}">
-                                            Edit
-                                        </button>
-                                        <form id="delete-form-{{ $p->id_user }}" action="{{ route('users.destroy', $p->id_user) }}" method="POST">
-                                            @csrf
-                                            @method('DELETE')
-                                        
-                                            <!-- Button Hapus -->
+                                    <td class="py-3 px-4 border">
+                                        <div class="flex items-center space-x-2">
                                             <button
-                                                type="button"
-                                                class="text-white px-4 py-2 rounded-lg"
-                                                style="background-color: #ff7f00 !important;"
-                                                onclick="confirmDelete({{ $p->id_user }})">
-                                                Hapus
+                                            data-bs-toggle="modal" data-bs-target="#editPengajuModal"
+                                                class="bg-blue-600 text-white px-4 py-2 rounded-lg"
+                                                data-id="{{ $p->user->id_user }}"
+                                                data-name="{{ $p->user->name }}"
+                                                data-nim="{{ $p->nim }}"
+                                                data-id-ormawa="{{ $p->ormawa->id_ormawa }}"
+                                                data-email="{{ $p->user->email }}">
+                                                Edit
                                             </button>
-                                        </form>
+                                            <form id="delete-form-{{ $p->id_user }}" action="{{ route('users.destroy', $p->id_user) }}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                            
+                                                <!-- Button Hapus -->
+                                                <button
+                                                    type="button"
+                                                    class="text-white px-4 py-2 rounded-lg"
+                                                    style="background-color: #ff7f00 !important;"
+                                                    onclick="confirmDelete({{ $p->id_user }})">
+                                                    Hapus
+                                                </button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach
@@ -161,29 +163,31 @@
                                         <td class="py-3 px-4 border">{{ $r->user->name }}</td>
                                         <td class="py-3 px-4 border">{{ $r->user->email }}</td>
                                         <td class="py-3 px-4 border">{{ $r->role }}</td>
-                                        <td class="py-3 px-4 border flex items-center space-x-2">
-                                            <button
-                                            data-bs-toggle="modal" data-bs-target="#editReviewerModal"
-                                                class="bg-blue-600 text-white px-4 py-2 rounded-lg"
-                                                data-id="{{ $r->user->id_user }}"
-                                                data-name="{{ $r->user->name }}"
-                                                data-role="{{ $r->role }}"
-                                                data-email="{{ $r->user->email }}">
-                                                Edit
-                                            </button>
-                                            <form id="delete-form-{{ $r->id_user }}" action="{{ route('users.destroy', $r->id_user) }}" method="POST">
-                                                @csrf
-                                                @method('DELETE')
-                                            
-                                                <!-- Button Hapus -->
+                                        <td class="py-3 px-4 border">
+                                            <div class="flex items-center space-x-2">
                                                 <button
-                                                    type="button"
-                                                    class="text-white px-4 py-2 rounded-lg"
-                                                    style="background-color: #ff7f00 !important;"
-                                                    onclick="confirmDelete({{ $r->id_user }})">
-                                                    Hapus
+                                                data-bs-toggle="modal" data-bs-target="#editReviewerModal"
+                                                    class="bg-blue-600 text-white px-4 py-2 rounded-lg"
+                                                    data-id="{{ $r->user->id_user }}"
+                                                    data-name="{{ $r->user->name }}"
+                                                    data-role="{{ $r->role }}"
+                                                    data-email="{{ $r->user->email }}">
+                                                    Edit
                                                 </button>
-                                            </form>
+                                                <form id="delete-form-{{ $r->id_user }}" action="{{ route('users.destroy', $r->id_user) }}" method="POST">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                
+                                                    <!-- Button Hapus -->
+                                                    <button
+                                                        type="button"
+                                                        class="text-white px-4 py-2 rounded-lg"
+                                                        style="background-color: #ff7f00 !important;"
+                                                        onclick="confirmDelete({{ $r->id_user }})">
+                                                        Hapus
+                                                    </button>
+                                                </form>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach

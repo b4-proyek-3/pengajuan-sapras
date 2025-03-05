@@ -24,13 +24,12 @@ use App\Http\Controllers\FileController;
 use App\Models\Dokumen;
 
 Route::get('/', function () {
-    return redirect()->route('select-role');
+    return redirect()->route('login');
 });
 
 // ========================================================================================
 // AUTHENTICATION ROUTES ==================================================================
 Route::controller(AuthController::class)->group(function () {
-    Route::get('/select-role', 'showRoleSelection')->name('auth.role');
     Route::get('/login', 'index')->name('login');
     Route::post('/login', 'login')->name('login.submit');
 

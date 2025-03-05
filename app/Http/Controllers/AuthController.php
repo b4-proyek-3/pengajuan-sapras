@@ -40,54 +40,32 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        try {
-            $request->validate([
-                'email' => [
-                    'required',
-                    'email',
-                    'regex:/^[a-zA-Z0-9._%+-]+@polban\.ac\.id$/i',
-                ],
-                'password' => 'required|min:6',
-                'role' => 'required|in:pengaju,reviewer'
-            ], [
-                'email.regex' => 'Gunakan email polban!',
-            ]);
+        $request->validate([
+            'email' => [
+                'required',
+                'email',
+                'regex:/^[a-zA-Z0-9._%+-]+@polban\.ac\.id$/i',
+            ],
+            'password' => 'required|min:6',
+        ], [
+            'email.regex' => 'Gunakan email polban!',
+        ]);
 
-            $credentials = $request->only('email', 'password');
+        $credentials = $request->only('email', 'password');
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+            // Dapatkan user yang login
+            $user = Auth::user();
 
-            if (Auth::attempt($credentials)) {
-                $request->session()->regenerate();
-                $user = Auth::user();
-
-                // Validasi role yang dipilih
-                if ($request->role === 'pengaju' && Pengaju::where('id_user', $user->id_user)->exists()) {
-                    return redirect()->intended('/pengajuan');
-                } elseif ($request->role === 'reviewer' && Reviewer::where('id_user', $user->id_user)->exists()) {
-                    return redirect()->intended('/reviewer');
-                } else {
-                    Auth::logout();
-                    Log::warning('Login gagal: User tidak memiliki peran yang sesuai.', [
-                        'user_id' => $user->id_user,
-                        'email' => $user->email,
-                        'role_attempted' => $request->role
-                    ]);
-                    return redirect()->back()->with('error', 'Akun ini tidak memiliki akses sebagai ' . ucfirst($request->role));
-                }
-            } else {
-                Log::warning('Percobaan login gagal', [
-                    'email' => $request->email,
-                    'message' => 'Email atau password salah.'
-                ]);
+            // Cek apakah user adalah pengaju atau reviewer
+            if (Pengaju::where('id_user', $user->id_user)->exists()) {
+                return redirect()->intended('/pengajuan');
+            } elseif (Reviewer::where('id_user', $user->id_user)->exists()) {
+                return redirect()->intended('/reviewer');
             }
-
-            return back()->withErrors(['email' => 'Email or password is incorrect.'])->onlyInput('email');
-        } catch (\Exception $e) {
-            Log::error('Terjadi kesalahan saat login', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-            return back()->withErrors(['email' => 'Terjadi kesalahan, silakan coba lagi.'])->onlyInput('email');
         }
+
+        return back()->withErrors(['email' => 'Email or password is incorrect.'])->onlyInput('email');
     }
 
     /**
@@ -220,7 +198,6 @@ class AuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-
-        return redirect()->route('auth.role');
+        return redirect()->route('login');
     }
 }

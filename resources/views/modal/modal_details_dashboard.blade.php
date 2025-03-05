@@ -3,7 +3,11 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="timeSlotsModalLabel">Detail Jadwal</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" data-bs-dismiss="modal" aria-label="Close" 
+                    class="w-8 h-8 flex items-center justify-center bg-red-400 text-white text-lg font-bold
+                        rounded-full shadow-md focus:outline-none hover:bg-red-400 transition-colors !bg-red-600">
+                    ✖
+                </button>
             </div>
             <div class="modal-body">
                 <h6 id="selectedDateLabel"></h6>

@@ -1,21 +1,21 @@
 @extends('layout.login')
 @section('content')
 
-<main class="flex items-center justify-center h-screen bg-gray-100">
-    <section class="relative flex flex-col lg:flex-row w-full max-w-4xl h-auto lg:h-[30rem] rounded-3xl overflow-hidden shadow-lg">
-        <!-- First Column (App Name + Background Image + Overlay) -->
-        <div class="relative lg:w-1/2 w-full h-64 lg:h-full bg-cover bg-center flex items-start justify-center" style="background-image: url('{{ asset('assets/img/gedung.png') }}');">
+<main class="flex items-center justify-center min-h-screen bg-gray-100 p-4 sm:p-6">
+    <section class="relative flex flex-col lg:flex-row w-full max-w-4xl h-auto lg:h-[32rem] rounded-3xl overflow-hidden shadow-lg">
+        <!-- First Column -->
+        <div class="relative lg:w-1/2 w-full h-48 sm:h-64 lg:h-full bg-cover bg-center flex items-center justify-center" 
+            style="background-image: url('{{ asset('assets/img/gedung.png') }}');">
             <div class="absolute inset-0 bg-black opacity-30"></div>
-            <div class="relative z-10 p-8">
-                <h1 class="text-3xl font-bold text-white">
+            <div class="relative z-10 p-4 sm:p-6 text-center lg:text-left">
+                <h1 class="text-lg sm:text-xl lg:text-3xl font-bold text-white">
                     Sistem Informasi Kemahasiswaan Polban
                 </h1>
             </div>
-        </div>        
+        </div>
 
         <!-- Second Column (Login, Forgot Password, and Reset Password Forms) -->
-        <div class="w-full lg:w-1/2 flex flex-col p-10 bg-white relative">
-            <!-- Login Form -->
+<div class="w-full lg:w-1/2 flex flex-col p-10 sm:p-6 md:p-8 lg:p-10 bg-white relative min-h-[400px] sm:min-h-[500px] lg:min-h-auto">            <!-- Login Form -->
             <div id="loginForm" class="absolute inset-0 transition-transform duration-700 ease-in-out flex flex-col justify-between p-10 bg-white">
                 <div class="title mb-6">
                     <h1 class="text-2xl font-bold">Login</h1>
@@ -23,7 +23,6 @@
                 <form method="POST" action="{{ route('login.submit') }}">
                     @csrf
                     <div class="space-y-5">
-                        <input type="hidden" name="role" value="{{ request('role') }}">
                         <div>
                             <label for="email" class="block pb-3 text-sm font-medium text-gray-700">Email</label>
                             <input type="email" name="email" id="email" class="focus:shadow-soft-primary-outline text-sm block w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700 focus:border-fuchsia-300 focus:outline-none transition-shadow" placeholder="example@polban.ac.id">

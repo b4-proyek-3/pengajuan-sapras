@@ -25,6 +25,7 @@
                         <div class="mb-3">
                             <label for="notelp" class="form-label">Nomor Telepon</label>
                             <input type="text" name="notelp" id="notelp" class="form-control" required>
+                            <div id="notelp-error" class="text-danger mt-1" style="display: none;">Nomor telepon harus berupa angka dan minimal 10 digit!</div>
                         </div>
 
                         <div class="mb-3">
@@ -480,13 +481,31 @@
             dokumen5.setAttribute("required", "true");
         } else if (activityType === "latihan_rutin") {
             pergerakanFiles.style.display = "block";
+            commonFiles.style.display = "block";
             dokumen2.setAttribute("required", "true");
+            dokumen4.setAttribute("required", "true");
+            dokumen3.style.display = "none";
+            dokumen5.style.display = "none";
+            document.getElementById("dokumen3").parentElement.style.display = "none";
+            document.getElementById("dokumen5").parentElement.style.display = "none";
         }
     }
 
     // Call on page load to handle any default state
     document.addEventListener("DOMContentLoaded", function () {
         showFileInputs();
+    });
+
+    const notelpInput = document.getElementById('notelp');
+    const errorDiv = document.getElementById('notelp-error');
+
+    notelpInput.addEventListener('input', function () {
+        const pattern = /^[0-9]{10,}$/; // Hanya angka, minimal 10 digit
+        if (!pattern.test(notelpInput.value)) {
+            errorDiv.style.display = 'block';
+        } else {
+            errorDiv.style.display = 'none';
+        }
     });
     
 </script>

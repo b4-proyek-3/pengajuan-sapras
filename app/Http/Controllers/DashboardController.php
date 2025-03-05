@@ -52,7 +52,7 @@ class DashboardController extends Controller
                     ]
                 ];
 
-                $startDate->addDay(); // Pindah ke hari berikutnya
+                $startDate->addDay();
             }
         }
         return response()->json($events);

@@ -218,7 +218,7 @@ class PengajuanController extends Controller
                     ]);
 
                 } catch (\Exception $e) {
-                    dd($e->getMessage()); // Menampilkan error jika ada
+                    return redirect()->route('pengajuan.index')->with('error', 'Terjadi kesalahan saat menyimpan ruangan.');
                 }
             }
 
@@ -227,7 +227,6 @@ class PengajuanController extends Controller
 
             return redirect()->route('pengajuan.index')->with('success', 'Pengajuan berhasil ditambahkan!');
         } catch (\Exception $e) {
-            dd($e->getMessage());
             return redirect()->route('pengajuan.index')->with('error', 'Terjadi kesalahan saat menambahkan pengajuan: ' . $e->getMessage());
         }
     }
@@ -325,8 +324,7 @@ class PengajuanController extends Controller
 
             return redirect()->route('pengajuan.show', $pengajuan->id_pengajuan)->with('success', 'Informasi pengajuan berhasil diperbarui.');
         } catch (\Exception $e) {
-            dd($e->getMessage());
-            return redirect()->route('pengajuan.show', $id_pengajuan)->with('failed', 'Informasi pengajuan tidak berhasil diperbarui.');
+            return redirect()->route('pengajuan.show', $id_pengajuan)->with('error', 'Informasi pengajuan tidak berhasil diperbarui.' . $e->getMessage());
         }
     }
 

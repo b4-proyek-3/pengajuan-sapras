@@ -1,9 +1,9 @@
 @extends('layout.main')
 @section('content')
 <!-- cards -->
-<div class="w-full px-6 py-6 mx-auto">
-  <h5 class="font-bold">Detail Pengajuan</h5>
-  <!-- cards row 1 -->
+<div class="w-full px-6 md:px-6 py-6 mx-auto">
+  <h5 class="font-bold text-lg mb-4">Detail Pengajuan</h5>
+    <!-- cards row 1 -->
   <div class="flex flex-wrap -mx-3">
     <div class="max-w-full px-3 lg:w-2/3 lg:flex-none">
       <div class="flex flex-wrap -mx-3">
@@ -136,7 +136,7 @@
           </div>
         </div>
 
-        <div class="max-w-full px-3 lg:mb-0 lg:w-full lg:flex-none">
+        <div class="max-w-full px-3 mb-4 lg:mb-0 lg:w-full lg:flex-none">
           <div class="border-black/12.5 shadow-soft-xl relative flex min-w-0 flex-col break-words rounded-2xl border-0 border-solid bg-white bg-clip-border">
             <div class="flex-auto p-2 px-0">
               <div class="overflow-x-auto">
@@ -190,18 +190,18 @@
             </div>
           </div>
         </div>
+
       </div>
     </div>
-    <!-- card 2 -->
-    <div class="w-full max-w-full pr-4 md:w-1/2 md:flex-none lg:w-1/3 lg:flex-none">
-      <div class="border-black/12.5 shadow-soft-xl relative flex h-full min-w-0 flex-col break-words rounded-2xl border-0 border-solid bg-white bg-clip-border">
+    <div class="w-full max-w-full px-3 lg:w-1/3 lg:flex-none">
+      <div class="relative flex flex-col h-full min-w-0 break-words bg-white border-0 border-transparent border-solid shadow-soft-xl rounded-2xl bg-clip-border">
         <div class="border-black/12.5 mb-0 rounded-t-2xl border-b-0 border-solid bg-white p-6 pb-0">
           <h6>Status Pengajuan</h6>
           <p class="text-sm leading-normal">
           </p>
         </div>
         <table class="items-center w-full mb-0 align-top border-gray-200 text-slate-500">
-              <td class="p-0 align-middle bg-transparent border-b whitespace-nowrap">
+            <td class="p-0 align-middle bg-transparent border-b whitespace-nowrap">
         </table>
         <div class="flex-auto p-4">
           <div class="before:border-r-solid relative before:absolute before:top-0 before:left-4 before:h-full before:border-r-2 before:border-r-slate-100 before:content-[''] before:lg:-ml-px">
@@ -241,14 +241,14 @@
   </div>
 </div>
 
-<div class="w-full mx-auto">
+<div class="w-full py-6 mx-auto">
   <!-- cards row 2 -->
-  <h5 class="font-bold px-3 mt-6 mb-0">Detail Dokumen</h5>
-  <div class="flex flex-wrap my-6 -mx-3">
-    <div class="w-full px-3 lg:w-1/3 flex flex-wrap">
+  <div class="flex flex-wrap -mx-3">
+    <div class="max-w-full px-3 lg:w-1/3 lg:flex-none">
       <div class="flex flex-wrap -mx-3">
         <!-- card 1 -->
-        <div class="max-w-full px-3 mb-4 lg:mb-0 lg:w-full lg:flex-none">
+        <div class="w-full max-w-full px-3 lg:w-full lg:flex-none">
+          <h5 class="font-bold text-lg mb-4">Detail Dokumen</h5>
           <div class="border-black/12.5 shadow-soft-xl relative flex min-w-0 flex-col break-words rounded-2xl border-0 border-solid bg-white bg-clip-border">
             <div class="border-black/12.5 mb-0 rounded-t-2xl border-b-0 border-solid bg-white p-6 pb-0">
               <div class="flex flex-wrap mt-0 -mx-3">
@@ -305,8 +305,9 @@
             </table>
           </div>
         </div>
-        <h5 class="font-bold px-3 mb-4">Catatan</h5>
-        <div class="max-w-full px-3 mb-0 lg:mb-0 lg:w-full lg:flex-none">
+        <!-- card 3 -->
+        <div class="w-full max-w-full px-3 lg:w-full lg:flex-none">
+          <h5 class="font-bold text-lg mb-4 py-6">Catatan</h5>
           <form>
             <div class="w-full mb-4 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
                 <div class="px-4 py-2 bg-white rounded-b-lg dark:bg-gray-800">
@@ -330,17 +331,21 @@
         </div>
       </div>
     </div>
-    <div class="w-full max-w-full pr-4 md:w-2/3 md:flex-none lg:w-2/3 lg:flex-none">
-      <div class="border-black/12.5 shadow-soft-xl relative flex h-full min-w-0 flex-col break-words rounded-2xl border-0 border-solid bg-white bg-clip-border">
-        <div class="flex-auto p-2">
-          <div class="before:border-r-solid relative before:absolute before:top-0 before:left-4 before:h-full before:border-r-2 before:border-r-slate-100 before:content-[''] before:lg:-ml-px">
-            <iframe id="dokumen-frame" src="{{ $firstDocument ? route('file.show', ['id_pengajuan' => $pengajuans->id_pengajuan, 'filename' => basename($firstDocument->path)]) : '' }}" style="width:100%; height:700px;" frameborder="0"></iframe>
+    <!-- card 2 -->
+    <div class="w-full max-w-full lg:w-2/3 lg:flex-none">
+      <div class="w-full max-w-full mb-4 lg:w-full lg:flex-none">
+        <div class="border-black/12.5 shadow-soft-xl relative flex h-full min-w-0 flex-col break-words rounded-2xl border-0 border-solid bg-white bg-clip-border">
+          <div class="flex-auto p-2">
+            <div class="before:border-r-solid relative before:absolute before:top-0 before:left-4 before:h-full before:border-r-2 before:border-r-slate-100 before:content-[''] before:lg:-ml-px">
+              <iframe id="dokumen-frame" src="{{ $firstDocument ? route('file.show', ['id_pengajuan' => $pengajuans->id_pengajuan, 'filename' => basename($firstDocument->path)]) : '' }}" style="width:100%; height:700px;" frameborder="0"></iframe>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
+
 <footer class="pt-4 w-full bg-transparent">
   <div class="container mx-auto px-6">
     <div class="flex flex-wrap items-center justify-center">
@@ -366,6 +371,18 @@
     timer: 1500,
     icon: "success"
   });
+</script>
+@endif
+
+@if (session('error'))
+<script>
+    Swal.fire({
+        position: "center",
+        title: "{{ session('error') }}",
+        showConfirmButton: false,
+        timer: 1500,
+        icon: "error"
+    });
 </script>
 @endif
 

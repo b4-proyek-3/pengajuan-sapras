@@ -75,7 +75,7 @@ class DokumenController extends Controller
 
     public function generateQRCode($id_pengajuan)
     {
-        $url = "https://birokrasi.kemahasiswaan.polban.ac.id:9009/validasi/{$id_pengajuan}";
+        $url = "http://192.168.0.195:8000/validasi/{$id_pengajuan}";
 
         $payload = json_encode(['url' => $url]);
 

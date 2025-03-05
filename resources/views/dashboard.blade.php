@@ -66,10 +66,10 @@
         </div>
 
         <!-- Calendar section (tambah id untuk scroll) -->
-        <div id="calendarSection" class="w-full overflow-auto mt-80">
-            <div class="container mx-auto">
-                <div id="ruanganCard" class="bg-white shadow-md rounded-lg p-6">
-                    <div class="mt-6" id="calendar"></div>
+        <div id="calendarSection" class="w-full overflow-auto mt-20 px-4 sm:px-6 md:px-8 lg:px-10">
+            <div class="container mx-auto max-w-7xl">
+                <div id="ruanganCard" class="bg-white shadow-md rounded-lg p-4 sm:p-6 md:p-8">
+                    <div class="mt-4 sm:mt-6" id="calendar"></div>
                 </div>
             </div>
         </div>
@@ -93,6 +93,8 @@
         var calendar = new FullCalendar.Calendar(calendarEl, {
             locale: 'id', // Bahasa Indonesia
             initialView: 'dayGridMonth',
+            height: 'auto',
+            aspectRatio: 1.5,
             headerToolbar: {
                 left: 'prev,next today',
                 center: 'title',
@@ -117,9 +119,9 @@
                 day: 'Hari',
                 list: 'Agenda'
             },
-            events: '{{ route('dashboard.calendar.data') }}', // API dari Laravel
+            events: '{{ route('dashboard.calendar.data') }}',
             eventDidMount: function (info) {
-                let status = info.event.extendedProps.status; // Ambil status dari API
+                let status = info.event.extendedProps.status;
 
                 // Tentukan warna berdasarkan status
                 let warna;
